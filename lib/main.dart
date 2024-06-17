@@ -4,6 +4,8 @@ import 'package:techshop_app/module/Auth/Binding/auth_binding.dart';
 import 'package:techshop_app/module/Auth/Controller/auth_controller.dart';
 import 'package:techshop_app/module/Auth/Views/login_view.dart';
 import 'package:techshop_app/module/Home/View/home_view.dart';
+import 'package:techshop_app/module/Product/Binding/product_binding.dart';
+import 'package:techshop_app/module/Product/Views/productList_view.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,10 +18,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'TechShop',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialBinding: AuthBinding(),
       home: Obx(() {
         final AuthController authController = Get.find<AuthController>();
         if (authController.user.value != null) {
@@ -28,6 +30,16 @@ class MyApp extends StatelessWidget {
           return LoginPage();
         }
       }),
+      initialBinding: AuthBinding(),
+      initialRoute: '/',
+      getPages: [
+        GetPage(name: '/', page: () => LoginPage(), binding: AuthBinding()),
+        GetPage(name: '/home', page: () => HomePage(), binding: AuthBinding()),
+        GetPage(
+            name: '/product',
+            page: () => ProductListPage(),
+            binding: ProductBinding()),
+      ],
     );
   }
 }

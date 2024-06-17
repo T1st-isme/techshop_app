@@ -6,14 +6,24 @@ class AuthController extends GetxController {
   var user = Rxn<User>();
   final AuthService _authService = AuthService();
 
-  void login(String email, String password) async {
-    final data = await _authService.login(email, password);
-    user.value = User.fromJson(data);
+  Future<bool> login(String email, String password) async {
+    try {
+      final data = await _authService.login(email, password);
+      user.value = User.fromJson(data);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
-  void register(String fullname, String email, String password) async {
-    final data = await _authService.register(fullname, email, password);
-    user.value = User.fromJson(data);
+  Future<bool> register(String fullname, String email, String password) async {
+    try {
+      final data = await _authService.register(fullname, email, password);
+      user.value = User.fromJson(data);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   void logout() {

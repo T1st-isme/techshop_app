@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:techshop_app/module/Auth/Controller/auth_controller.dart';
-import 'package:techshop_app/module/Auth/Views/register_view.dart';
 
 class LoginPage extends StatelessWidget {
-  final AuthController authController = Get.put(AuthController());
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final AuthController authController = Get.find<AuthController>();
 
   LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: const Text('Login Page'),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -29,15 +31,18 @@ class LoginPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
-                authController.login(
+              onPressed: () async {
+                Future<bool> success = authController.login(
                     emailController.text, passwordController.text);
+                if (await success) {
+                  Get.toNamed('/home');
+                }
               },
               child: const Text('Login'),
             ),
-            TextButton(
+            ElevatedButton(
               onPressed: () {
-                Get.to(() => RegisterPage());
+                Get.toNamed('/register');
               },
               child: const Text('Register'),
             ),
