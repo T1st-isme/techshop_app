@@ -11,44 +11,74 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text('Login Page'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
+    final loading = ValueNotifier<bool>(false);
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            title: const Text('Login Page'),
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                TextField(
+                  controller: emailController,
+                  decoration: const InputDecoration(labelText: 'Email'),
+                ),
+                TextField(
+                  controller: passwordController,
+                  decoration: const InputDecoration(labelText: 'Password'),
+                  obscureText: true,
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: loading.value
+                      ? null
+                      : () async {
+                          loading.value = true;
+                          bool success = await authController.login(
+                              emailController.text, passwordController.text);
+                          loading.value = false;
+                          if (success) {
+                            Get.toNamed('/home');
+                          }
+                        },
+                  child: const Text('Login'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Get.toNamed('/register');
+                  },
+                  child: const Text('Register'),
+                ),
+              ],
             ),
-            TextField(
-              controller: passwordController,
-              decoration: const InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                Future<bool> success = authController.login(
-                    emailController.text, passwordController.text);
-                if (await success) {
-                  Get.toNamed('/home');
-                }
-              },
-              child: const Text('Login'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Get.toNamed('/register');
-              },
-              child: const Text('Register'),
-            ),
-          ],
+          ),
         ),
-      ),
+        ValueListenableBuilder<bool>(
+          valueListenable: loading,
+          builder: (context, isLoading, child) {
+            if (isLoading) {
+              return const ModalBarrier(
+                  dismissible: false, color: Colors.black45);
+            } else {
+              return const SizedBox.shrink();
+            }
+          },
+        ),
+        ValueListenableBuilder<bool>(
+          valueListenable: loading,
+          builder: (context, isLoading, child) {
+            if (isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else {
+              return const SizedBox.shrink();
+            }
+          },
+        ),
+      ],
     );
   }
 }
