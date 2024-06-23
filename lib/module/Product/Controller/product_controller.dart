@@ -17,11 +17,24 @@ class ProductController extends GetxController with StateMixin<List<Products>> {
     fetchProducts();
   }
 
-  void fetchProducts() async {
+  void fetchProducts({
+    String keyword = "",
+    int resPerPage = 12,
+    String? category,
+    String? brand,
+    String? sort,
+  }) async {
     if (!hasMore.value) return;
     isLoading.value = true;
     try {
-      final response = await _productService.getProducts(currentPage.value);
+      final response = await _productService.getProducts(
+        currentPage.value,
+        keyword: keyword,
+        resPerPage: resPerPage,
+        category: category,
+        brand: brand,
+        sort: sort,
+      );
       if (response.statusCode == 200) {
         final pro = Product.fromJson(response.data);
         productItems.addAll(pro.products!);

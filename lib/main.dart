@@ -4,12 +4,15 @@ import 'package:techshop_app/module/Auth/Binding/auth_binding.dart';
 import 'package:techshop_app/module/Auth/Controller/auth_controller.dart';
 import 'package:techshop_app/module/Auth/Views/login_view.dart';
 import 'package:techshop_app/module/Auth/Views/register_view.dart';
+import 'package:techshop_app/module/Category/Binding/category_binding.dart';
 import 'package:techshop_app/module/Home/View/home_view.dart';
 import 'package:techshop_app/module/Product/Binding/product_binding.dart';
 import 'package:techshop_app/module/Product/Views/productDetail_view.dart';
 import 'package:techshop_app/module/Product/Views/productList_view.dart';
 
-void main() {
+import 'module/Category/Views/category_view.dart';
+
+void main() async {
   runApp(const MyApp());
 }
 
@@ -50,6 +53,10 @@ class MyApp extends StatelessWidget {
             name: '/product',
             page: () => ProductListPage(),
             binding: ProductBinding()),
+        GetPage(
+            name: '/category',
+            page: () => CategoryList(),
+            binding: CategoryBinding()),
       ],
     );
   }
