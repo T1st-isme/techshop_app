@@ -24,7 +24,7 @@ class ProductController extends GetxController with StateMixin<List<Products>> {
     String? brand,
     String? sort,
   }) async {
-    if (!hasMore.value) return;
+    if (isLoading.value || !hasMore.value) return;
     isLoading.value = true;
     try {
       final response = await _productService.getProducts(
@@ -54,11 +54,11 @@ class ProductController extends GetxController with StateMixin<List<Products>> {
   }
 
   //by slug
-  void fetchProductById(String slug) async {
+  void fetchProductBySlug(String slug) async {
     try {
       final response = await _productService.getProductBySlug(slug);
       if (response.statusCode == 200 && response.data != null) {
-        final pro = Products.fromJson(response.data);
+        final pro = Products.fromJson(response.data['data']);
         productItems.clear();
         productItems.add(pro);
         change(productItems, status: RxStatus.success());

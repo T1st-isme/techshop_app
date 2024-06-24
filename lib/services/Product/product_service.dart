@@ -31,7 +31,7 @@ class ProductService {
   Future<Response> getProductBySlug(String slug) async {
     try {
       final response = await _apiService.get('/product/$slug');
-      return response.data['data'];
+      return response;
     } on Exception catch (e) {
       // ignore: avoid_print
       print(e);

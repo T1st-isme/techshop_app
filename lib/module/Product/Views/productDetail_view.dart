@@ -17,14 +17,13 @@ class ProductDetailView extends StatelessWidget {
     if (slug == null) {
       return const Center(child: CircularProgressIndicator());
     }
-    productController.fetchProductById(slug);
 
     return Obx(() {
       if (productController.isLoading.value) {
         return const Center(child: CircularProgressIndicator());
       }
 
-      // ignore: invalid_use_of_protected_member
+      //get product detail by slug from productList
       final Products product = productController.productItems.value
           .firstWhere((product) => product.slug == slug);
 

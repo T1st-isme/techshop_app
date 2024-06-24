@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
             binding: AuthBinding()),
         GetPage(
             name: '/product/detail',
-            page: () => const ProductDetailView(),
+            page: () => ProductDetailView(),
             binding: ProductBinding()),
         GetPage(
             name: '/product',
