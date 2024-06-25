@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:techshop_app/models/product.dart';
-import 'package:techshop_app/module/Category/Views/category_view.dart';
+import 'package:techshop_app/module/Brand/Views/brand_view.dart';
 import 'package:techshop_app/module/Product/Controller/product_controller.dart';
 
 class ProductListPage extends StatefulWidget {
@@ -67,7 +67,7 @@ class _ProductListPageState extends State<ProductListPage> {
                   color: Colors.grey.shade200,
                   padding: const EdgeInsets.all(16),
                   margin: const EdgeInsets.only(bottom: 20),
-                  // child: CategoryList(),
+                  // child: BrandView(),
                 ),
               ),
               SliverGrid(

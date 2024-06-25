@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:techshop_app/module/Auth/Controller/auth_controller.dart';
 import 'package:techshop_app/module/Auth/Views/login_view.dart';
+import 'package:techshop_app/module/Brand/Views/brand_view.dart';
+import 'package:techshop_app/module/Category/Views/category_view.dart';
 
 import '../../../models/user.dart';
 
@@ -46,8 +48,14 @@ class HomePage extends StatelessWidget {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const CircularProgressIndicator();
                   } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                    return Text(
-                        'Welcome, ${authController.user.value?.email ?? 'Unknown'}');
+                    return Column(
+                      children: [
+                        BrandView(),
+                        CategoryList(),
+                        Text(
+                            'Welcome, ${authController.user.value?.email ?? 'Unknown'}'),
+                      ],
+                    );
                   } else {
                     return const Text('Go login');
                   }

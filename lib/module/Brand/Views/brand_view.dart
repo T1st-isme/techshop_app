@@ -20,34 +20,28 @@ class BrandView extends StatelessWidget {
             child: Text('Error'),
           );
         } else {
-          return MaterialApp(
-            home: Scaffold(
-              appBar: AppBar(title: const Text('Brands')),
-              body: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    for (int i = 0;
-                        i < _brandController.brand.value.data!.length;
-                        i++)
-                      Column(children: [
-                        GestureDetector(
-                          onTap: () {
-                            Get.toNamed(
-                              '/product',
-                              arguments: {
-                                'brand': _brandController.brand.value.data![i]
-                              },
-                            );
-                            print(_brandController.brand.value.data![i]
-                                .toString());
+          return Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                for (int i = 0;
+                    i < _brandController.brand.value.data!.length;
+                    i++)
+                  Column(children: [
+                    GestureDetector(
+                      onTap: () {
+                        Get.toNamed(
+                          '/product',
+                          arguments: {
+                            'brand': _brandController.brand.value.data![i]
                           },
-                          child: Text(_brandController.brand.value.data![i]),
-                        ),
-                      ]),
-                  ],
-                ),
-              ),
+                        );
+                        print(_brandController.brand.value.data![i].toString());
+                      },
+                      child: Text(_brandController.brand.value.data![i]),
+                    ),
+                  ]),
+              ],
             ),
           );
         }

@@ -7,6 +7,7 @@ import 'package:techshop_app/module/Auth/Views/register_view.dart';
 import 'package:techshop_app/module/Brand/Binding/brand_binding.dart';
 import 'package:techshop_app/module/Brand/Views/brand_view.dart';
 import 'package:techshop_app/module/Category/Binding/category_binding.dart';
+import 'package:techshop_app/module/Home/Binding/home_binding.dart';
 import 'package:techshop_app/module/Home/View/home_view.dart';
 import 'package:techshop_app/module/Product/Binding/product_binding.dart';
 import 'package:techshop_app/module/Product/Views/productDetail_view.dart';
@@ -42,7 +43,7 @@ class MyApp extends StatelessWidget {
       getPages: [
         GetPage(
             name: '/login', page: () => LoginPage(), binding: AuthBinding()),
-        GetPage(name: '/home', page: () => HomePage(), binding: AuthBinding()),
+        GetPage(name: '/home', page: () => HomePage(), binding: HomeBinding()),
         GetPage(
             name: '/register',
             page: () => RegisterPage(),
