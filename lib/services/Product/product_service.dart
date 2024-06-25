@@ -18,7 +18,8 @@ class ProductService {
         if (keyword != null && keyword.isNotEmpty) 'keyword': keyword,
         if (category != null && category.isNotEmpty) 'category': category,
         if (brand != null && brand.isNotEmpty) 'brand': brand,
-        if (sort != null && sort.isNotEmpty) 'sort': sort,
+        if (sort != null && sort == 'price') 'sort': 'price',
+        if (sort != null && sort == '-price') 'sort': '-price',
       };
       final Response<dynamic> response = await _apiService
           .get('/product?page=$page', queryParameters: queryParameters);

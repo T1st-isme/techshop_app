@@ -34,8 +34,13 @@ class CategoryList extends StatelessWidget {
                     aspectRatio: 1.25,
                     child: GestureDetector(
                       onTap: () {
-                        // Handle your tap event here.
-                        print('Category item tapped!');
+                        print(
+                            '${_categoryController.category.value.categoryList![index].sId}');
+                        // Handle tap event
+                        Get.toNamed('/product', arguments: {
+                          'category': _categoryController
+                              .category.value.categoryList![index].sId,
+                        });
                       },
                       child: Align(
                         alignment: Alignment.center,

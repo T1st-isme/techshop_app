@@ -10,11 +10,12 @@ class ProductController extends GetxController with StateMixin<List<Products>> {
   var isLoading = false.obs;
   var hasMore = true.obs;
   final _productService = ProductService();
+  final Map<String, String?> data = Get.arguments ?? {};
 
   @override
   void onInit() {
     super.onInit();
-    fetchProducts();
+    fetchProducts(category: data['category'], brand: data['brand']);
   }
 
   void fetchProducts({
@@ -51,6 +52,7 @@ class ProductController extends GetxController with StateMixin<List<Products>> {
       }
     }
     isLoading.value = false;
+    update();
   }
 
   //by slug
