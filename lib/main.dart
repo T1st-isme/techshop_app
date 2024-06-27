@@ -6,13 +6,14 @@ import 'package:techshop_app/module/Auth/Views/login_view.dart';
 import 'package:techshop_app/module/Auth/Views/register_view.dart';
 import 'package:techshop_app/module/Brand/Binding/brand_binding.dart';
 import 'package:techshop_app/module/Brand/Views/brand_view.dart';
+import 'package:techshop_app/module/Cart/Binding/cart_binding.dart';
+import 'package:techshop_app/module/Cart/Views/cart_view.dart';
 import 'package:techshop_app/module/Category/Binding/category_binding.dart';
 import 'package:techshop_app/module/Home/Binding/home_binding.dart';
 import 'package:techshop_app/module/Home/View/home_view.dart';
 import 'package:techshop_app/module/Product/Binding/product_binding.dart';
 import 'package:techshop_app/module/Product/Views/productDetail_view.dart';
 import 'package:techshop_app/module/Product/Views/productList_view.dart';
-
 import 'module/Category/Views/category_view.dart';
 
 void main() async {
@@ -32,7 +33,8 @@ class MyApp extends StatelessWidget {
       ),
       home: Obx(() {
         final AuthController authController = Get.find<AuthController>();
-        if (authController.user.value != null) {
+        if (authController.user.user != null &&
+            authController.isLoggedIn() == true) {
           return HomePage();
         } else {
           return LoginPage();
@@ -62,6 +64,7 @@ class MyApp extends StatelessWidget {
             binding: CategoryBinding()),
         GetPage(
             name: '/brand', page: () => BrandView(), binding: BrandBinding()),
+        GetPage(name: '/cart', page: () => CartPage(), binding: CartBinding()),
       ],
     );
   }

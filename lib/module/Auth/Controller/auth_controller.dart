@@ -1,33 +1,29 @@
-import 'dart:convert';
-
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:techshop_app/models/user.dart';
 import 'package:techshop_app/services/Auth/auth_service.dart';
 
 class AuthController extends GetxController {
-  var user = Rxn<User>();
   final AuthService _authService = AuthService();
+
+  final _user = User().obs;
+  User get user => _user.value;
 
   Future<bool> login(String email, String password) async {
     try {
-      final data = await _authService.login(email, password);
-      user.value = User.fromJson(data);
-      // Store user data in shared preferences
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('user', jsonEncode(data));
+      _user.value = await _authService.login(email, password);
       return true;
     } catch (e) {
+      print(e);
       return false;
     }
   }
 
   Future<bool> register(String fullname, String email, String password) async {
     try {
-      final data = await _authService.register(fullname, email, password);
-      user.value = User.fromJson(data);
+      _user.value = await _authService.register(fullname, email, password);
       return true;
     } catch (e) {
+      print(e);
       return false;
     }
   }
@@ -35,7 +31,7 @@ class AuthController extends GetxController {
   Future<void> logout() async {
     try {
       await _authService.logout();
-      user.value = null;
+      _user.value = User();
     } on Exception catch (e) {
       print(e);
     }

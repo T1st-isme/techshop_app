@@ -36,7 +36,7 @@ class HomePage extends StatelessWidget {
                   icon: const Icon(Icons.logout),
                   onPressed: () {
                     authController.logout();
-                    Get.to(() => LoginPage());
+                    Get.toNamed('/login');
                   },
                 ),
               ],
@@ -53,7 +53,7 @@ class HomePage extends StatelessWidget {
                         BrandView(),
                         CategoryList(),
                         Text(
-                            'Welcome, ${authController.user.value?.email ?? 'Unknown'}'),
+                            'Welcome, ${authController.user.user?.email ?? 'Unknown'}'),
                       ],
                     );
                   } else {
@@ -72,7 +72,8 @@ class HomePage extends StatelessWidget {
     final prefs = await SharedPreferences.getInstance();
     final userData = prefs.getString('user');
     if (userData != null) {
-      authController.user.value = User.fromJson(jsonDecode(userData));
+      final user = User.fromJson(jsonDecode(userData));
+      authController.user.user!.value = user;
       return 'Success';
     }
     return null;

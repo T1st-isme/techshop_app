@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:techshop_app/models/product.dart';
-import 'package:techshop_app/module/Brand/Views/brand_view.dart';
 import 'package:techshop_app/module/Product/Controller/product_controller.dart';
 
 class ProductListPage extends StatefulWidget {
