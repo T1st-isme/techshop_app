@@ -42,7 +42,7 @@ class LoginPage extends StatelessWidget {
                               emailController.text, passwordController.text);
                           loading.value = false;
                           if (success) {
-                            Get.toNamed('/home');
+                            Get.toNamed('/');
                           }
                         },
                   child: const Text('Login'),

@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:techshop_app/models/cart.dart';
+import 'package:techshop_app/models/product.dart';
 
 import '../../../services/Cart/cart_service.dart';
 
@@ -28,6 +29,17 @@ class CartController extends GetxController with StateMixin<List<CartItems>> {
       totalQuantity.value = response.data['total_quantity'];
     } else {
       Get.snackbar('Error', 'Failed to fetch cart items');
+    }
+  }
+
+  void addToCart(List<Map<String, dynamic>> cartItems) async {
+    final data = {'cartItems': cartItems};
+
+    final response = await _cartService.addToCart(data);
+    if (response.statusCode == 201) {
+      Get.snackbar('Thành công', 'Đã thêm vào giỏ hàng');
+    } else {
+      Get.snackbar('Error', 'Failed to add to cart');
     }
   }
 }

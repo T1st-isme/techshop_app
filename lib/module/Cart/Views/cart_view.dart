@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:techshop_app/module/Cart/Controller/cart_controller.dart';
+import 'package:techshop_app/module/Cart/Views/cart_empty_view.dart';
 
 class CartPage extends StatelessWidget {
   final CartController _cartController = Get.find<CartController>();
@@ -15,7 +16,7 @@ class CartPage extends StatelessWidget {
       ),
       body: Obx(() {
         if (_cartController.cartItems.isEmpty) {
-          return const Center(child: Text('No items in the cart'));
+          return const CartEmptyView();
         }
         return ListView.builder(
           itemCount: _cartController.cartItems.length,

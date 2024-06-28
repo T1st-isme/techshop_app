@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../Controller/brand_controller.dart';
 
 class BrandView extends StatelessWidget {

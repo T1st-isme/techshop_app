@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:techshop_app/models/product.dart';
+import 'package:techshop_app/module/Cart/Controller/cart_controller.dart';
 import 'package:techshop_app/module/Product/Controller/product_controller.dart';
 
 class ProductListPage extends StatefulWidget {
@@ -17,13 +18,25 @@ class _ProductListPageState extends State<ProductListPage> {
   final ProductController _productController = Get.find<ProductController>();
   final ScrollController _scrollController = Get.put(ScrollController());
   final Map<String, String?> data = Get.arguments ?? {};
+  bool _isDisposed = false;
+
+  @override
+  void dispose() {
+    _isDisposed = true;
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
+    _isDisposed = false;
     _scrollController.addListener(() {
-      if (_scrollController.hasClients &&
-          _scrollController.position.pixels ==
-              _scrollController.position.maxScrollExtent) {
+      if (!_scrollController.hasClients || _isDisposed) {
+        return;
+      }
+
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
         _productController.fetchProducts(
             category: data['category'], brand: data['brand']);
       }
@@ -31,17 +44,9 @@ class _ProductListPageState extends State<ProductListPage> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-    _scrollController.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Products'),
-      ),
+      appBar: AppBar(),
       body: GetBuilder<ProductController>(
         init: _productController,
         initState: (_) {
@@ -109,6 +114,7 @@ class _ProductListPageState extends State<ProductListPage> {
 }
 
 Widget itemGridView(Products proItem) {
+  final CartController cartController = Get.find<CartController>();
   final formatter = NumberFormat('#,###', 'vi_VN');
   final value = proItem.price!.$numberDecimal!;
   final formatPrice = formatter.format(double.parse(value) * 1000000);
@@ -147,6 +153,14 @@ Widget itemGridView(Products proItem) {
                   color: Colors.red,
                   fontSize: 15,
                   fontWeight: FontWeight.bold)),
+          ElevatedButton(
+            onPressed: () {
+              cartController.addToCart([
+                {'product': proItem.sId, 'quantity': 1}
+              ]);
+            },
+            child: const Text('Add to cart'),
+          ),
         ],
       ),
     ),

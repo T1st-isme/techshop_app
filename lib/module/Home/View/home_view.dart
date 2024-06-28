@@ -1,13 +1,11 @@
 import 'dart:convert';
-
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:techshop_app/module/Auth/Controller/auth_controller.dart';
-import 'package:techshop_app/module/Auth/Views/login_view.dart';
 import 'package:techshop_app/module/Brand/Views/brand_view.dart';
-import 'package:techshop_app/module/Category/Views/category_view.dart';
-
+import 'package:techshop_app/module/Product/Controller/product_controller.dart';
 import '../../../models/user.dart';
 
 class HomePage extends StatelessWidget {
@@ -17,6 +15,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ProductController productController = Get.put(ProductController());
     return FutureBuilder<String?>(
       future: _retrieveUserData(),
       builder: (context, snapshot) {
@@ -47,17 +46,70 @@ class HomePage extends StatelessWidget {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const CircularProgressIndicator();
-                  } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                  } else {
                     return Column(
                       children: [
                         BrandView(),
-                        CategoryList(),
+                        const SizedBox(height: 50),
                         Text(
                             'Welcome, ${authController.user.user?.email ?? 'Unknown'}'),
+                        Expanded(
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount:
+                                min(5, productController.productItems.length) +
+                                    1,
+                            itemBuilder: (context, index) {
+                              if (index >=
+                                  min(5,
+                                      productController.productItems.length)) {
+                                return TextButton(
+                                  child: const Text("Show More"),
+                                  onPressed: () {
+                                    Get.toNamed('/product');
+                                  },
+                                );
+                              } else {
+                                return GestureDetector(
+                                  onTap: () {
+                                    Get.toNamed(
+                                      '/product/detail',
+                                      parameters: {
+                                        'slug': productController
+                                            .productItems[index].slug!
+                                      },
+                                    );
+                                  },
+                                  child: Container(
+                                    margin: const EdgeInsets.all(10.0),
+                                    height: 150.0,
+                                    width: 160.0,
+                                    child: Card(
+                                      child: Column(
+                                        children: <Widget>[
+                                          Expanded(
+                                            child: Image.network(
+                                              productController
+                                                  .productItems[index]
+                                                  .proImg![0]
+                                                  .img!,
+                                            ),
+                                          ),
+                                          ListTile(
+                                            title: Text(productController
+                                                .productItems[index].name!),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                        ),
                       ],
                     );
-                  } else {
-                    return const Text('Go login');
                   }
                 },
               ),
