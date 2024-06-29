@@ -22,7 +22,7 @@ class CategoryList extends StatelessWidget {
         } else {
           return Center(
             child: SizedBox(
-              height: 80, // You can adjust the height according to your needs
+              height: 80,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount:
@@ -34,9 +34,8 @@ class CategoryList extends StatelessWidget {
                     aspectRatio: 1.25,
                     child: GestureDetector(
                       onTap: () {
-                        print(
-                            '${_categoryController.category.value.categoryList![index].sId}');
-                        // Handle tap event
+                        // print(
+                        //     '${_categoryController.category.value.categoryList![index].sId}');
                         Get.toNamed('/product', arguments: {
                           'category': _categoryController
                               .category.value.categoryList![index].sId,

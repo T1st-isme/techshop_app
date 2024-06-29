@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:techshop_app/models/cart.dart';
-import 'package:techshop_app/models/product.dart';
 
 import '../../../services/Cart/cart_service.dart';
 

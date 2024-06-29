@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:get/get.dart';
 
 import 'package:techshop_app/module/Auth/Binding/auth_binding.dart';

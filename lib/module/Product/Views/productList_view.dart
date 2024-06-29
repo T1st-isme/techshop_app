@@ -1,11 +1,11 @@
-// ignore_for_file: file_names, unrelated_type_equality_checks
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:techshop_app/models/category.dart';
 import 'package:techshop_app/models/product.dart';
 import 'package:techshop_app/module/Cart/Controller/cart_controller.dart';
 import 'package:techshop_app/module/Product/Controller/product_controller.dart';
+import 'package:techshop_app/module/Category/Controller/category_controller.dart';
 
 class ProductListPage extends StatefulWidget {
   const ProductListPage({super.key});
@@ -16,9 +16,11 @@ class ProductListPage extends StatefulWidget {
 
 class _ProductListPageState extends State<ProductListPage> {
   final ProductController _productController = Get.find<ProductController>();
+  final CategoryController _categoryController = Get.put(CategoryController());
   final ScrollController _scrollController = Get.put(ScrollController());
   final Map<String, String?> data = Get.arguments ?? {};
   bool _isDisposed = false;
+  String? _selectedCategoryName;
 
   @override
   void dispose() {
@@ -41,73 +43,105 @@ class _ProductListPageState extends State<ProductListPage> {
             category: data['category'], brand: data['brand']);
       }
     });
+    _categoryController.getCategories(); // Fetch categories
+    if (data['category'] != null) {
+      _productController.fetchProducts(
+        category: data['category'],
+        isCategoryFetch: true,
+      );
+    }
+    if (data['brand'] != null) {
+      _productController.fetchProducts(
+        brand: data['brand'],
+        isBrandFetch: true,
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: GetBuilder<ProductController>(
-        init: _productController,
-        initState: (_) {
-          _productController.fetchProducts(
-              category: data['category'], brand: data['brand']);
-        },
-        builder: (_) {
-          if (_productController.productItems.isEmpty) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      appBar: AppBar(
+        title: const Text('Products'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () {
+              _productController.fetchAllProducts();
+            },
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          Obx(() {
+            if (_categoryController.status.value == RxStatus.loading()) {
+              return const CircularProgressIndicator(); // Loading
+            }
+            if (_categoryController.category.value.categoryList == null ||
+                _categoryController.category.value.categoryList!.isEmpty) {
+              return const Text('No categories found');
+            }
+            return DropdownButton<String>(
+              hint: Text(_selectedCategoryName ?? 'Select a category'),
+              items: _categoryController.category.value.categoryList!
+                  .map((CategoryList category) {
+                return DropdownMenuItem<String>(
+                  value: category.sId,
+                  child: Text(category.name!),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                if (newValue != null) {
+                  //Update curr value display dropdown
+                  setState(() {
+                    _selectedCategoryName = _categoryController
+                        .category.value.categoryList!
+                        .firstWhere((category) => category.sId == newValue)
+                        .name;
+                  });
+                  _productController.fetchProducts(
+                    category: newValue,
+                    isCategoryFetch: true,
+                  );
+                }
+              },
+            );
+          }),
+          Expanded(
+            child: GetBuilder<ProductController>(
+              init: _productController,
+              initState: (_) {
+                _productController.fetchProducts(
+                    category: data['category'], brand: data['brand']);
+              },
+              builder: (_) {
+                if (_productController.isLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-          if (_productController.productItems.isEmpty) {
-            return const Center(child: Text('No products found'));
-          }
+                if (_productController.productItems.isEmpty) {
+                  return const Center(child: Text('No products found'));
+                }
 
-          return CustomScrollView(
-            controller: _scrollController,
-            slivers: [
-              SliverToBoxAdapter(
-                // padding: const EdgeInsets.all(8),
-                child: Container(
-                  color: Colors.grey.shade200,
-                  padding: const EdgeInsets.all(16),
-                  margin: const EdgeInsets.only(bottom: 20),
-                  // child: BrandView(),
-                ),
-              ),
-              SliverGrid(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 0.8,
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
-                ),
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    if (index == _productController.productItems.length &&
-                        _productController.isLoading.value &&
-                        _productController.hasMore == true) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else {
-                      if (index == _productController.productItems.length - 1 &&
-                          !_productController.isLoading.value) {
-                        Future.microtask(
-                          () => _productController.fetchProducts(
-                            category: Get.arguments,
-                          ),
-                        );
-                      }
-                      final productItem =
-                          _productController.productItems[index];
-                      return itemGridView(productItem);
-                    }
+                return GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10,
+                    childAspectRatio: 0.7,
+                  ),
+                  controller: _scrollController,
+                  itemCount: _productController.productItems.length,
+                  itemBuilder: (context, index) {
+                    final product = _productController.productItems[index];
+                    return itemGridView(product);
                   },
-                  childCount: _productController.productItems.length +
-                      (_productController.isLoading.value ? 1 : 0),
-                ),
-              ),
-            ],
-          );
-        },
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -148,7 +182,7 @@ Widget itemGridView(Products proItem) {
             proItem.brand ?? 'N/A',
             style: const TextStyle(color: Colors.grey, fontSize: 13),
           ),
-          Text(' $formatPrice \u20ab',
+          Text(' $formatPrice ₫',
               style: const TextStyle(
                   color: Colors.red,
                   fontSize: 15,

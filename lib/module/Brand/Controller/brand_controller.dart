@@ -17,6 +17,7 @@ class BrandController extends GetxController {
 
   void getTopBrands() async {
     status.value = RxStatus.loading();
+    update();
     try {
       final response = await _brandService.getTopBrands();
       print('API Response: ${response.data}');

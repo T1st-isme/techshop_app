@@ -10,41 +10,44 @@ class CategoryController extends GetxController {
   Rx<Category> category = Rx<Category>(Category());
   Rx<RxStatus> status = Rx<RxStatus>(RxStatus.empty());
 
-  @override
-  void onInit() {
-    super.onInit();
-    getCategories();
-  }
+  // @override
+  // void onInit() {
+  //   super.onInit();
+  //   getCategories();
+  // }
 
   void getCategories() async {
-    status.value = RxStatus.loading();
+    Future.microtask(() => status.value = RxStatus.loading());
     try {
-      final response = await _categoryService.getCategories();
-      print('API Response: ${response.data}');
-      if (response.statusCode == 200) {
-        category.value = Category.fromJson(response.data);
-        print(
-            'Parsed Category: ${category.value}'); // Print the parsed category
-        status.value = RxStatus.success();
-      }
+      await Future.delayed(Duration.zero, () async {
+        final response = await _categoryService.getCategories();
+        // print('API Response: ${response.data}');
+        if (response.statusCode == 200) {
+          category.value = Category.fromJson(response.data);
+          // print('Parsed Category: ${category.value}');
+          Future.microtask(() => status.value = RxStatus.success());
+        }
+      });
     } on DioException catch (e) {
       final ApiException apiException = ApiException.fromDioException(e);
-      status.value = RxStatus.error(apiException.toString());
+      Future.microtask(
+          () => status.value = RxStatus.error(apiException.toString()));
     }
     update();
   }
 
   void getCategoryBySlug(String slug) async {
-    status.value = RxStatus.loading();
+    Future.microtask(() => status.value = RxStatus.loading());
     try {
       final response = await _categoryService.getCategoryBySlug(slug);
       if (response.statusCode == 200) {
         category.value = Category.fromJson(response.data);
-        status.value = RxStatus.success();
+        Future.microtask(() => status.value = RxStatus.success());
       }
     } on DioException catch (e) {
       final ApiException apiException = ApiException.fromDioException(e);
-      status.value = RxStatus.error(apiException.toString());
+      Future.microtask(
+          () => status.value = RxStatus.error(apiException.toString()));
     }
     update();
   }
