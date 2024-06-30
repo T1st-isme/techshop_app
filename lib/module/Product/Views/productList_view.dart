@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -63,6 +64,13 @@ class _ProductListPageState extends State<ProductListPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Products'),
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Get.toNamed('/');
+          },
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -163,12 +171,13 @@ Widget itemGridView(Products proItem) {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Image.network(
-            proItem.proImg?.elementAt(0).img ?? 'N/A',
-            width: 80,
-            height: 80,
-            errorBuilder: (context, error, stackTrace) =>
-                const Icon(Icons.image),
+          CachedNetworkImage(
+            imageUrl: proItem.proImg?.elementAt(0).img ?? 'N/A',
+            height: 100,
+            width: 100,
+            fit: BoxFit.cover,
+            placeholder: (context, url) => const CircularProgressIndicator(),
+            errorWidget: (context, url, error) => const Icon(Icons.error),
           ),
           Text(
             proItem.name ?? 'N/A',

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:math';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,7 +23,9 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    productController.fetchAllProducts();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      productController.fetchAllProducts();
+    });
   }
 
   @override
@@ -36,28 +39,28 @@ class _HomePageState extends State<HomePage> {
           );
         }
         return Scaffold(
-          appBar: _buildAppBar(),
+          // appBar: _buildAppBar(),
           body: _buildBody(),
         );
       },
     );
   }
 
-  AppBar _buildAppBar() {
-    return AppBar(
-      automaticallyImplyLeading: false,
-      title: const Text('Home'),
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.logout),
-          onPressed: () {
-            authController.logout();
-            Get.toNamed('/login');
-          },
-        ),
-      ],
-    );
-  }
+  // AppBar _buildAppBar() {
+  //   return AppBar(
+  //     // automaticallyImplyLeading: false,
+  //     title: const Text('Home'),
+  //     actions: [
+  //       IconButton(
+  //         icon: const Icon(Icons.logout),
+  //         onPressed: () {
+  //           authController.logout();
+  //           Get.toNamed('/login');
+  //         },
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget _buildBody() {
     return Column(
@@ -120,13 +123,19 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: 120, // Fixed height for the image
-                width: double.infinity,
-                child: Image.network(
-                  product.proImg![0].img!,
-                  fit: BoxFit.cover,
-                ),
-              ),
+                  height: 120, // Fixed height for the img
+                  width: double.infinity,
+                  child: CachedNetworkImage(
+                    imageUrl: product.proImg?.elementAt(0).img ?? 'N/A',
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.image),
+                    fit: BoxFit.cover,
+                    progressIndicatorBuilder:
+                        (context, url, downloadProgress) => Center(
+                      child: CircularProgressIndicator(
+                          value: downloadProgress.progress),
+                    ),
+                  )),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(

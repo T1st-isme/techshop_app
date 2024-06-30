@@ -29,7 +29,7 @@ class AppPages {
   static final routes = [
     GetPage(
       name: _Paths.DASHBOARD,
-      page: () => DashboardPage(),
+      page: () => const DashboardPage(),
       binding: DashboardBinding(),
     ),
     GetPage(
@@ -44,7 +44,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.HOME,
-      page: () => HomePage(),
+      page: () => const HomePage(),
       binding: HomeBinding(),
     ),
     GetPage(
@@ -62,7 +62,7 @@ class AppPages {
         binding: ProductBinding()),
     GetPage(
         name: '/category',
-        page: () => CategoryList(),
+        page: () => const CategoryList(),
         binding: CategoryBinding()),
     GetPage(
       name: '/brand',

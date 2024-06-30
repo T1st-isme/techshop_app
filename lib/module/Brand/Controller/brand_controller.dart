@@ -20,10 +20,10 @@ class BrandController extends GetxController {
     update();
     try {
       final response = await _brandService.getTopBrands();
-      print('API Response: ${response.data}');
+      // print('API Response: ${response.data}');
       if (response.statusCode == 200) {
         brand.value = Brand.fromJson(response.data);
-        print('Parsed Category: ${brand.value}'); // Print the parsed category
+        // print('Parsed Category: ${brand.value}');
         status.value = RxStatus.success();
       }
     } on DioException catch (e) {

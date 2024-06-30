@@ -14,6 +14,7 @@ class DashboardBinding extends Bindings {
     Get.lazyPut<CategoryController>(() => CategoryController());
     Get.lazyPut<ProductController>(() => ProductController());
     Get.lazyPut<CartController>(() => CartController());
+    // Get.lazyPut<OrderController>(() => OrderController());
     Get.lazyPut<DashboardController>(() => DashboardController());
   }
 }

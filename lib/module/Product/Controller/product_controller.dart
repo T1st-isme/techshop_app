@@ -10,21 +10,18 @@ class ProductController extends GetxController with StateMixin<List<Products>> {
   var isLoading = false.obs;
   var hasMore = true.obs;
   final _productService = ProductService();
-  // final Map<String, String?> data = Get.arguments ?? {};
 
-  // @override
-  // void onInit() {
-  //   super.onInit();
-  //   fetchProducts(category: data['category'], brand: data['brand']);
-  // }
+  void resetState() {
+    currentPage.value = 1;
+    isLoading.value = false;
+    hasMore.value = true;
+    productItems.clear();
+    update();
+  }
 
   void fetchAllProducts() async {
     if (isLoading.value) return;
-    // Reset pagination and clear current items
-    currentPage.value = 1;
-    hasMore.value = true;
-    productItems.clear();
-    isLoading.value = true;
+    resetState();
     try {
       final response = await _productService.getProducts(currentPage.value);
       if (response.statusCode == 200) {
@@ -59,16 +56,10 @@ class ProductController extends GetxController with StateMixin<List<Products>> {
   }) async {
     if (isLoading.value || !hasMore.value) return;
     if (isCategoryFetch) {
-      // Reset for new category fetch
-      currentPage.value = 1;
-      hasMore.value = true;
-      productItems.clear();
+      resetState();
     }
     if (isBrandFetch) {
-      // Reset for new brand fetch
-      currentPage.value = 1;
-      hasMore.value = true;
-      productItems.clear();
+      resetState();
     }
     isLoading.value = true;
     try {

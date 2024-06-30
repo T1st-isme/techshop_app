@@ -35,7 +35,7 @@ class BrandView extends StatelessWidget {
                             'brand': _brandController.brand.value.data![i]
                           },
                         );
-                        print(_brandController.brand.value.data![i].toString());
+                        // print(_brandController.brand.value.data![i].toString());
                       },
                       child: Text(_brandController.brand.value.data![i]),
                     ),

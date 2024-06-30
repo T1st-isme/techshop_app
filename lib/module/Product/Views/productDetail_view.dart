@@ -1,5 +1,6 @@
 // ignore_for_file: file_names, invalid_use_of_protected_member
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -40,7 +41,12 @@ class ProductDetailView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.network(product.proImg?.elementAt(0).img ?? ''),
+              CachedNetworkImage(
+                imageUrl: product.proImg?.elementAt(0).img ?? 'N/A',
+                placeholder: (context, url) =>
+                    const CircularProgressIndicator(),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
+              ),
               const SizedBox(height: 16),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),

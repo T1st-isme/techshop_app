@@ -2,10 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:techshop_app/module/Category/Controller/category_controller.dart';
 
-class CategoryList extends StatelessWidget {
+class CategoryList extends StatefulWidget {
+  const CategoryList({super.key});
+
+  @override
+  _CategoryListState createState() => _CategoryListState();
+}
+
+class _CategoryListState extends State<CategoryList> {
   final _categoryController = Get.find<CategoryController>();
 
-  CategoryList({super.key});
+  @override
+  initState() {
+    super.initState();
+    _categoryController.getCategories();
+  }
 
   @override
   Widget build(BuildContext context) {
