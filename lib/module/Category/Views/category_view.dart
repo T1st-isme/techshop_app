@@ -15,11 +15,11 @@ class _CategoryListState extends State<CategoryList> {
   @override
   initState() {
     super.initState();
-    _categoryController.getCategories();
   }
 
   @override
   Widget build(BuildContext context) {
+    _categoryController.getCategories();
     return Obx(
       () {
         if (_categoryController.status.value.isLoading) {

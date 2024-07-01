@@ -5,20 +5,33 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:techshop_app/models/product.dart';
+import 'package:techshop_app/module/Cart/Controller/cart_controller.dart';
 import 'package:techshop_app/module/Product/Controller/product_controller.dart';
 
-class ProductDetailView extends StatelessWidget {
+class ProductDetailView extends StatefulWidget {
   const ProductDetailView({super.key});
 
   @override
+  _ProductDetailState createState() => _ProductDetailState();
+}
+
+class _ProductDetailState extends State<ProductDetailView> {
+  final ProductController productController = Get.find<ProductController>();
+  final CartController cartController = Get.find<CartController>();
+  bool _isExpanded = false;
+  final String? slug = Get.parameters['slug'];
+  @override
+  void initState() {
+    super.initState();
+    productController.fetchProductBySlug(slug!);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final ProductController productController = Get.find<ProductController>();
     //get product detail
-    final String? slug = Get.parameters['slug'];
     if (slug == null) {
       return const Center(child: CircularProgressIndicator());
     }
-
     return Obx(() {
       if (productController.isLoading.value) {
         return const Center(child: CircularProgressIndicator());
@@ -73,11 +86,33 @@ class ProductDetailView extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
-                  product.description!,
+                  _isExpanded
+                      ? product.description!
+                      : product.description!.length > 100
+                          ? '${product.description!.substring(0, 100)}...'
+                          : product.description!,
                   style: const TextStyle(
                     fontSize: 16,
                   ),
                 ),
+              ),
+              TextButton(
+                child: Text(_isExpanded ? "Thu gọn" : "Xem thêm"),
+                onPressed: () {
+                  setState(() {
+                    _isExpanded = !_isExpanded;
+                  });
+                },
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  //add product to cart
+                  cartController.addToCart([
+                    {'product': product.sId, 'quantity': 1}
+                  ]);
+                },
+                child: const Text('Add to cart'),
               ),
             ],
           ),

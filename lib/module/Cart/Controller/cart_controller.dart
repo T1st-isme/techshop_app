@@ -9,11 +9,6 @@ class CartController extends GetxController with StateMixin<List<CartItems>> {
   var totalPrice = 0.0.obs;
   var totalQuantity = 0.obs;
   final CartService _cartService = CartService();
-  @override
-  void onInit() {
-    super.onInit();
-    fetchCartItems();
-  }
 
   void fetchCartItems() async {
     final response = await _cartService.getCartItems();
@@ -21,7 +16,7 @@ class CartController extends GetxController with StateMixin<List<CartItems>> {
       final dataCart = response.data['cartItems'];
       List<CartItems> cartItemsList =
           dataCart.map<CartItems>((item) => CartItems.fromJson(item)).toList();
-      cartItems.addAll(cartItemsList);
+      cartItems.assignAll(cartItemsList);
       change(cartItems, status: RxStatus.success());
       totalItems.value = response.data['total_items'];
       totalPrice.value = double.parse(response.data['total_price']);
@@ -29,14 +24,20 @@ class CartController extends GetxController with StateMixin<List<CartItems>> {
     } else {
       Get.snackbar('Error', 'Failed to fetch cart items');
     }
+    update();
+  }
+
+  int getCartItemCount() {
+    print('Fetching cart item count: ${cartItems.length}');
+    return cartItems.length;
   }
 
   void addToCart(List<Map<String, dynamic>> cartItems) async {
     final data = {'cartItems': cartItems};
-
     final response = await _cartService.addToCart(data);
     if (response.statusCode == 201) {
       Get.snackbar('Thành công', 'Đã thêm vào giỏ hàng');
+      fetchCartItems();
     } else {
       Get.snackbar('Error', 'Failed to add to cart');
     }

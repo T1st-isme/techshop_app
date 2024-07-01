@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:techshop_app/module/Auth/Binding/auth_binding.dart';
 
 import 'Routes/app_pages.dart';
 
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       getPages: AppPages.routes,
-      // initialBinding: AuthBinding(),
+      initialBinding: AuthBinding(),
       initialRoute: AppPages.INITIAL,
     );
   }

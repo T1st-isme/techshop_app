@@ -10,12 +10,39 @@ class ProductController extends GetxController with StateMixin<List<Products>> {
   var isLoading = false.obs;
   var hasMore = true.obs;
   final _productService = ProductService();
+  final RxMap productsByCategory = {}.obs; // Map to store products by category
 
   void resetState() {
     currentPage.value = 1;
     isLoading.value = false;
     hasMore.value = true;
     productItems.clear();
+    update();
+  }
+
+  Future<void> fetchProductsByCategory(String category) async {
+    if (isLoading.value || !hasMore.value) return;
+    resetState();
+    try {
+      final response = await _productService.getProducts(
+        currentPage.value,
+        category: category,
+      );
+      if (response.statusCode == 200) {
+        final pro = Product.fromJson(response.data);
+        productsByCategory[category] = pro.products ?? [];
+        hasMore.value = pro.products!.isNotEmpty;
+      }
+      currentPage.value++;
+    } on DioException catch (e) {
+      final ApiException apiException = ApiException.fromDioException(e);
+      change(null, status: RxStatus.error(apiException.toString()));
+      productsByCategory[category] = [];
+      if (e.response?.statusCode == 400 &&
+          e.response?.data['message'] == 'Invalid page number') {
+        hasMore.value = false;
+      }
+    }
     update();
   }
 
@@ -51,17 +78,13 @@ class ProductController extends GetxController with StateMixin<List<Products>> {
     String? category,
     String? brand,
     String? sort,
-    bool isCategoryFetch = false, // Add a parameter to indicate category fetch
-    bool isBrandFetch = false, // Add a parameter to indicate category fetch
+    bool isCategoryFetch = false,
+    bool isBrandFetch = false,
   }) async {
     if (isLoading.value || !hasMore.value) return;
-    if (isCategoryFetch) {
+    if (isCategoryFetch || isBrandFetch) {
       resetState();
     }
-    if (isBrandFetch) {
-      resetState();
-    }
-    isLoading.value = true;
     try {
       final response = await _productService.getProducts(
         currentPage.value,
@@ -87,12 +110,12 @@ class ProductController extends GetxController with StateMixin<List<Products>> {
         hasMore.value = false;
       }
     }
-    isLoading.value = false;
     update();
   }
 
   //by slug
   void fetchProductBySlug(String slug) async {
+    if (isLoading.value) return;
     try {
       final response = await _productService.getProductBySlug(slug);
       if (response.statusCode == 200 && response.data != null) {
