@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -54,50 +55,64 @@ class _HomePageState extends State<HomePage> {
         }
         return Scaffold(
           appBar: _buildAppBar(),
-          body: Obx(() {
-            if (productController.productsByCategory.isEmpty) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            return SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: categories.map((category) {
-                  final products =
-                      productController.productsByCategory[category] ?? [];
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 8.0),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: BrandView(),
+          body: Obx(
+            () {
+              if (productController.productsByCategory.isEmpty) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              return SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Text(
+                        'Thương hiệu',
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16.0, vertical: 8.0),
-                        child: Text(
-                          category == '6552ee08ea3b4606a040af7a'
-                              ? 'Laptop'
-                              : category == '6552ee08ea3b4606a040af7b'
-                                  ? 'Chuột'
-                                  : category == '6552ee08ea3b4606a040af7c'
-                                      ? 'Bàn phím'
-                                      : 'Màn hình',
-                          style: const TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 220,
-                        child: _buildProductList(products),
-                      ),
-                    ],
-                  );
-                }).toList(),
-              ),
-            );
-          }),
+                    ),
+                    const SizedBox(height: 16.0),
+                    SizedBox(
+                      height: 80,
+                      child: BrandView(),
+                    ),
+                    const SizedBox(height: 16.0),
+                    ...categories.map((category) {
+                      final products =
+                          productController.productsByCategory[category] ?? [];
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 50.0),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16.0, vertical: 8.0),
+                            child: Text(
+                              category == '6552ee08ea3b4606a040af7a'
+                                  ? 'Laptop'
+                                  : category == '6552ee08ea3b4606a040af7b'
+                                      ? 'Chuột'
+                                      : category == '6552ee08ea3b4606a040af7c'
+                                          ? 'Bàn phím'
+                                          : 'Màn hình',
+                              style: const TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          const SizedBox(height: 8.0),
+                          SizedBox(
+                            height: 220,
+                            child: _buildProductList(products),
+                          ),
+                        ],
+                      );
+                    }),
+                  ],
+                ),
+              );
+            },
+          ),
         );
       },
     );
@@ -119,15 +134,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildProductList(List<Products> products) {
-    if (products.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
     return ListView.builder(
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      itemCount: products.length,
+      itemCount: min(5, products.length) + 1,
       itemBuilder: (context, index) {
+        if (index >= min(5, products.length)) {
+          return _buildShowMoreButton();
+        }
         return _buildProductCard(products[index]);
       },
     );
@@ -205,6 +219,24 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildShowMoreButton() {
+    return Container(
+      width: 160,
+      margin: const EdgeInsets.only(right: 16),
+      child: Card(
+        child: InkWell(
+          onTap: () => Get.toNamed('/product'),
+          child: const Center(
+            child: Text(
+              "Show More",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
           ),
         ),
       ),

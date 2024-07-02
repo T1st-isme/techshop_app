@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:techshop_app/module/Cart/Controller/cart_controller.dart';
-import 'package:techshop_app/module/Cart/Views/cart_view.dart';
 import 'package:techshop_app/module/Category/Views/category_view.dart';
 import 'package:techshop_app/module/Home/View/home_view.dart';
+import 'package:techshop_app/module/Order/Views/order_list_view.dart';
+import 'package:techshop_app/module/Profile/Views/profile_view.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -20,7 +21,8 @@ class _DashboardPageState extends State<DashboardPage> {
   final List<Widget> _children = [
     const HomePage(),
     const CategoryList(),
-    const CartPage(),
+    const OrderListView(),
+    const ProfileView(),
   ];
 
   void onTabTapped(int index) {
@@ -85,20 +87,30 @@ class _DashboardPageState extends State<DashboardPage> {
           children: _children,
         ),
         bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Colors.white,
+          selectedItemColor: const Color.fromARGB(255, 162, 95, 230),
+          unselectedItemColor: Colors.grey,
+          showSelectedLabels: true,
+          showUnselectedLabels: false,
           onTap: onTabTapped,
           currentIndex: _currentIndex,
           items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
-              label: 'Home',
+              label: 'Trang chủ',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.category),
-              label: 'Category',
+              label: 'Danh mục',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_cart),
-              label: 'Cart',
+              icon: Icon(Icons.receipt_long),
+              label: 'Đơn hàng',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Tôi',
             ),
           ],
         ),

@@ -10,7 +10,8 @@ class ProductController extends GetxController with StateMixin<List<Products>> {
   var isLoading = false.obs;
   var hasMore = true.obs;
   final _productService = ProductService();
-  final RxMap productsByCategory = {}.obs; // Map to store products by category
+  final RxMap<String, List<Products>> productsByCategory =
+      <String, List<Products>>{}.obs; // Map to store products by category
 
   void resetState() {
     currentPage.value = 1;
@@ -21,7 +22,8 @@ class ProductController extends GetxController with StateMixin<List<Products>> {
   }
 
   Future<void> fetchProductsByCategory(String category) async {
-    if (isLoading.value || !hasMore.value) return;
+    isLoading.value = true;
+    hasMore.value = false;
     resetState();
     try {
       final response = await _productService.getProducts(
@@ -43,6 +45,7 @@ class ProductController extends GetxController with StateMixin<List<Products>> {
         hasMore.value = false;
       }
     }
+    isLoading.value = false;
     update();
   }
 
@@ -95,11 +98,21 @@ class ProductController extends GetxController with StateMixin<List<Products>> {
         sort: sort,
       );
       if (response.statusCode == 200) {
-        final pro = Product.fromJson(response.data);
-        // print("Fetched products: ${pro.products!.length}"); // Debugging line
-        productItems.addAll(pro.products!);
+        // final pro = Product.fromJson(response.data);
+        // // print("Fetched products: ${pro.products!.length}"); // Debugging line
+        // productItems.addAll(pro.products!);
+        if (response.data is List) {
+          // If response.data is a list, map each item to a Products object
+          productItems.addAll((response.data as List)
+              .map((item) => Products.fromJson(item))
+              .toList());
+        } else {
+          // If response.data is not a list, handle it as before
+          final pro = Product.fromJson(response.data);
+          productItems.addAll(pro.products!);
+          hasMore.value = pro.products!.isNotEmpty;
+        }
         change(productItems, status: RxStatus.success());
-        hasMore.value = pro.products!.isNotEmpty;
       }
       currentPage.value++;
     } on DioException catch (e) {
@@ -115,7 +128,7 @@ class ProductController extends GetxController with StateMixin<List<Products>> {
 
   //by slug
   void fetchProductBySlug(String slug) async {
-    if (isLoading.value) return;
+    isLoading.value = true;
     try {
       final response = await _productService.getProductBySlug(slug);
       if (response.statusCode == 200 && response.data != null) {
@@ -128,5 +141,7 @@ class ProductController extends GetxController with StateMixin<List<Products>> {
       final ApiException apiException = ApiException.fromDioException(e);
       change(null, status: RxStatus.error(apiException.toString()));
     }
+    isLoading.value = false;
+    update();
   }
 }

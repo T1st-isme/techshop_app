@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -129,7 +131,7 @@ class _ProductListPageState extends State<ProductListPage> {
                 }
 
                 if (_productController.productItems.isEmpty) {
-                  return const Center(child: Text('No products found'));
+                  return const Center(child: CircularProgressIndicator());
                 }
 
                 return GridView.builder(
