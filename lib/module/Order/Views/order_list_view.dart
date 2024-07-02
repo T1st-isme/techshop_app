@@ -10,7 +10,7 @@ class OrderListView extends StatelessWidget {
         title: const Text('Order List'),
       ),
       body: ListView.builder(
-        itemCount: 10, // Replace with the actual number of orders
+        itemCount: 10,
         itemBuilder: (context, index) {
           return ListTile(
             title: Text('Order ${index + 1}'),

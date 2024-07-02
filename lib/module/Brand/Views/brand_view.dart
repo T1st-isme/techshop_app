@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:techshop_app/constants/AppUrl.dart';
 import '../Controller/brand_controller.dart';
 
 class BrandView extends StatelessWidget {
@@ -37,7 +38,19 @@ class BrandView extends StatelessWidget {
                         );
                         // print(_brandController.brand.value.data![i].toString());
                       },
-                      child: Text(_brandController.brand.value.data![i]),
+                      child: Column(
+                        children: [
+                          ClipOval(
+                            child: Image.asset(
+                              '${AppUrl.imageUrl}${_brandController.brand.value.data![i]}.png',
+                              height: 50,
+                              width: 50,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Text(_brandController.brand.value.data![i]),
+                        ],
+                      ),
                     ),
                   ]),
               ],
