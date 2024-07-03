@@ -42,4 +42,55 @@ class CartController extends GetxController with StateMixin<List<CartItems>> {
       Get.snackbar('Error', 'Failed to add to cart');
     }
   }
+
+  void updateCart(Map<String, dynamic> data) async {
+    final response = await _cartService.updateCart(data);
+    if (response.statusCode == 200) {
+      Get.snackbar('Thành công', 'Đã cập nhật giỏ hàng');
+      fetchCartItems();
+    } else {
+      Get.snackbar('Error', 'Failed to update cart');
+    }
+  }
+
+  void updateCartItemQuantity(String productId, int newQuantity) async {
+    if (newQuantity <= 0) {
+      removeCartItem(productId);
+      return;
+    }
+    final data = {'productId': productId, 'quantity': newQuantity};
+    final response = await _cartService.updateCart(data);
+    if (response.statusCode == 200) {
+      fetchCartItems();
+    } else {
+      Get.snackbar('Error', 'Failed to update cart item quantity');
+    }
+  }
+
+  void removeCartItem(String productId) async {
+    final data = {'productId': productId};
+    final response = await _cartService.removeCartItem(data);
+    if (response.statusCode == 200) {
+      fetchCartItems();
+    } else {
+      Get.snackbar('Error', 'Failed to remove cart item');
+    }
+  }
+
+  void resetCart() {
+    cartItems.clear();
+    totalItems.value = 0;
+    totalPrice.value = 0.0;
+    totalQuantity.value = 0;
+  }
+
+  // Future<void> clearCart() async {
+  //   final response = await _cartService.clearCart();
+  //   if (response.statusCode == 200) {
+  //     Get.snackbar('Thành công', 'Đã xóa giỏ hàng');
+  //     fetchCartItems();
+  //   } else {
+  //     Get.snackbar('Error', 'Failed to clear cart');
+  //   }
+  // }
 }

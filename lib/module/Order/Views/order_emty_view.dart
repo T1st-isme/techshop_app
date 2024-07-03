@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class CartEmptyView extends StatelessWidget {
-  const CartEmptyView({super.key});
+class OrderEmptyView extends StatelessWidget {
+  const OrderEmptyView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -12,19 +12,19 @@ class CartEmptyView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
-              'images/Cart/empty_cart.png',
-              width: 150,
-              height: 150,
+              'images/Order/empty_order.png',
+              width: 100,
+              height: 100,
             ),
             const SizedBox(height: 16),
             const Text(
-              'Giỏ hàng đang trống!!!',
+              'Chưa có đơn hàng nào',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 8),
             ElevatedButton(
               onPressed: () {
                 Get.toNamed('/product');
@@ -32,18 +32,14 @@ class CartEmptyView extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromARGB(255, 162, 95, 230),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(100),
+                  borderRadius: BorderRadius.circular(20),
                 ),
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               ),
               child: const Text(
-                'Mua hàng ngay',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
+                'Xem thêm sản phẩm',
+                style: TextStyle(fontSize: 16, color: Colors.white),
               ),
             ),
           ],

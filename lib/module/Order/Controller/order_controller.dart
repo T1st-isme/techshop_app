@@ -58,4 +58,9 @@ class OrderController extends GetxController {
     }
     update();
   }
+
+  void resetOrder() {
+    orders.clear();
+    orderDetail.value = null;
+  }
 }

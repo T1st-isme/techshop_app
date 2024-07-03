@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 import 'package:techshop_app/models/user.dart';
+import 'package:techshop_app/module/Cart/Controller/cart_controller.dart';
+import 'package:techshop_app/module/Order/Controller/order_controller.dart';
 import 'package:techshop_app/services/Auth/auth_service.dart';
 
 class AuthController extends GetxController {
@@ -32,6 +34,8 @@ class AuthController extends GetxController {
     try {
       await _authService.logout();
       _user.value = User();
+      Get.find<CartController>().resetCart(); // Reset the cart state
+      Get.find<OrderController>().resetOrder(); // Reset the order state
     } on Exception catch (e) {
       print(e);
     }

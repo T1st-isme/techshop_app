@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:techshop_app/module/Cart/Controller/cart_controller.dart';
 import 'package:techshop_app/module/Category/Views/category_view.dart';
 import 'package:techshop_app/module/Home/View/home_view.dart';
+import 'package:techshop_app/module/Order/Controller/order_controller.dart';
 import 'package:techshop_app/module/Order/Views/order_list_view.dart';
 import 'package:techshop_app/module/Profile/Views/profile_view.dart';
 
@@ -15,6 +16,7 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   final CartController cartController = Get.find<CartController>();
+  final OrderController orderController = Get.find<OrderController>();
 
   int _currentIndex = 0;
 
@@ -34,7 +36,8 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   void initState() {
     super.initState();
-    cartController.getCartItemCount();
+    cartController.fetchCartItems();
+    orderController.getOrder();
   }
 
   @override

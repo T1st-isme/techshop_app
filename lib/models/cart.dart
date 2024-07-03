@@ -61,7 +61,7 @@ class CartItem {
   String? sId;
   String? name;
   String? img;
-  Price? price;
+  double? price;
   int? quantity;
 
   CartItem({this.sId, this.name, this.img, this.price, this.quantity});
@@ -70,7 +70,7 @@ class CartItem {
     sId = json['_id'];
     name = json['name'];
     img = json['img'];
-    price = json['price'] != null ? Price.fromJson(json['price']) : null;
+    price = json['price'];
     quantity = json['quantity'];
   }
 
@@ -79,26 +79,8 @@ class CartItem {
     data['_id'] = sId;
     data['name'] = name;
     data['img'] = img;
-    if (price != null) {
-      data['price'] = price!.toJson();
-    }
+    data['price'] = price;
     data['quantity'] = quantity;
-    return data;
-  }
-}
-
-class Price {
-  String? numberDecimal;
-
-  Price({this.numberDecimal});
-
-  Price.fromJson(Map<String, dynamic> json) {
-    numberDecimal = json['$numberDecimal'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['$numberDecimal'] = numberDecimal;
     return data;
   }
 }

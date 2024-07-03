@@ -24,6 +24,16 @@ class CartService {
     }
   }
 
+  Future<Response> updateCart(Map<String, dynamic> data) async {
+    try {
+      Response response = await _apiService.put('/cart/updateCart', data: data);
+      return response;
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
   Future<Response> removeCartItem(Map<String, dynamic> data) async {
     try {
       Response response =

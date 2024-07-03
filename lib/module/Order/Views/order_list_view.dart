@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:techshop_app/Routes/app_pages.dart';
 import 'package:techshop_app/module/Order/Controller/order_controller.dart';
+import 'package:techshop_app/module/Order/Views/order_emty_view.dart';
 
 class OrderListView extends StatefulWidget {
   const OrderListView({super.key});
@@ -28,10 +29,14 @@ class _OrderListViewState extends State<OrderListView> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 FilterChip(
-                  label: const Text('Đang xử lý'),
+                  checkmarkColor: Colors.white,
+                  label: const Text(
+                    'Đang xử lý',
+                    style: TextStyle(color: Colors.white),
+                  ),
                   selected: true,
                   onSelected: (bool value) {},
-                  selectedColor: Colors.purple,
+                  selectedColor: const Color.fromARGB(255, 162, 95, 230),
                 ),
                 FilterChip(
                   label: const Text('Vận chuyển'),
@@ -53,11 +58,11 @@ class _OrderListViewState extends State<OrderListView> {
           ),
           Expanded(
             child: Obx(() {
-              if (orderController.status.value == RxStatus.loading) {
+              if (orderController.status.value.isLoading) {
                 return const Center(child: CircularProgressIndicator());
               }
               if (orderController.orders.isEmpty) {
-                return const Center(child: Text('No orders found'));
+                return const OrderEmptyView();
               }
               return ListView.builder(
                 itemCount: orderController.orders.length,
