@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -31,6 +32,13 @@ class _HomePageState extends State<HomePage> {
     '6552ee08ea3b4606a040af7d',
   ];
 
+  final List<String> carouselImages = [
+    'assets/images/BannerAsus.jpg',
+    'assets/images/BannerLogi.png',
+    'assets/images/BannerRazer.png',
+    'assets/images/BannerAkko.jpg',
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -54,7 +62,6 @@ class _HomePageState extends State<HomePage> {
           );
         }
         return Scaffold(
-          appBar: _buildAppBar(),
           body: Obx(
             () {
               if (productController.productsByCategory.isEmpty) {
@@ -63,7 +70,37 @@ class _HomePageState extends State<HomePage> {
               return SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                  children:  [
+                    CarouselSlider(
+                      options: CarouselOptions(
+                        height: 250.0,
+                        enlargeCenterPage: true,
+                        autoPlay: true,
+                        aspectRatio: 16 / 9,
+                        autoPlayCurve: Curves.fastOutSlowIn,
+                        enableInfiniteScroll: true,
+                        autoPlayAnimationDuration: const Duration(seconds: 2),
+                        viewportFraction: 0.8,
+                      ),
+                      items: carouselImages.map((imageUrl) {
+                        return Builder(
+                          builder: (BuildContext context) {
+                            return Container(
+                              width: MediaQuery.of(context).size.width,
+                              margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.0),
+                                image: DecorationImage(
+                                  image: NetworkImage(imageUrl),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 80.0),
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16.0),
                       child: Text(
@@ -118,21 +155,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  AppBar _buildAppBar() {
-    return AppBar(
-      title: const Text('Home'),
-      automaticallyImplyLeading: false,
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.logout),
-          onPressed: () {
-            authController.logout();
-          },
-        ),
-      ],
-    );
-  }
-
   Widget _buildProductList(List<Products> products) {
     return ListView.builder(
       scrollDirection: Axis.horizontal,
@@ -153,10 +175,6 @@ class _HomePageState extends State<HomePage> {
     final formatPrice = formatter.format(double.parse(value) * 1000000);
     return GestureDetector(
       onTap: () {
-        // // Debugging
-        // print('Product tapped: ${product.name}');
-        // print('Product slug: ${product.slug}');
-        // print('Product images: ${product.proImg}');
         Get.toNamed('/product/detail', parameters: {'slug': product.slug!});
       },
       child: Container(
@@ -193,13 +211,13 @@ class _HomePageState extends State<HomePage> {
               Row(
                 children: [
                   Text(
-                    '   $formatPrice ₫',
+                    '  $formatPrice ₫',
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w900,
                       color: Color.fromARGB(255, 162, 95, 230),
                     ),
-                    textAlign: TextAlign.center,
+                    textAlign: TextAlign.left,
                   ),
                   const Spacer(),
                   ElevatedButton(
@@ -211,10 +229,10 @@ class _HomePageState extends State<HomePage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 162, 95, 230),
                       shape: const CircleBorder(),
-                      padding: const EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(5),
                     ),
                     child: const Icon(Icons.add_shopping_cart,
-                        color: Colors.white, size: 20),
+                        color: Colors.white, size: 18),
                   ),
                 ],
               ),

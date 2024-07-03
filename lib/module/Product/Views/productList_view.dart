@@ -70,7 +70,7 @@ class _ProductListPageState extends State<ProductListPage> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Get.toNamed('/');
+            Get.toNamed('/home');
           },
         ),
         actions: [

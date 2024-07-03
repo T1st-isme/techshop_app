@@ -5,6 +5,7 @@ import 'package:techshop_app/module/Category/Views/category_view.dart';
 import 'package:techshop_app/module/Home/View/home_view.dart';
 import 'package:techshop_app/module/Order/Views/order_list_view.dart';
 import 'package:techshop_app/module/Profile/Views/profile_view.dart';
+import 'package:techshop_app/module/Brand/Controller/brand_controller.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -15,8 +16,10 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   final CartController cartController = Get.find<CartController>();
+  final BrandController brandController = Get.find<BrandController>();
 
   int _currentIndex = 0;
+  String? _selectedBrand;
 
   final List<Widget> _children = [
     const HomePage(),
@@ -35,6 +38,7 @@ class _DashboardPageState extends State<DashboardPage> {
   void initState() {
     super.initState();
     cartController.getCartItemCount();
+    brandController.getTopBrands(); // Fetch brands when initializing
   }
 
   @override
@@ -42,9 +46,15 @@ class _DashboardPageState extends State<DashboardPage> {
     return Obx(
       () => Scaffold(
         appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () {},
+          leading: Builder(
+            builder: (BuildContext context) {
+              return IconButton(
+                icon: const Icon(Icons.menu),
+                onPressed: () {
+                  Scaffold.of(context).openDrawer();
+                },
+              );
+            },
           ),
           actions: <Widget>[
             Stack(
@@ -69,7 +79,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       minHeight: 14,
                     ),
                     child: Text(
-                      cartController.totalItems.toString(), //Count item in cart
+                      cartController.totalItems.toString(), // Count item in cart
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 8,
@@ -81,6 +91,84 @@ class _DashboardPageState extends State<DashboardPage> {
               ],
             ),
           ],
+        ),
+        drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              const DrawerHeader(
+                child: Image(
+                  image: AssetImage('assets/images/TechLogo.png'),
+                  fit: BoxFit.contain,
+                ),
+              ),
+              ListTile(
+                leading: const Icon(Icons.home),
+                title: const Text('Trang chủ'),
+                onTap: () {
+                  onTabTapped(0);
+                  Navigator.pop(context); // Close the drawer
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.category),
+                title: Obx(() {
+                  if (brandController.status.value.isLoading) {
+                    return const CircularProgressIndicator();
+                  } else if (brandController.status.value.isError) {
+                    return const Text('Error loading brands');
+                  } else {
+                    return DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        value: _selectedBrand,
+                        hint: const Text('Hãng'),
+                        icon: const Icon(Icons.arrow_drop_down),
+                        iconSize: 24,
+                        elevation: 16,
+                        style: const TextStyle(color: Colors.black),
+                        isExpanded: true,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            _selectedBrand = newValue;
+                            onTabTapped(1); // Change tab to product list
+                          });
+                          Navigator.pop(context); // Close the drawer
+                        },
+                        items: brandController.brand.value.data!
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Row(
+                              children: [
+                                const SizedBox(width: 10),
+                                Text(value),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    );
+                  }
+                }),
+              ),
+              ListTile(
+                leading: const Icon(Icons.receipt_long),
+                title: const Text('Đơn hàng'),
+                onTap: () {
+                  onTabTapped(2);
+                  Navigator.pop(context); // Close the drawer
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.person),
+                title: const Text('Tôi'),
+                onTap: () {
+                  onTabTapped(3);
+                  Navigator.pop(context); // Close the drawer
+                },
+              ),
+            ],
+          ),
         ),
         body: IndexedStack(
           index: _currentIndex,
