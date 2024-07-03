@@ -13,9 +13,26 @@ class OrderService {
   }
 
   //get orders
-  Future<Map<String, dynamic>> getOrders() async {
-    final response = await _apiService.get('/order');
-    return response.data;
+  Future<Response> getOrders() async {
+    try {
+      final response = await _apiService.get('/order/me/order');
+      return response;
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  //get order detail
+  Future<Response> getOrderDetail(String orderId) async {
+    try {
+      final response =
+          await _apiService.get('/order/get-order-detail/$orderId');
+      return response;
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
   }
 
   Future<String> createPaymentLink(int amount) async {

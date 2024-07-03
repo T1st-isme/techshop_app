@@ -15,6 +15,9 @@ import 'package:techshop_app/module/Dashboard/Binding/dashboard_binding.dart';
 import 'package:techshop_app/module/Dashboard/View/dashboard_view.dart';
 import 'package:techshop_app/module/Home/Binding/home_binding.dart';
 import 'package:techshop_app/module/Home/View/home_view.dart';
+import 'package:techshop_app/module/Order/Binding/order_binding.dart';
+import 'package:techshop_app/module/Order/Views/order_detail_view.dart';
+import 'package:techshop_app/module/Order/Views/order_list_view.dart';
 import 'package:techshop_app/module/Product/Binding/product_binding.dart';
 import 'package:techshop_app/module/Product/Views/productDetail_view.dart';
 import 'package:techshop_app/module/Product/Views/productList_view.dart';
@@ -73,6 +76,16 @@ class AppPages {
       name: _Paths.CART,
       page: () => const CartPage(),
       binding: CartBinding(),
+    ),
+    GetPage(
+      name: _Paths.ORDER,
+      page: () => const OrderListView(),
+      binding: OrderBinding(),
+    ),
+    GetPage(
+      name: _Paths.ORDERDETAIL,
+      page: () => const OrderDetailView(),
+      binding: OrderBinding(),
     ),
   ];
 }
