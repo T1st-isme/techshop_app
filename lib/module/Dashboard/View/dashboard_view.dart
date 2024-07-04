@@ -4,6 +4,7 @@ import 'package:techshop_app/module/Cart/Controller/cart_controller.dart';
 import 'package:techshop_app/module/Category/Views/category_view.dart';
 import 'package:techshop_app/module/Home/View/home_view.dart';
 import 'package:techshop_app/module/Order/Views/order_list_view.dart';
+import 'package:techshop_app/module/Product/Views/productList_view.dart';
 import 'package:techshop_app/module/Profile/Views/profile_view.dart';
 import 'package:techshop_app/module/Brand/Controller/brand_controller.dart';
 
@@ -23,7 +24,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
   final List<Widget> _children = [
     const HomePage(),
-    const CategoryList(),
+    const ProductListPage(),
     const OrderListView(),
     const ProfileView(),
   ];
@@ -112,44 +113,11 @@ class _DashboardPageState extends State<DashboardPage> {
               ),
               ListTile(
                 leading: const Icon(Icons.category),
-                title: Obx(() {
-                  if (brandController.status.value.isLoading) {
-                    return const CircularProgressIndicator();
-                  } else if (brandController.status.value.isError) {
-                    return const Text('Error loading brands');
-                  } else {
-                    return DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        value: _selectedBrand,
-                        hint: const Text('Hãng'),
-                        icon: const Icon(Icons.arrow_drop_down),
-                        iconSize: 24,
-                        elevation: 16,
-                        style: const TextStyle(color: Colors.black),
-                        isExpanded: true,
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            _selectedBrand = newValue;
-                            onTabTapped(1); // Change tab to product list
-                          });
-                          Navigator.pop(context); // Close the drawer
-                        },
-                        items: brandController.brand.value.data!
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Row(
-                              children: [
-                                const SizedBox(width: 10),
-                                Text(value),
-                              ],
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    );
-                  }
-                }),
+                title: const Text('Danh mục'),
+                onTap: () {
+                  onTabTapped(1);
+                  Navigator.pop(context); // Close the drawer
+                },
               ),
               ListTile(
                 leading: const Icon(Icons.receipt_long),

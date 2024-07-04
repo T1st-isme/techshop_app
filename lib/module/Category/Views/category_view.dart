@@ -55,7 +55,6 @@ class _CategoryListState extends State<CategoryList> {
                       child: Align(
                         alignment: Alignment.center,
                         child: Container(
-                          color: Colors.red,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
