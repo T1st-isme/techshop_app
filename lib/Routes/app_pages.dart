@@ -16,8 +16,11 @@ import 'package:techshop_app/module/Dashboard/View/dashboard_view.dart';
 import 'package:techshop_app/module/Home/Binding/home_binding.dart';
 import 'package:techshop_app/module/Home/View/home_view.dart';
 import 'package:techshop_app/module/Order/Binding/order_binding.dart';
+import 'package:techshop_app/module/Order/Views/checkout_view.dart';
 import 'package:techshop_app/module/Order/Views/order_detail_view.dart';
+import 'package:techshop_app/module/Order/Views/order_failed_view.dart';
 import 'package:techshop_app/module/Order/Views/order_list_view.dart';
+import 'package:techshop_app/module/Order/Views/order_success_view.dart';
 import 'package:techshop_app/module/Product/Binding/product_binding.dart';
 import 'package:techshop_app/module/Product/Views/productDetail_view.dart';
 import 'package:techshop_app/module/Product/Views/productList_view.dart';
@@ -71,6 +74,21 @@ class AppPages {
       name: '/brand',
       page: () => BrandView(),
       binding: BrandBinding(),
+    ),
+    GetPage(
+      name: '/checkout/order-success',
+      page: () => const OrderSuccessView(),
+      binding: OrderBinding(),
+    ),
+    GetPage(
+      name: '/checkout/order-failed',
+      page: () => const OrderFailedView(),
+      binding: OrderBinding(),
+    ),
+    GetPage(
+      name: '/checkout',
+      page: () => const CheckoutView(),
+      binding: OrderBinding(),
     ),
     GetPage(
       name: _Paths.CART,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:techshop_app/module/Auth/Controller/auth_controller.dart';
 import 'package:techshop_app/module/Cart/Controller/cart_controller.dart';
 import 'package:techshop_app/module/Cart/Views/cart_empty_view.dart';
 
@@ -13,6 +14,7 @@ class CartPage extends StatefulWidget {
 
 class _CartPageState extends State<CartPage> {
   final CartController _cartController = Get.find<CartController>();
+  final AuthController _authController = Get.find<AuthController>();
 
   @override
   void initState() {
@@ -117,7 +119,7 @@ class _CartPageState extends State<CartPage> {
           bottomNavigationBar: Obx(() {
             if (_cartController.cartItems.isEmpty) {
               return const SizedBox
-                  .shrink(); // Return an empty widget if the cart is empty
+                  .shrink(); // Xóa phần hiển thị tổng tiền và nút mua hàng khi giỏ hàng trống
             }
             return Container(
               padding: const EdgeInsets.all(16),
@@ -181,10 +183,11 @@ class _CartPageState extends State<CartPage> {
                   ElevatedButton(
                     onPressed: () {
                       // Checkout logic
+                      Get.toNamed('/checkout');
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 162, 95, 230),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      padding: const EdgeInsets.symmetric(vertical: 20),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(100),
                       ),

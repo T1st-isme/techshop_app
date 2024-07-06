@@ -12,7 +12,7 @@ class CartEmptyView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
-              'images/Cart/empty_cart.png',
+              'assets/images/Cart/empty_cart.png',
               width: 150,
               height: 150,
             ),

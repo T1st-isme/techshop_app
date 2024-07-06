@@ -59,6 +59,22 @@ class OrderController extends GetxController {
     update();
   }
 
+  Future<String> createPaymentLink(int amount) async {
+    Future.microtask(() => status.value = RxStatus.loading());
+    try {
+      final url = await orderService.createPaymentLink(amount);
+      if (url.isNotEmpty) {
+        Future.microtask(() => status.value = RxStatus.success());
+      }
+      return url;
+    } on DioException catch (e) {
+      final ApiException apiException = ApiException.fromDioException(e);
+      Future.microtask(
+          () => status.value = RxStatus.error(apiException.toString()));
+      rethrow;
+    }
+  }
+
   void resetOrder() {
     orders.clear();
     orderDetail.value = null;
