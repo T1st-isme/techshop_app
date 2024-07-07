@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:techshop_app/models/user.dart';
 import 'package:techshop_app/services/API/ApiService.dart';
@@ -28,7 +30,7 @@ class AuthService {
       '/user/signup',
       data: {'fullname': fullname, 'email': email, 'password': password},
     );
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201) {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('user', jsonEncode(response.data));
       await prefs.setString('token', jsonEncode(response.data['token'] ?? ''));
@@ -37,6 +39,43 @@ class AuthService {
       throw Exception('Failed to register');
     }
   }
+
+  //user profile
+  Future<Response> getUserProfile() async {
+    try {
+      final Response<dynamic> response = await _apiService.get('/user/me');
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  //update user profile
+  Future<Response> updateUserProfile(String fullname, String email,
+      String password, String phone, String address, XFile? image) async {
+    try {
+      FormData formData = FormData.fromMap({
+        'fullname': fullname,
+        'email': email,
+        'password': password,
+        'phone': phone,
+        'address': address,
+        if (image != null)
+          'avatar': kIsWeb
+              ? MultipartFile.fromBytes(await image.readAsBytes(),
+                  filename: image.name)
+              : await MultipartFile.fromFile(image.path, filename: image.name),
+      });
+
+      final Response<dynamic> response =
+          await _apiService.put('/user/me', data: formData);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  //upload image
 
   Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();

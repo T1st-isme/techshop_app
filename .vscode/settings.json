@@ -35,5 +35,7 @@
   ],
   "terminal.integrated.rescaleOverlappingGlyphs": false,
   "gitlens.blame.fontFamily": "JetBrainsMono Nerd Font, 'Courier New', monospace",
-  "terminal.integrated.fontFamily": "JetBrainsMono Nerd Font, 'Courier New', monospace"
+  "terminal.integrated.fontFamily": "JetBrainsMono Nerd Font, 'Courier New', monospace",
+  "dart.previewFlutterUiGuides": true,
+  "dart.previewFlutterUiGuidesCustomTracking": true
 }

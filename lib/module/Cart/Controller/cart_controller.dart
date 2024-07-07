@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:techshop_app/models/cart.dart';
+import 'package:techshop_app/module/Auth/Controller/auth_controller.dart';
 
 import '../../../services/Cart/cart_service.dart';
 
@@ -33,6 +34,11 @@ class CartController extends GetxController with StateMixin<List<CartItems>> {
   }
 
   void addToCart(List<Map<String, dynamic>> cartItems) async {
+    Get.find<AuthController>().checkLoginStatus();
+    if (!Get.find<AuthController>().isLoggedIn) {
+      Get.snackbar('Thông báo', 'Bạn phải đăng nhập để thêm vào giỏ hàng');
+      return;
+    }
     final data = {'cartItems': cartItems};
     final response = await _cartService.addToCart(data);
     if (response.statusCode == 201) {

@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:techshop_app/module/Auth/Controller/auth_controller.dart';
+import 'package:techshop_app/module/Auth/Views/check_login_view.dart';
 import 'package:techshop_app/module/Cart/Controller/cart_controller.dart';
 import 'package:techshop_app/module/Cart/Views/cart_empty_view.dart';
 
@@ -19,7 +21,9 @@ class _CartPageState extends State<CartPage> {
   @override
   void initState() {
     super.initState();
-    _cartController.fetchCartItems();
+    if (_authController.isLoggedIn) {
+      _cartController.fetchCartItems();
+    }
   }
 
   void _incrementQuantity(String itemId, int currentQuantity) {
@@ -63,6 +67,10 @@ class _CartPageState extends State<CartPage> {
             ],
           ),
           body: Obx(() {
+            //check đăng nhập
+            if (!_authController.isLoggedIn) {
+              return const CheckLoginView();
+            }
             if (_cartController.cartItems.isEmpty) {
               return const CartEmptyView();
             }
@@ -77,7 +85,16 @@ class _CartPageState extends State<CartPage> {
                   margin:
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   child: ListTile(
-                    leading: Image.network(item.cartItem!.img!),
+                    leading: CachedNetworkImage(
+                      imageUrl: item.cartItem!.img!,
+                      fadeInDuration: const Duration(milliseconds: 200),
+                      fadeOutDuration: const Duration(milliseconds: 200),
+                      placeholder: (context, url) => const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                    ),
                     title: Text(item.cartItem!.name!),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,97 +133,101 @@ class _CartPageState extends State<CartPage> {
               },
             );
           }),
-          bottomNavigationBar: Obx(() {
-            if (_cartController.cartItems.isEmpty) {
-              return const SizedBox
-                  .shrink(); // Xóa phần hiển thị tổng tiền và nút mua hàng khi giỏ hàng trống
-            }
-            return Container(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          bottomNavigationBar: Obx(
+            () {
+              if (_cartController.cartItems.isEmpty) {
+                return const SizedBox
+                    .shrink(); // Hide total and checkout button when cart is empty
+              } else {
+                return Container(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Text('Tổng tiền hàng'),
-                      Text(
-                        NumberFormat.currency(locale: 'vi_VN', symbol: 'đ')
-                            .format(_cartController.totalPrice.toDouble()),
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('Tổng tiền hàng'),
+                          Text(
+                            NumberFormat.currency(locale: 'vi_VN', symbol: 'đ')
+                                .format(_cartController.totalPrice.toDouble()),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Phí vận chuyển'),
-                      Text('30.000đ'),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Tổng thanh toán',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                      const SizedBox(height: 10),
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Phí vận chuyển'),
+                          Text('30.000đ'),
+                        ],
                       ),
-                      Text(
-                        NumberFormat.currency(locale: 'vi_VN', symbol: 'đ')
-                            .format((_cartController.totalPrice + 30000)
-                                .toDouble()),
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Tổng thanh toán',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            NumberFormat.currency(locale: 'vi_VN', symbol: 'đ')
+                                .format((_cartController.totalPrice + 30000)
+                                    .toDouble()),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  TextField(
-                    decoration: InputDecoration(
-                      prefixIcon:
-                          const Icon(Icons.discount, color: Colors.green),
-                      hintText: 'Nhập mã giảm giá',
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.arrow_forward,
-                            color: Color.fromARGB(255, 162, 95, 230)),
+                      const SizedBox(height: 20),
+                      TextField(
+                        decoration: InputDecoration(
+                          prefixIcon:
+                              const Icon(Icons.discount, color: Colors.green),
+                          hintText: 'Nhập mã giảm giá',
+                          suffixIcon: IconButton(
+                            icon: const Icon(Icons.arrow_forward,
+                                color: Color.fromARGB(255, 162, 95, 230)),
+                            onPressed: () {
+                              //discount logic
+                            },
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      ElevatedButton(
                         onPressed: () {
-                          //discount logic
+                          // Checkout logic
+                          Get.toNamed('/checkout');
                         },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              const Color.fromARGB(255, 162, 95, 230),
+                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                          minimumSize: const Size(double.infinity, 48),
+                        ),
+                        child: const Text(
+                          'Mua hàng',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
+                      const SizedBox(height: 10),
+                    ],
                   ),
-                  const SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed: () {
-                      // Checkout logic
-                      Get.toNamed('/checkout');
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 162, 95, 230),
-                      padding: const EdgeInsets.symmetric(vertical: 20),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                      minimumSize: const Size(double.infinity, 48),
-                    ),
-                    child: const Text(
-                      'Mua hàng',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                ],
-              ),
-            );
-          }),
+                );
+              }
+            },
+          ),
         );
       },
     );

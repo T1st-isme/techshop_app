@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> {
           );
         }
         return Scaffold(
-          appBar: _buildAppBar(),
+          // appBar: _buildAppBar(),
           body: Obx(
             () {
               if (productController.productsByCategory.isEmpty) {
@@ -72,19 +72,15 @@ class _HomePageState extends State<HomePage> {
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                     ),
-                    const SizedBox(height: 16.0),
-                    SizedBox(
-                      height: 80,
-                      child: BrandView(),
-                    ),
-                    const SizedBox(height: 16.0),
+                    const SizedBox(height: 20.0),
+                    BrandView(),
                     ...categories.map((category) {
                       final products =
                           productController.productsByCategory[category] ?? [];
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SizedBox(height: 50.0),
+                          const SizedBox(height: 20.0),
                           Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 16.0, vertical: 8.0),
@@ -160,16 +156,17 @@ class _HomePageState extends State<HomePage> {
         Get.toNamed('/product/detail', parameters: {'slug': product.slug!});
       },
       child: Container(
-        width: 160,
+        width: 180,
         margin: const EdgeInsets.only(right: 16),
         child: Card(
           elevation: 2,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
-                height: 120,
-                width: double.infinity,
+              Container(
+                height: 100,
+                alignment: Alignment.center,
+                // width: double.infinity,
                 child: CachedNetworkImage(
                   imageUrl: product.proImg?.elementAt(0).img ?? 'N/A',
                   errorWidget: (context, url, error) => const Icon(Icons.image),
@@ -190,18 +187,21 @@ class _HomePageState extends State<HomePage> {
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
+              const SizedBox(height: 2),
               Row(
                 children: [
-                  Text(
-                    '   $formatPrice ₫',
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w900,
-                      color: Color.fromARGB(255, 162, 95, 230),
+                  Expanded(
+                    child: Text(
+                      ' $formatPrice₫',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w900,
+                        color: Color.fromARGB(255, 162, 95, 230),
+                      ),
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    textAlign: TextAlign.center,
                   ),
-                  const Spacer(),
                   ElevatedButton(
                     onPressed: () {
                       cartController.addToCart([

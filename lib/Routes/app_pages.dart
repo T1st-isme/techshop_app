@@ -3,6 +3,8 @@
 import 'package:get/get.dart';
 
 import 'package:techshop_app/module/Auth/Binding/auth_binding.dart';
+import 'package:techshop_app/module/Auth/Views/Proflie/update_profile_view.dart';
+import 'package:techshop_app/module/Auth/Views/Proflie/user_profile_view.dart';
 import 'package:techshop_app/module/Auth/Views/login_view.dart';
 import 'package:techshop_app/module/Auth/Views/register_view.dart';
 import 'package:techshop_app/module/Brand/Binding/brand_binding.dart';
@@ -56,6 +58,16 @@ class AppPages {
     GetPage(
       name: _Paths.REGISTER,
       page: () => RegisterPage(),
+      binding: AuthBinding(),
+    ),
+    GetPage(
+      name: _Paths.PROFILE,
+      page: () => const ProfilePage(),
+      binding: AuthBinding(),
+    ),
+    GetPage(
+      name: _Paths.UPDATEPROFILE,
+      page: () => const UpdateProfilePage(),
       binding: AuthBinding(),
     ),
     GetPage(

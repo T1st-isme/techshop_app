@@ -13,11 +13,6 @@ class _CategoryListState extends State<CategoryList> {
   final _categoryController = Get.find<CategoryController>();
 
   @override
-  initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     _categoryController.getCategories();
     return Obx(

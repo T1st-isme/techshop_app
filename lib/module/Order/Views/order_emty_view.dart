@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:techshop_app/constants/AppUrl.dart';
 
 class OrderEmptyView extends StatelessWidget {
   const OrderEmptyView({super.key});
@@ -12,7 +13,7 @@ class OrderEmptyView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
-              'images/Order/empty_order.png',
+              '${AppUrl.imageUrl}Order/empty_order.png',
               width: 100,
               height: 100,
             ),
@@ -24,7 +25,7 @@ class OrderEmptyView extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
                 Get.toNamed('/product');

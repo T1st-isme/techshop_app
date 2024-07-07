@@ -10,12 +10,6 @@ class CategoryController extends GetxController {
   Rx<Category> category = Rx<Category>(Category());
   Rx<RxStatus> status = Rx<RxStatus>(RxStatus.empty());
 
-  // @override
-  // void onInit() {
-  //   super.onInit();
-  //   getCategories();
-  // }
-
   void getCategories() async {
     Future.microtask(() => status.value = RxStatus.loading());
     try {

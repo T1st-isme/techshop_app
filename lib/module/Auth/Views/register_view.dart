@@ -12,6 +12,7 @@ class RegisterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loading = ValueNotifier<bool>(false);
     return Scaffold(
       appBar: AppBar(title: const Text('Register')),
       body: Padding(
@@ -33,10 +34,19 @@ class RegisterPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
-                authController.register(fullnameController.text,
-                    emailController.text, passwordController.text);
-              },
+              onPressed: loading.value
+                  ? null
+                  : () async {
+                      loading.value = true;
+                      bool success = await authController.register(
+                          fullnameController.text,
+                          emailController.text,
+                          passwordController.text);
+                      loading.value = false;
+                      if (success) {
+                        Get.toNamed('/');
+                      }
+                    },
               child: const Text('Register'),
             ),
             TextButton(

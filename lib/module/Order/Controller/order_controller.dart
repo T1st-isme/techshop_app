@@ -1,21 +1,25 @@
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:techshop_app/models/order.dart';
+import 'package:techshop_app/module/Auth/Controller/auth_controller.dart';
 import 'package:techshop_app/services/API/ApiException.dart';
 import 'package:techshop_app/services/Order/order_service.dart';
 
 class OrderController extends GetxController {
   final OrderService orderService = Get.put(OrderService());
+  final AuthController authController = Get.find<AuthController>();
   RxList<Data> orders = RxList<Data>();
   Rx<Data?> orderDetail = Rx<Data?>(null);
   // Rx<bool> isLoading = Rx<bool>(false);
   Rx<RxStatus> status = Rx<RxStatus>(RxStatus.empty());
 
-  @override
-  void onInit() {
-    super.onInit();
-    getOrder();
-  }
+  // @override
+  // void onInit() {
+  //   super.onInit();
+  //   if (authController.isLoggedIn) {
+  //     getOrder();
+  //   }
+  // }
 
   Future<void> getOrder() async {
     Future.microtask(() => status.value = RxStatus.loading());
