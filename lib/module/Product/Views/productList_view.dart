@@ -179,6 +179,8 @@ Widget itemGridView(Products proItem) {
             width: 100,
             fit: BoxFit.cover,
             placeholder: (context, url) => const CircularProgressIndicator(),
+            fadeInDuration: const Duration(milliseconds: 200),
+            fadeOutDuration: const Duration(milliseconds: 200),
             errorWidget: (context, url, error) => const Icon(Icons.error),
           ),
           Text(

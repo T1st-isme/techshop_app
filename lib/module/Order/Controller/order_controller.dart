@@ -38,6 +38,7 @@ class OrderController extends GetxController {
           () => status.value = RxStatus.error(apiException.toString()));
       print(e);
     }
+    Future.microtask(() => status.value = RxStatus.empty());
     update();
   }
 
@@ -63,19 +64,29 @@ class OrderController extends GetxController {
     update();
   }
 
-  Future<String> createPaymentLink(int amount) async {
+  Future<Map<String, String>> createPaymentLink(int amount) async {
     Future.microtask(() => status.value = RxStatus.loading());
     try {
-      final url = await orderService.createPaymentLink(amount);
-      if (url.isNotEmpty) {
+      final response = await orderService.createPaymentLink(amount);
+      final url = response['checkoutUrl'];
+      final orderCode = response['orderCode'];
+      if (url != null && orderCode != null) {
         Future.microtask(() => status.value = RxStatus.success());
       }
-      return url;
+      return {'url': url!, 'orderCode': orderCode!};
     } on DioException catch (e) {
       final ApiException apiException = ApiException.fromDioException(e);
       Future.microtask(
           () => status.value = RxStatus.error(apiException.toString()));
       rethrow;
+    }
+  }
+
+  Future<void> handlePaymentResult(String orderId, String url) async {
+    if (url.contains('order-success')) {
+      await orderService.updatePaymentStatus(orderId, 'completed');
+    } else if (url.contains('order-failed')) {
+      await orderService.updatePaymentStatus(orderId, 'cancelled');
     }
   }
 

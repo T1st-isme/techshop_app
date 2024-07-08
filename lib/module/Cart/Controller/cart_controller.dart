@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:techshop_app/models/cart.dart';
 import 'package:techshop_app/module/Auth/Controller/auth_controller.dart';
@@ -10,21 +11,29 @@ class CartController extends GetxController with StateMixin<List<CartItems>> {
   var totalPrice = 0.0.obs;
   var totalQuantity = 0.obs;
   final CartService _cartService = CartService();
+  var isLoading = false.obs;
 
   void fetchCartItems() async {
-    final response = await _cartService.getCartItems();
-    if (response.statusCode == 200) {
-      final dataCart = response.data['cartItems'];
-      List<CartItems> cartItemsList =
-          dataCart.map<CartItems>((item) => CartItems.fromJson(item)).toList();
-      cartItems.assignAll(cartItemsList);
-      change(cartItems, status: RxStatus.success());
-      totalItems.value = response.data['total_items'];
-      totalPrice.value = double.parse(response.data['total_price']);
-      totalQuantity.value = response.data['total_quantity'];
-    } else {
+    isLoading.value = true;
+    try {
+      final response = await _cartService.getCartItems();
+      if (response.statusCode == 200) {
+        final dataCart = response.data['cartItems'];
+        List<CartItems> cartItemsList = dataCart
+            .map<CartItems>((item) => CartItems.fromJson(item))
+            .toList();
+        cartItems.assignAll(cartItemsList);
+        change(cartItems, status: RxStatus.success());
+        totalItems.value = response.data['total_items'];
+        totalPrice.value = double.parse(response.data['total_price']);
+        totalQuantity.value = response.data['total_quantity'];
+      } else {
+        Get.snackbar('Error', 'Failed to fetch cart items');
+      }
+    } on DioException catch (e) {
       Get.snackbar('Error', 'Failed to fetch cart items');
     }
+    isLoading.value = false;
     update();
   }
 

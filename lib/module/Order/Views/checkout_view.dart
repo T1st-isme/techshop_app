@@ -1,6 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:techshop_app/module/Auth/Controller/auth_controller.dart';
+import 'package:techshop_app/module/Cart/Controller/cart_controller.dart';
 import 'package:techshop_app/module/Order/Controller/order_controller.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -18,22 +21,36 @@ class _CheckoutView extends State<CheckoutView> {
   Widget build(BuildContext context) {
     final orderController = Get.find<OrderController>();
     final authController = Get.find<AuthController>();
+    final cartController = Get.find<CartController>();
     var isLoading = false;
+    var totalPrice = NumberFormat.currency(locale: 'vi_VN', symbol: '₫')
+        .format(cartController.totalPrice.toDouble());
+    var totalPriceInt = int.parse(totalPrice.replaceAll(RegExp(r'[^0-9]'), ''));
+    print(totalPriceInt);
 
     Future<void> checkout() async {
       try {
         setState(() => isLoading = true);
 
-        final response = await orderController.createPaymentLink(10000);
-        final url = Uri.parse(response);
+        final response = await orderController.createPaymentLink(totalPriceInt);
+        final url = Uri.parse(response['url']!);
+        print("MaGD: ${response['orderCode']}");
+        print("linkGD: ${response['url']}");
+        final orderCode = response['orderCode'];
         if (await canLaunchUrl(url)) {
           await launchUrl(url);
+          await orderController.getOrder();
+          Future.microtask(
+            () => orderController.handlePaymentResult(
+              orderCode!,
+              url.toString(),
+            ),
+          );
         } else {
           throw Exception("Không thể mở liên kết!");
         }
       } on Exception catch (e) {
         showDialog(
-          // ignore: use_build_context_synchronously
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
@@ -80,7 +97,7 @@ class _CheckoutView extends State<CheckoutView> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    'You must login',
+                    'Bạn phải đăng nhập để mua hàng!!!',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 20),
@@ -88,7 +105,7 @@ class _CheckoutView extends State<CheckoutView> {
                     onPressed: () {
                       Get.toNamed('/login');
                     },
-                    child: const Text('Go login'),
+                    child: const Text('Đăng nhập'),
                   ),
                 ],
               );
@@ -97,21 +114,24 @@ class _CheckoutView extends State<CheckoutView> {
             return Column(
               children: [
                 ListTile(
-                  title: const Text('Địa chỉ giao hàng'),
-                  subtitle: const Text('132 Sư Vạn Hạnh Phường 12 Quận 10'),
+                  title: const Text('Địa chỉ giao hàng',
+                      style: TextStyle(fontWeight: FontWeight.w500)),
+                  subtitle: Text(authController.user.user!.address ?? ''),
                   trailing: const Icon(Icons.arrow_forward_ios),
-                  onTap: () {
-                    // Navigate to address selection
-                  },
+                  onTap: () {},
                 ),
                 const SizedBox(height: 16),
                 ListTile(
-                  title: const Text('Phương thức thanh toán'),
-                  subtitle: const Row(
+                  title: Row(
                     children: [
-                      Text('**** 4187'),
-                      SizedBox(width: 8),
-                      Icon(Icons.credit_card, color: Colors.red),
+                      const Text('Phương thức thanh toán',
+                          style: TextStyle(fontWeight: FontWeight.w500)),
+                      const Spacer(),
+                      Image.asset(
+                        'assets/images/Order/vietqr.png',
+                        width: 50,
+                        height: 50,
+                      ),
                     ],
                   ),
                   trailing: const Icon(Icons.arrow_forward_ios),
@@ -119,13 +139,50 @@ class _CheckoutView extends State<CheckoutView> {
                     // Navigate to payment method selection
                   },
                 ),
-                const Spacer(),
-                const Row(
+                const SizedBox(height: 16),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: cartController.cartItems.length,
+                    itemBuilder: (context, index) {
+                      final item = cartController.cartItems[index].cartItem!;
+                      final formatter = NumberFormat('#,###', 'vi_VN');
+                      final value = item.price!;
+                      final formatPrice = formatter.format(value * 1000000);
+                      return Card(
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 16),
+                        child: ListTile(
+                          leading: CachedNetworkImage(
+                            imageUrl: item.img ?? '',
+                            placeholder: (context, url) =>
+                                const CircularProgressIndicator(),
+                            fadeInDuration: const Duration(milliseconds: 200),
+                            fadeOutDuration: const Duration(milliseconds: 200),
+                          ),
+                          title: Text(item.name ?? ''),
+                          subtitle: Text(
+                            'Số lượng: ${item.quantity}',
+                            style: const TextStyle(color: Colors.grey),
+                          ),
+                          trailing: Text(
+                            '$formatPrice₫',
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Tổng tiền hàng',
+                    const Text('Tổng tiền hàng',
                         style: TextStyle(color: Colors.grey)),
-                    Text('7.580.000₫'),
+                    Text(
+                      NumberFormat.currency(locale: 'vi_VN', symbol: '₫')
+                          .format(cartController.totalPrice.toDouble()),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 8),
@@ -134,17 +191,17 @@ class _CheckoutView extends State<CheckoutView> {
                   children: [
                     Text('Phí vận chuyển',
                         style: TextStyle(color: Colors.grey)),
-                    Text('30.000₫'),
+                    Text('30.000 ₫'),
                   ],
                 ),
                 const SizedBox(height: 8),
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Tổng thanh toán',
+                    const Text('Tổng thanh toán',
                         style: TextStyle(fontWeight: FontWeight.bold)),
-                    Text('7.610.000₫',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text(totalPrice,
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
                   ],
                 ),
                 const SizedBox(height: 20.0),
@@ -156,22 +213,22 @@ class _CheckoutView extends State<CheckoutView> {
                       borderRadius: BorderRadius.circular(100.0),
                     ),
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 32.0, vertical: 25.0),
+                        horizontal: 32.0, vertical: 20.0),
                     minimumSize: const Size(double.infinity, 50),
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '7.610.000₫',
-                        style: TextStyle(
+                        totalPrice,
+                        style: const TextStyle(
                           fontSize: 18,
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(width: 20.0),
-                      Text(
+                      const SizedBox(width: 20.0),
+                      const Text(
                         'Đặt hàng',
                         style: TextStyle(
                           fontSize: 18,

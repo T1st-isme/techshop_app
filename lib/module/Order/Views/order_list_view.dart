@@ -38,7 +38,8 @@ class _OrderListViewState extends State<OrderListView> {
         }
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Đơn hàng'),
+            title: const Text('Đơn hàng',
+                style: TextStyle(fontWeight: FontWeight.bold)),
             centerTitle: true,
           ),
           body: Column(
@@ -86,8 +87,8 @@ class _OrderListViewState extends State<OrderListView> {
                           vertical: 8.0, horizontal: 16.0),
                       child: ListTile(
                         leading: const Icon(Icons.receipt_long),
-                        title: Text('Đơn #${order.sId}'),
-                        subtitle: Text('${order.items?.length ?? 0} items'),
+                        title: Text('Đơn #${order.orderCode}'),
+                        subtitle: Text('${order.items?.length ?? 0} sản phẩm'),
                         trailing: const Icon(Icons.arrow_forward_ios),
                         onTap: () {
                           if (order.sId != null && order.sId!.isNotEmpty) {

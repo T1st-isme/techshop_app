@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -54,7 +55,7 @@ class _OrderDetailViewState extends State<OrderDetailView> {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  Text('Order ID: ${order.sId}',
+                  Text('Mã đơn hàng: ${order.orderCode}',
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 20)),
                   const SizedBox(height: 20),
@@ -69,8 +70,10 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                             child: ListTile(
                               leading: item.productId?.proImg != null &&
                                       item.productId!.proImg!.isNotEmpty
-                                  ? Image.network(
-                                      item.productId!.proImg!.first.img ?? '',
+                                  ? CachedNetworkImage(
+                                      imageUrl:
+                                          item.productId!.proImg!.first.img ??
+                                              '',
                                       width: 50,
                                       height: 50,
                                       fit: BoxFit.cover)
@@ -91,16 +94,48 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                     width: double.infinity,
                     padding: const EdgeInsets.all(16.0),
                     decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 240, 240, 240),
+                      color: Colors.grey[200],
                       borderRadius: BorderRadius.circular(8.0),
                     ),
-                    child: const Column(
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('132 Sư Vạn Hạnh Phường 12 Quận 10',
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        SizedBox(height: 4),
-                        Text('0123'),
+                        Text("Người đặt hàng: ${order.user!.fullname}",
+                            style:
+                                const TextStyle(fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 10),
+                        Text("Địa chỉ: ${order.user!.address}",
+                            style:
+                                const TextStyle(fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 10),
+                        Text("SĐT: ${order.user!.phone}",
+                            style:
+                                const TextStyle(fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Phương thức thanh toán: ${order.paymentType}",
+                            style:
+                                const TextStyle(fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 10),
+                        Text("Trạng thái thanh toán:  ${order.paymentStatus}",
+                            style:
+                                const TextStyle(fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 10),
+                        Text("Trạng thái đơn hàng: ${order.orderStatus}",
+                            style:
+                                const TextStyle(fontWeight: FontWeight.bold)),
                       ],
                     ),
                   ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:techshop_app/constants/AppUrl.dart';
 
 class OrderSuccessView extends StatelessWidget {
   const OrderSuccessView({super.key});
@@ -16,7 +17,7 @@ class OrderSuccessView extends StatelessWidget {
               color: const Color.fromARGB(255, 162, 95, 230),
               child: Center(
                 child: Image.asset(
-                  'images/Order/order_success.png',
+                  '${AppUrl.imageUrl}Order/order_success.png',
                   height: 400,
                   width: 400,
                 ),

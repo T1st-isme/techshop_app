@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:techshop_app/Routes/app_pages.dart';
+import 'package:techshop_app/constants/AppUrl.dart';
 
 class OrderFailedView extends StatelessWidget {
   const OrderFailedView({super.key});
@@ -19,7 +20,7 @@ class OrderFailedView extends StatelessWidget {
               color: Colors.red,
               child: Center(
                 child: Image.asset(
-                  'images/Order/order_failed.png',
+                  '${AppUrl.imageUrl}Order/order_failed.png',
                   height: 400,
                   width: 400,
                 ),

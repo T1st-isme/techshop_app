@@ -34,7 +34,7 @@ class OrderService {
     }
   }
 
-  Future<String> createPaymentLink(int amount) async {
+  Future<Map<String, String>> createPaymentLink(int amount) async {
     const returnUrl = 'app://techshopflutter/checkout/order-success';
     const cancelUrl = 'app://techshopflutter/checkout/order-failed';
 
@@ -49,7 +49,10 @@ class OrderService {
           }));
       print("Thanh toán: ${response.data['data']['checkoutUrl']}");
       if (response.statusCode == 200) {
-        return response.data['data']['checkoutUrl'];
+        return {
+          'checkoutUrl': response.data['data']['checkoutUrl'],
+          'orderCode': response.data['data']['orderCode'].toString()
+        };
       } else {
         throw Exception('Failed to create payment link');
       }
@@ -57,6 +60,21 @@ class OrderService {
       if (e.type == DioExceptionType.unknown) {
         print('CORS error: ${e.message}');
       }
+      rethrow;
+    }
+  }
+
+  Future<void> updatePaymentStatus(String orderId, String paymentStatus) async {
+    try {
+      final response =
+          await _apiService.put('/order/update-payment-status/$orderId', data: {
+        'paymentStatus': paymentStatus,
+      });
+      if (response.statusCode != 200) {
+        throw Exception('Failed to update payment status');
+      }
+    } catch (e) {
+      print(e);
       rethrow;
     }
   }
