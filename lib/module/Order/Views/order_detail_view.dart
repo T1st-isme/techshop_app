@@ -28,7 +28,8 @@ class _OrderDetailViewState extends State<OrderDetailView> {
     final formatter = NumberFormat('#,###', 'vi_VN');
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Chi tiết đơn hàng'),
+        title: const Text('Chi tiết đơn hàng',
+            style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),

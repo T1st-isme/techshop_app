@@ -118,12 +118,17 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget buildOrderItem(IconData icon, String label) {
-    return Column(
-      children: [
-        Icon(icon, size: 40),
-        const SizedBox(height: 5),
-        Text(label),
-      ],
+    return GestureDetector(
+      onTap: () {
+        Get.toNamed(Routes.ORDER);
+      },
+      child: Column(
+        children: [
+          Icon(icon, size: 40),
+          const SizedBox(height: 5),
+          Text(label),
+        ],
+      ),
     );
   }
 

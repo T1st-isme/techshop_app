@@ -31,7 +31,7 @@ class CartController extends GetxController with StateMixin<List<CartItems>> {
         Get.snackbar('Error', 'Failed to fetch cart items');
       }
     } on DioException catch (e) {
-      Get.snackbar('Error', 'Failed to fetch cart items');
+      Get.snackbar('Error', 'Failed to fetch cart items: ${e.message}');
     }
     isLoading.value = false;
     update();
@@ -99,13 +99,13 @@ class CartController extends GetxController with StateMixin<List<CartItems>> {
     totalQuantity.value = 0;
   }
 
-  // Future<void> clearCart() async {
-  //   final response = await _cartService.clearCart();
-  //   if (response.statusCode == 200) {
-  //     Get.snackbar('Thành công', 'Đã xóa giỏ hàng');
-  //     fetchCartItems();
-  //   } else {
-  //     Get.snackbar('Error', 'Failed to clear cart');
-  //   }
-  // }
+  Future<void> clearCart() async {
+    final response = await _cartService.clearCart();
+    if (response.statusCode == 200) {
+      Get.snackbar('Thành công', 'Đã xóa giỏ hàng');
+      fetchCartItems();
+    } else {
+      Get.snackbar('Error', 'Failed to clear cart');
+    }
+  }
 }

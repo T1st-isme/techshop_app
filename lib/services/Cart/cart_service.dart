@@ -44,4 +44,15 @@ class CartService {
       rethrow;
     }
   }
+
+  //clear cart
+  Future<Response> clearCart() async {
+    try {
+      Response response = await _apiService.delete('/cart/clearCart');
+      return response;
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
 }

@@ -67,7 +67,7 @@ class _CartPageState extends State<CartPage> {
             actions: [
               TextButton(
                 onPressed: () {
-                  // _cartController.clearCart();
+                  _cartController.clearCart();
                 },
                 child: const Text(
                   'Xóa tất cả',
