@@ -1,5 +1,15 @@
+// 🎯 Dart imports:
+import 'dart:developer';
+
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
+import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:get/get.dart';
+
+// 🌎 Project imports:
 import 'package:techshop_app/module/Auth/Controller/auth_controller.dart';
 import 'package:techshop_app/module/Auth/Views/Proflie/user_profile_view.dart';
 import 'package:techshop_app/module/Cart/Controller/cart_controller.dart';
@@ -20,7 +30,9 @@ class _DashboardPageState extends State<DashboardPage> {
   final OrderController orderController = Get.find<OrderController>();
   final AuthController authController = Get.find<AuthController>();
 
-  int _currentIndex = 0;
+  final PageController _pageController = PageController(initialPage: 0);
+  final NotchBottomBarController _controller =
+      NotchBottomBarController(index: 0);
 
   final List<Widget> _children = [
     const HomePage(),
@@ -29,16 +41,16 @@ class _DashboardPageState extends State<DashboardPage> {
     const ProfilePage(),
   ];
 
-  void onTabTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-  }
-
   @override
   void initState() {
     super.initState();
     cartController.fetchCartItems();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   @override
@@ -86,37 +98,78 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
           ],
         ),
-        body: IndexedStack(
-          index: _currentIndex,
+        body: PageView(
+          controller: _pageController,
+          physics: const NeverScrollableScrollPhysics(),
           children: _children,
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.white,
-          selectedItemColor: const Color.fromARGB(255, 162, 95, 230),
-          unselectedItemColor: Colors.grey,
-          showSelectedLabels: true,
-          showUnselectedLabels: false,
-          onTap: onTabTapped,
-          currentIndex: _currentIndex,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Trang chủ',
+        extendBody: true,
+        bottomNavigationBar: AnimatedNotchBottomBar(
+          notchBottomBarController: _controller,
+          color: const Color.fromARGB(255, 162, 95, 230),
+          showLabel: false,
+          textOverflow: TextOverflow.visible,
+          maxLine: 1,
+          shadowElevation: 5,
+          kBottomRadius: 16.0,
+          notchColor: Colors.black54,
+          removeMargins: false,
+          bottomBarWidth: 500,
+          showShadow: false,
+          durationInMilliSeconds: 300,
+          itemLabelStyle: const TextStyle(fontSize: 10),
+          elevation: 1,
+          bottomBarItems: const [
+            BottomBarItem(
+              inActiveItem: Icon(
+                FluentIcons.home_32_regular,
+                color: Colors.white,
+              ),
+              activeItem: Icon(
+                FluentIcons.home_32_filled,
+                color: Color.fromARGB(255, 162, 95, 230),
+              ),
+              itemLabel: 'Trang chủ',
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.category),
-              label: 'Danh mục',
+            BottomBarItem(
+              inActiveItem: Icon(
+                FluentIcons.grid_28_regular,
+                color: Colors.white,
+              ),
+              activeItem: Icon(
+                FluentIcons.filter_32_filled,
+                color: Color.fromARGB(255, 162, 95, 230),
+              ),
+              itemLabel: 'Danh mục',
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.receipt_long),
-              label: 'Đơn hàng',
+            BottomBarItem(
+              inActiveItem: Icon(
+                FluentIcons.receipt_32_regular,
+                color: Colors.white,
+              ),
+              activeItem: Icon(
+                FluentIcons.receipt_32_filled,
+                color: Color.fromARGB(255, 162, 95, 230),
+              ),
+              itemLabel: 'Đơn hàng',
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: 'Tôi',
+            BottomBarItem(
+              inActiveItem: Icon(
+                FluentIcons.person_32_regular,
+                color: Colors.white,
+              ),
+              activeItem: Icon(
+                FluentIcons.person_32_filled,
+                color: Color.fromARGB(255, 162, 95, 230),
+              ),
+              itemLabel: 'Tôi',
             ),
           ],
+          onTap: (index) {
+            log('current selected index $index');
+            _pageController.jumpToPage(index);
+          },
+          kIconSize: 24.0,
         ),
       ),
     );

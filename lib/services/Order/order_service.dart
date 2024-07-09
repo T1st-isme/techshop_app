@@ -1,5 +1,10 @@
+// 🎯 Dart imports:
 import 'dart:convert';
+
+// 📦 Package imports:
 import 'package:dio/dio.dart';
+
+// 🌎 Project imports:
 import 'package:techshop_app/services/API/ApiService.dart';
 
 class OrderService {
@@ -12,9 +17,11 @@ class OrderService {
   }
 
   //get orders
-  Future<Response> getOrders() async {
+  Future<Response> getOrders({String? orderStatus}) async {
     try {
-      final response = await _apiService.get('/order/me/order');
+      final response = await _apiService.get('/order/me/order',
+          queryParameters:
+              orderStatus != null ? {'orderStatus': orderStatus} : null);
       return response;
     } catch (e) {
       print(e);

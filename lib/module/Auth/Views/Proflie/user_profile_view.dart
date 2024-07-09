@@ -1,8 +1,14 @@
-import 'package:cached_network_image/cached_network_image.dart';
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:get/get.dart';
+
+// 🌎 Project imports:
 import 'package:techshop_app/Routes/app_pages.dart';
 import 'package:techshop_app/module/Auth/Controller/auth_controller.dart';
+import 'package:techshop_app/module/Auth/Views/Proflie/avatar_view.dart';
 import 'package:techshop_app/module/Auth/Views/check_login_view.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -45,10 +51,17 @@ class _ProfilePageState extends State<ProfilePage> {
             child: Column(
               children: [
                 const SizedBox(height: 20),
-                CircleAvatar(
-                  radius: 50,
-                  backgroundImage:
-                      CachedNetworkImageProvider(user.user?.avatar ?? ''),
+                GestureDetector(
+                  onTap: () {
+                    Get.to(() => AvatarView(
+                          avatarUrl: user.user?.avatar ?? '',
+                        ));
+                  },
+                  child: CircleAvatar(
+                    radius: 50,
+                    backgroundImage:
+                        CachedNetworkImageProvider(user.user?.avatar ?? ''),
+                  ),
                 ),
                 const SizedBox(height: 10),
                 Text(user.user?.email ?? 'Lỗi email'),
@@ -120,13 +133,22 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget buildOrderItem(IconData icon, String label) {
     return GestureDetector(
       onTap: () {
-        Get.toNamed(Routes.ORDER);
+        Get.toNamed(
+          Routes.ORDER,
+        );
       },
       child: Column(
         children: [
-          Icon(icon, size: 40),
+          Icon(
+            icon,
+            size: 40,
+            color: const Color.fromRGBO(29, 24, 42, 0.9),
+          ),
           const SizedBox(height: 5),
-          Text(label),
+          Text(label,
+              style: const TextStyle(
+                color: Color.fromRGBO(29, 24, 42, 0.9),
+              )),
         ],
       ),
     );
@@ -152,9 +174,12 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget buildUtilityItem(IconData icon, String label) {
     return Column(
       children: [
-        Icon(icon, size: 40),
+        Icon(icon, size: 40, color: const Color.fromRGBO(29, 24, 42, 0.9)),
         const SizedBox(height: 5),
-        Text(label),
+        Text(
+          label,
+          style: const TextStyle(color: Color.fromRGBO(29, 24, 42, 0.9)),
+        ),
       ],
     );
   }
@@ -170,8 +195,13 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: ListTile(
-            leading: const Icon(Icons.settings, size: 30),
-            title: const Text('Cài đặt', style: TextStyle(fontSize: 20)),
+            leading: const Icon(Icons.settings,
+                size: 30, color: Color.fromRGBO(29, 24, 42, 0.9)),
+            title: const Text(
+              'Cài đặt',
+              style: TextStyle(
+                  fontSize: 20, color: Color.fromRGBO(29, 24, 42, 0.9)),
+            ),
             onTap: () {
               // Handle settings
             },
@@ -185,9 +215,16 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: ListTile(
-            leading: const Icon(Icons.help_center, size: 30),
-            title:
-                const Text('Trung tâm hỗ trợ', style: TextStyle(fontSize: 20)),
+            leading: const Icon(
+              Icons.help_center,
+              size: 30,
+              color: Color.fromRGBO(29, 24, 42, 0.9),
+            ),
+            title: const Text(
+              'Trung tâm hỗ trợ',
+              style: TextStyle(
+                  fontSize: 20, color: Color.fromRGBO(29, 24, 42, 0.9)),
+            ),
             onTap: () {
               // Handle support center
             },
@@ -201,13 +238,22 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: ListTile(
-            leading: const Icon(Icons.logout, size: 30),
-            title: const Text('Đăng xuất', style: TextStyle(fontSize: 20)),
+            leading: const Icon(
+              Icons.logout,
+              size: 30,
+              color: Color.fromRGBO(29, 24, 42, 0.9),
+            ),
+            title: const Text(
+              'Đăng xuất',
+              style: TextStyle(
+                  fontSize: 20, color: Color.fromRGBO(29, 24, 42, 0.9)),
+            ),
             onTap: () {
               authController.logout();
             },
           ),
         ),
+        const SizedBox(height: 100),
       ],
     );
   }

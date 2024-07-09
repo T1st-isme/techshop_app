@@ -1,8 +1,15 @@
+// 🎯 Dart imports:
 import 'dart:convert';
-import 'package:dio/dio.dart';
+
+// 🐦 Flutter imports:
 import 'package:flutter/foundation.dart';
+
+// 📦 Package imports:
+import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+// 🌎 Project imports:
 import 'package:techshop_app/models/user.dart';
 import 'package:techshop_app/services/API/ApiService.dart';
 

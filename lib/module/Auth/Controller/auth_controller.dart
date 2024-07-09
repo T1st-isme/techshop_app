@@ -1,6 +1,9 @@
+// 📦 Package imports:
 import 'package:dio/dio.dart' as dio;
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+
+// 🌎 Project imports:
 import 'package:techshop_app/models/user.dart';
 import 'package:techshop_app/module/Cart/Controller/cart_controller.dart';
 import 'package:techshop_app/module/Order/Controller/order_controller.dart';

@@ -1,4 +1,7 @@
+// 📦 Package imports:
 import 'package:dio/dio.dart';
+
+// 🌎 Project imports:
 import 'package:techshop_app/services/API/ApiService.dart';
 
 class ProductService {
@@ -11,6 +14,7 @@ class ProductService {
     String? category,
     String? brand,
     String? sort,
+    int? stock,
   }) async {
     try {
       final Map<String, dynamic> queryParameters = {
@@ -20,6 +24,7 @@ class ProductService {
         if (brand != null && brand.isNotEmpty) 'brand': brand,
         if (sort != null && sort == 'price') 'sort': 'price',
         if (sort != null && sort == '-price') 'sort': '-price',
+        if (stock != null) 'stock': stock.toString(),
       };
       final Response<dynamic> response = await _apiService
           .get('/product?page=$page', queryParameters: queryParameters);

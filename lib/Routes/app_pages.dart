@@ -1,7 +1,9 @@
 // ignore_for_file: constant_identifier_names
 
+// 📦 Package imports:
 import 'package:get/get.dart';
 
+// 🌎 Project imports:
 import 'package:techshop_app/module/Auth/Binding/auth_binding.dart';
 import 'package:techshop_app/module/Auth/Views/Proflie/update_profile_view.dart';
 import 'package:techshop_app/module/Auth/Views/Proflie/user_profile_view.dart';

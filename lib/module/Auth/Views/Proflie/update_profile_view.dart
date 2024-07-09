@@ -1,9 +1,15 @@
+// 🎯 Dart imports:
 import 'dart:io';
 
+// 🐦 Flutter imports:
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+
+// 🌎 Project imports:
 import 'package:techshop_app/models/user.dart';
 import 'package:techshop_app/module/Auth/Controller/auth_controller.dart';
 

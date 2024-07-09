@@ -1,7 +1,12 @@
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:techshop_app/module/Auth/Binding/auth_binding.dart';
 
+// 📦 Package imports:
+import 'package:get/get.dart';
+
+// 🌎 Project imports:
+import 'package:techshop_app/Core/Theme/app_theme.dart';
+import 'package:techshop_app/module/Auth/Binding/auth_binding.dart';
 import 'Routes/app_pages.dart';
 
 void main() async {
@@ -16,9 +21,9 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'TechShop',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData.light(),
+      darkTheme: MyAppTheme.darkTheme,
+      themeMode: ThemeMode.system,
       getPages: AppPages.routes,
       initialBinding: AuthBinding(),
       initialRoute: AppPages.INITIAL,

@@ -1,8 +1,10 @@
+// 📦 Package imports:
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
+
+// 🌎 Project imports:
 import 'package:techshop_app/models/cart.dart';
 import 'package:techshop_app/module/Auth/Controller/auth_controller.dart';
-
 import '../../../services/Cart/cart_service.dart';
 
 class CartController extends GetxController with StateMixin<List<CartItems>> {
@@ -28,10 +30,10 @@ class CartController extends GetxController with StateMixin<List<CartItems>> {
         totalPrice.value = double.parse(response.data['total_price']);
         totalQuantity.value = response.data['total_quantity'];
       } else {
-        Get.snackbar('Error', 'Failed to fetch cart items');
+        print('Error: Failed to fetch cart items');
       }
     } on DioException catch (e) {
-      Get.snackbar('Error', 'Failed to fetch cart items: ${e.message}');
+      print('Error: Failed to fetch cart items: ${e.message}');
     }
     isLoading.value = false;
     update();

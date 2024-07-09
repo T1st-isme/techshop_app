@@ -1,7 +1,12 @@
-import 'package:cached_network_image/cached_network_image.dart';
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+
+// 🌎 Project imports:
 import 'package:techshop_app/module/Order/Controller/order_controller.dart';
 
 class OrderDetailView extends StatefulWidget {
@@ -67,6 +72,7 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                   const SizedBox(height: 10),
                   ...order.items?.map((item) => Card(
+                            color: Colors.grey[200],
                             margin: const EdgeInsets.symmetric(vertical: 8.0),
                             child: ListTile(
                               leading: item.productId?.proImg != null &&
@@ -79,10 +85,14 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                                       height: 50,
                                       fit: BoxFit.cover)
                                   : null,
-                              title: Text(item.productId?.name ?? ''),
+                              title: Text(item.productId?.name ?? '',
+                                  style: const TextStyle(color: Colors.black)),
                               subtitle: Text('Số lượng: ${item.purchasedQty}'),
                               trailing: Text(
-                                  '${formatter.format(item.payablePrice! * 1000000)} đ'),
+                                  '${formatter.format(item.payablePrice! * 1000000)} đ',
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold)),
                             ),
                           )) ??
                       [],
@@ -102,16 +112,19 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text("Người đặt hàng: ${order.user!.fullname}",
-                            style:
-                                const TextStyle(fontWeight: FontWeight.bold)),
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black)),
                         const SizedBox(height: 10),
                         Text("Địa chỉ: ${order.user!.address}",
-                            style:
-                                const TextStyle(fontWeight: FontWeight.bold)),
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black)),
                         const SizedBox(height: 10),
                         Text("SĐT: ${order.user!.phone}",
-                            style:
-                                const TextStyle(fontWeight: FontWeight.bold)),
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black)),
                       ],
                     ),
                   ),
@@ -127,16 +140,19 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text("Phương thức thanh toán: ${order.paymentType}",
-                            style:
-                                const TextStyle(fontWeight: FontWeight.bold)),
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black)),
                         const SizedBox(height: 10),
                         Text("Trạng thái thanh toán:  ${order.paymentStatus}",
-                            style:
-                                const TextStyle(fontWeight: FontWeight.bold)),
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black)),
                         const SizedBox(height: 10),
                         Text("Trạng thái đơn hàng: ${order.orderStatus}",
-                            style:
-                                const TextStyle(fontWeight: FontWeight.bold)),
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black)),
                       ],
                     ),
                   ),

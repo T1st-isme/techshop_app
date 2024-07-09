@@ -1,5 +1,8 @@
+// 📦 Package imports:
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
+
+// 🌎 Project imports:
 import 'package:techshop_app/models/product.dart';
 import 'package:techshop_app/services/API/ApiException.dart';
 import 'package:techshop_app/services/Product/product_service.dart';
@@ -81,14 +84,18 @@ class ProductController extends GetxController with StateMixin<List<Products>> {
     String? category,
     String? brand,
     String? sort,
+    int? stock,
     bool isCategoryFetch = false,
     bool isBrandFetch = false,
+    bool isStockFetch = false,
+    bool isSortFetch = false,
   }) async {
     if (isLoading.value || !hasMore.value) return;
-    if (isCategoryFetch || isBrandFetch) {
+    if (isCategoryFetch || isBrandFetch || isStockFetch || isSortFetch) {
       resetState();
     }
     try {
+      isLoading.value = true;
       final response = await _productService.getProducts(
         currentPage.value,
         keyword: keyword,
@@ -96,6 +103,7 @@ class ProductController extends GetxController with StateMixin<List<Products>> {
         category: category,
         brand: brand,
         sort: sort,
+        stock: stock,
       );
       if (response.statusCode == 200) {
         // final pro = Product.fromJson(response.data);
@@ -123,17 +131,20 @@ class ProductController extends GetxController with StateMixin<List<Products>> {
         hasMore.value = false;
       }
     }
+    isLoading.value = false;
     update();
   }
 
   //by slug
-  void fetchProductBySlug(String slug) async {
+  var currentProduct = Rxn<Products>();
+
+  Future<void> fetchProductBySlug(String slug) async {
     isLoading.value = true;
     try {
       final response = await _productService.getProductBySlug(slug);
       if (response.statusCode == 200 && response.data != null) {
         final pro = Products.fromJson(response.data['data']);
-        productItems.clear();
+        currentProduct.value = pro;
         productItems.add(pro);
         change(productItems, status: RxStatus.success());
       }
@@ -143,5 +154,12 @@ class ProductController extends GetxController with StateMixin<List<Products>> {
     }
     isLoading.value = false;
     update();
+  }
+
+  void fetchRelatedProducts(String category) {
+    final relatedProducts = productItems.where((product) {
+      return product.category?.sId == category;
+    }).toList();
+    change(relatedProducts, status: RxStatus.success());
   }
 }

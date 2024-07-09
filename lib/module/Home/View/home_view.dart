@@ -1,10 +1,19 @@
+// 🎯 Dart imports:
 import 'dart:convert';
 import 'dart:math';
-import 'package:cached_network_image/cached_network_image.dart';
+
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+// 🌎 Project imports:
+import 'package:techshop_app/Routes/app_pages.dart';
 import 'package:techshop_app/models/product.dart';
 import 'package:techshop_app/module/Auth/Controller/auth_controller.dart';
 import 'package:techshop_app/module/Brand/Views/brand_view.dart';
@@ -30,7 +39,12 @@ class _HomePageState extends State<HomePage> {
     '6552ee08ea3b4606a040af7c',
     '6552ee08ea3b4606a040af7d',
   ];
-
+  final List<String> carouselImages = [
+    'assets/images/BannerAsus.jpg',
+    'assets/images/BannerLogi.png',
+    'assets/images/BannerRazer.png',
+    'assets/images/BannerAkko.jpg',
+  ];
   @override
   void initState() {
     super.initState();
@@ -64,6 +78,42 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    CarouselSlider(
+                      options: CarouselOptions(
+                        height: 250.0,
+                        enlargeCenterPage: true,
+                        autoPlay: true,
+                        aspectRatio: 16 / 9,
+                        autoPlayCurve: Curves.fastOutSlowIn,
+                        enableInfiniteScroll: true,
+                        autoPlayAnimationDuration: const Duration(seconds: 2),
+                        viewportFraction: 0.8,
+                      ),
+                      items: carouselImages.map((imageUrl) {
+                        return Builder(
+                          builder: (BuildContext context) {
+                            return GestureDetector(
+                              onTap: () {
+                                Get.toNamed(Routes.PRODUCT);
+                              },
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 5.0),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  image: DecorationImage(
+                                    image: AssetImage(imageUrl),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 80.0),
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16.0),
                       child: Text(
@@ -74,36 +124,40 @@ class _HomePageState extends State<HomePage> {
                     ),
                     const SizedBox(height: 20.0),
                     BrandView(),
-                    ...categories.map((category) {
-                      final products =
-                          productController.productsByCategory[category] ?? [];
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 20.0),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16.0, vertical: 8.0),
-                            child: Text(
-                              category == '6552ee08ea3b4606a040af7a'
-                                  ? 'Laptop'
-                                  : category == '6552ee08ea3b4606a040af7b'
-                                      ? 'Chuột'
-                                      : category == '6552ee08ea3b4606a040af7c'
-                                          ? 'Bàn phím'
-                                          : 'Màn hình',
-                              style: const TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
+                    ...categories.map(
+                      (category) {
+                        final products =
+                            productController.productsByCategory[category] ??
+                                [];
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 20.0),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0, vertical: 8.0),
+                              child: Text(
+                                category == '6552ee08ea3b4606a040af7a'
+                                    ? 'Laptop'
+                                    : category == '6552ee08ea3b4606a040af7b'
+                                        ? 'Chuột'
+                                        : category == '6552ee08ea3b4606a040af7c'
+                                            ? 'Bàn phím'
+                                            : 'Màn hình',
+                                style: const TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 8.0),
-                          SizedBox(
-                            height: 220,
-                            child: _buildProductList(products),
-                          ),
-                        ],
-                      );
-                    }),
+                            const SizedBox(height: 8.0),
+                            SizedBox(
+                              height: 220,
+                              child: _buildProductList(products),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 120),
                   ],
                 ),
               );
@@ -114,20 +168,20 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  AppBar _buildAppBar() {
-    return AppBar(
-      title: const Text('Home'),
-      automaticallyImplyLeading: false,
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.logout),
-          onPressed: () {
-            authController.logout();
-          },
-        ),
-      ],
-    );
-  }
+  // AppBar _buildAppBar() {
+  //   return AppBar(
+  //     title: const Text('Home'),
+  //     automaticallyImplyLeading: false,
+  //     actions: [
+  //       IconButton(
+  //         icon: const Icon(Icons.logout),
+  //         onPressed: () {
+  //           authController.logout();
+  //         },
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget _buildProductList(List<Products> products) {
     return ListView.builder(
@@ -157,8 +211,9 @@ class _HomePageState extends State<HomePage> {
       },
       child: Container(
         width: 180,
-        margin: const EdgeInsets.only(right: 16),
+        margin: const EdgeInsets.only(right: 4),
         child: Card(
+          color: Colors.grey.shade200,
           elevation: 2,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -184,7 +239,11 @@ class _HomePageState extends State<HomePage> {
                   product.name!,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
                 ),
               ),
               const SizedBox(height: 2),

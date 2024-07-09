@@ -1,4 +1,7 @@
+// 📦 Package imports:
 import 'package:dio/dio.dart';
+
+// 🌎 Project imports:
 import '../API/ApiService.dart';
 
 class CategoryService {

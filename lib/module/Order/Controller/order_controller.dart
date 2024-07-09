@@ -1,5 +1,8 @@
+// 📦 Package imports:
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
+
+// 🌎 Project imports:
 import 'package:techshop_app/models/order.dart';
 import 'package:techshop_app/module/Auth/Controller/auth_controller.dart';
 import 'package:techshop_app/services/API/ApiException.dart';
@@ -21,13 +24,17 @@ class OrderController extends GetxController {
   //   }
   // }
 
-  Future<void> getOrder() async {
+  Future<void> getOrder({String? orderStatus}) async {
     Future.microtask(() => status.value = RxStatus.loading());
     try {
-      final response = await orderService.getOrders();
+      final response = await orderService.getOrders(orderStatus: orderStatus);
       if (response.statusCode == 200) {
-        final orderData = Order.fromJson(response.data);
-        orders.value = orderData.data ?? [];
+        if (response.data is List) {
+          orders.value = response.data.map((e) => Order.fromJson(e)).toList();
+        } else {
+          final orderData = Order.fromJson(response.data);
+          orders.value = orderData.data ?? [];
+        }
         Future.microtask(() => status.value = RxStatus.success());
       } else {
         throw Exception('Failed to get order');

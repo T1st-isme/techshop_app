@@ -1,14 +1,18 @@
-// ignore_for_file: file_names
-
-import 'package:cached_network_image/cached_network_image.dart';
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+
+// 🌎 Project imports:
 import 'package:techshop_app/models/category.dart';
 import 'package:techshop_app/models/product.dart';
 import 'package:techshop_app/module/Cart/Controller/cart_controller.dart';
-import 'package:techshop_app/module/Product/Controller/product_controller.dart';
 import 'package:techshop_app/module/Category/Controller/category_controller.dart';
+import 'package:techshop_app/module/Product/Controller/product_controller.dart';
 
 class ProductListPage extends StatefulWidget {
   const ProductListPage({super.key});
@@ -20,10 +24,12 @@ class ProductListPage extends StatefulWidget {
 class _ProductListPageState extends State<ProductListPage> {
   final ProductController _productController = Get.find<ProductController>();
   final CategoryController _categoryController = Get.put(CategoryController());
-  final ScrollController _scrollController = Get.put(ScrollController());
+  final ScrollController _scrollController = ScrollController();
   final Map<String, String?> data = Get.arguments ?? {};
   bool _isDisposed = false;
   String? _selectedCategoryName;
+  String? _selectedSortOption;
+  String? _selectedFilterOption;
 
   @override
   void dispose() {
@@ -47,6 +53,20 @@ class _ProductListPageState extends State<ProductListPage> {
       }
     });
     _categoryController.getCategories(); // Fetch categories
+  }
+
+  final Map<String, String> sortOptions = {
+    'Giá: Thấp đến Cao': 'price',
+    'Giá: Cao đến Thấp': '-price',
+  };
+
+  final Map<String, String> filterOptions = {
+    'Còn hàng': '1',
+    'Hết hàng': '0',
+  };
+
+  @override
+  Widget build(BuildContext context) {
     if (data['category'] != null) {
       _productController.fetchProducts(
         category: data['category'],
@@ -59,13 +79,15 @@ class _ProductListPageState extends State<ProductListPage> {
         isBrandFetch: true,
       );
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Products'),
+        title: const Text(
+          'Sản phẩm',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
         automaticallyImplyLeading: false,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -85,39 +107,221 @@ class _ProductListPageState extends State<ProductListPage> {
       body: Column(
         children: [
           Obx(() {
-            if (_categoryController.status.value == RxStatus.loading()) {
-              return const CircularProgressIndicator(); // Loading
+            if (_categoryController.status.value.isLoading) {
+              return const CircularProgressIndicator();
             }
             if (_categoryController.category.value.categoryList == null ||
                 _categoryController.category.value.categoryList!.isEmpty) {
-              return const Text('No categories found');
+              return const Text('Không tồn tại danh mục');
             }
-            return DropdownButton<String>(
-              hint: Text(_selectedCategoryName ?? 'Select a category'),
-              items: _categoryController.category.value.categoryList!
-                  .map((CategoryList category) {
-                return DropdownMenuItem<String>(
-                  value: category.sId,
-                  child: Text(category.name!),
-                );
-              }).toList(),
-              onChanged: (String? newValue) {
-                if (newValue != null) {
-                  //Update curr value display dropdown
-                  setState(() {
-                    _selectedCategoryName = _categoryController
-                        .category.value.categoryList!
-                        .firstWhere((category) => category.sId == newValue)
-                        .name;
-                  });
-                  _productController.fetchProducts(
-                    category: newValue,
-                    isCategoryFetch: true,
-                  );
-                }
-              },
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: DropdownButtonFormField<String>(
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12.0, vertical: 8.0),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  isDense: true,
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                borderRadius: BorderRadius.circular(10.0),
+                hint: Text(
+                  _selectedSortOption != null
+                      ? _categoryController.category.value.categoryList!
+                          .firstWhere(
+                              (category) => category.sId == _selectedSortOption,
+                              orElse: () => CategoryList(name: 'Danh mục'))
+                          .name!
+                      : 'Danh mục',
+                  style: const TextStyle(color: Colors.black),
+                ),
+                items: [
+                  const DropdownMenuItem<String>(
+                    value: null,
+                    child: Text('Tất cả'),
+                  ),
+                  ..._categoryController.category.value.categoryList!
+                      .map((CategoryList category) {
+                    return DropdownMenuItem<String>(
+                      value: category.sId,
+                      child: Text(category.name!),
+                    );
+                  }),
+                ],
+                selectedItemBuilder: (BuildContext context) {
+                  return [
+                    const DropdownMenuItem<String>(
+                      value: null,
+                      child: Text(
+                        'Tất cả',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                    ..._categoryController.category.value.categoryList!
+                        .map((CategoryList category) {
+                      return DropdownMenuItem<String>(
+                        value: category.sId,
+                        child: Text(
+                          category.name!,
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                      );
+                    }),
+                  ];
+                },
+                onChanged: (String? newValue) {
+                  if (newValue != null) {
+                    setState(() {
+                      _selectedCategoryName = _categoryController
+                          .category.value.categoryList!
+                          .firstWhere((category) => category.sId == newValue)
+                          .name;
+                    });
+                    _productController.fetchProducts(
+                      category: newValue,
+                      isCategoryFetch: true,
+                    );
+                  } else {
+                    setState(() {
+                      _selectedCategoryName = 'Tất cả';
+                    });
+                    _productController.fetchAllProducts();
+                  }
+                },
+                icon: const Icon(
+                  FluentIcons.caret_down_16_filled,
+                  color: Colors.black,
+                ),
+              ),
             );
           }),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: DropdownButtonFormField<String>(
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12.0, vertical: 8.0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      isDense: true,
+                    ),
+                    borderRadius: BorderRadius.circular(10.0),
+                    hint: Text(
+                      _selectedSortOption != null
+                          ? sortOptions.keys.firstWhere(
+                              (k) => sortOptions[k] == _selectedSortOption,
+                              orElse: () => 'Sắp xếp theo')
+                          : 'Sắp xếp theo',
+                      style: const TextStyle(color: Colors.black),
+                    ),
+                    items: sortOptions.keys.map((String key) {
+                      return DropdownMenuItem<String>(
+                        value: sortOptions[key],
+                        child: Text(key),
+                      );
+                    }).toList(),
+                    selectedItemBuilder: (BuildContext context) {
+                      return sortOptions.keys.map((String key) {
+                        return DropdownMenuItem<String>(
+                          value: sortOptions[key],
+                          child: Text(
+                            key,
+                            style: const TextStyle(color: Colors.black),
+                          ),
+                        );
+                      }).toList();
+                    },
+                    onChanged: (String? newValue) {
+                      if (newValue != null) {
+                        setState(() {
+                          _selectedSortOption = newValue;
+                        });
+                        _productController.fetchProducts(
+                          sort: newValue,
+                          isSortFetch: true,
+                        );
+                      }
+                    },
+                    icon: const Icon(
+                      FluentIcons.caret_down_16_filled,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: DropdownButtonFormField<String>(
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12.0, vertical: 8.0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      isDense: true,
+                    ),
+                    borderRadius: BorderRadius.circular(10.0),
+                    hint: Text(
+                      _selectedFilterOption != null
+                          ? filterOptions.keys.firstWhere(
+                              (k) => filterOptions[k] == _selectedFilterOption,
+                              orElse: () => 'Lọc theo')
+                          : 'Lọc theo',
+                      style: const TextStyle(color: Colors.black),
+                    ),
+                    items: filterOptions.keys.map((String key) {
+                      return DropdownMenuItem<String>(
+                        value: filterOptions[key],
+                        child: Text(key),
+                      );
+                    }).toList(),
+                    selectedItemBuilder: (BuildContext context) {
+                      return filterOptions.keys.map((String key) {
+                        return DropdownMenuItem<String>(
+                          value: filterOptions[key],
+                          child: Text(
+                            key,
+                            style: const TextStyle(color: Colors.black),
+                          ),
+                        );
+                      }).toList();
+                    },
+                    onChanged: (String? newValue) {
+                      if (newValue != null) {
+                        setState(() {
+                          _selectedFilterOption = newValue;
+                        });
+                        _productController.fetchProducts(
+                          stock: int.parse(newValue),
+                          isStockFetch: true,
+                        );
+                      }
+                    },
+                    icon: const Icon(
+                      FluentIcons.caret_down_16_filled,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
           Expanded(
             child: GetBuilder<ProductController>(
               init: _productController,
@@ -144,6 +348,13 @@ class _ProductListPageState extends State<ProductListPage> {
                   controller: _scrollController,
                   itemCount: _productController.productItems.length,
                   itemBuilder: (context, index) {
+                    if (index == _productController.productItems.length) {
+                      if (_productController.hasMore.value) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else {
+                        return const SizedBox.shrink();
+                      }
+                    }
                     final product = _productController.productItems[index];
                     return itemGridView(product);
                   },
@@ -166,49 +377,75 @@ Widget itemGridView(Products proItem) {
     onTap: () => {
       Get.toNamed('/product/detail', parameters: {'slug': proItem.slug!})
     },
-    child: Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(color: Colors.grey.shade200),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          CachedNetworkImage(
-            imageUrl: proItem.proImg?.elementAt(0).img ?? 'N/A',
-            height: 100,
-            width: 100,
-            fit: BoxFit.cover,
-            placeholder: (context, url) => const CircularProgressIndicator(),
-            fadeInDuration: const Duration(milliseconds: 200),
-            fadeOutDuration: const Duration(milliseconds: 200),
-            errorWidget: (context, url, error) => const Icon(Icons.error),
-          ),
-          Text(
-            proItem.name ?? 'N/A',
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
+    child: Card(
+      color: Colors.grey.shade200,
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            CachedNetworkImage(
+              imageUrl: proItem.proImg?.elementAt(0).img ?? 'N/A',
+              height: 100,
+              width: 100,
+              fit: BoxFit.cover,
+              placeholder: (context, url) => const CircularProgressIndicator(),
+              fadeInDuration: const Duration(milliseconds: 200),
+              fadeOutDuration: const Duration(milliseconds: 200),
+              errorWidget: (context, url, error) => const Icon(Icons.error),
             ),
-          ),
-          Text(
-            proItem.brand ?? 'N/A',
-            style: const TextStyle(color: Colors.grey, fontSize: 13),
-          ),
-          Text(' $formatPrice ₫',
+            Text(
+              proItem.name ?? 'N/A',
+              maxLines: 2,
+              textAlign: TextAlign.center,
               style: const TextStyle(
-                  color: Colors.red,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold)),
-          ElevatedButton(
-            onPressed: () {
-              cartController.addToCart([
-                {'product': proItem.sId, 'quantity': 1}
-              ]);
-            },
-            child: const Text('Add to cart'),
-          ),
-        ],
+                color: Colors.black,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              proItem.brand ?? 'N/A',
+              style: const TextStyle(color: Colors.grey, fontSize: 13),
+            ),
+            Text(' $formatPrice ₫',
+                style: const TextStyle(
+                    color: Colors.red,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold)),
+            ElevatedButton(
+              onPressed: () {
+                cartController.addToCart([
+                  {'product': proItem.sId, 'quantity': 1}
+                ]);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 162, 95, 230),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12.0, vertical: 5.0),
+              ),
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.shopping_cart, color: Colors.white),
+                  SizedBox(width: 5),
+                  Text(
+                    'Thêm vào giỏ',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     ),
   );

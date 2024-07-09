@@ -1,8 +1,10 @@
+// 📦 Package imports:
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
+
+// 🌎 Project imports:
 import 'package:techshop_app/services/API/ApiException.dart';
 import 'package:techshop_app/services/Category/category_service.dart';
-
 import '../../../models/category.dart';
 
 class CategoryController extends GetxController {
