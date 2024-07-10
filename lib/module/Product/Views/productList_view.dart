@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
 
 // 🌎 Project imports:
 import 'package:techshop_app/models/category.dart';
@@ -65,6 +66,22 @@ class _ProductListPageState extends State<ProductListPage> {
     'Hết hàng': '0',
   };
 
+  Future<void> _refresh() async {
+    if (data['category'] != null) {
+      _productController.fetchProducts(
+        category: data['category'],
+        isCategoryFetch: true,
+      );
+    } else if (data['brand'] != null) {
+      _productController.fetchProducts(
+        brand: data['brand'],
+        isBrandFetch: true,
+      );
+    } else {
+      _productController.fetchAllProducts();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (data['category'] != null) {
@@ -95,14 +112,6 @@ class _ProductListPageState extends State<ProductListPage> {
             Get.toNamed('/');
           },
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              _productController.fetchAllProducts();
-            },
-          ),
-        ],
       ),
       body: Column(
         children: [
@@ -331,33 +340,49 @@ class _ProductListPageState extends State<ProductListPage> {
               },
               builder: (_) {
                 if (_productController.isLoading.value) {
-                  return const Center(child: CircularProgressIndicator());
+                  return GridView.builder(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 10,
+                      crossAxisSpacing: 10,
+                      childAspectRatio: 0.7,
+                    ),
+                    itemCount: 6,
+                    itemBuilder: (context, index) {
+                      return itemLoading();
+                    },
+                  );
                 }
 
                 if (_productController.productItems.isEmpty) {
                   return const Center(child: CircularProgressIndicator());
                 }
 
-                return GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 10,
-                    crossAxisSpacing: 10,
-                    childAspectRatio: 0.7,
-                  ),
-                  controller: _scrollController,
-                  itemCount: _productController.productItems.length,
-                  itemBuilder: (context, index) {
-                    if (index == _productController.productItems.length) {
-                      if (_productController.hasMore.value) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else {
-                        return const SizedBox.shrink();
+                return RefreshIndicator(
+                  onRefresh: _refresh,
+                  child: GridView.builder(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 10,
+                      crossAxisSpacing: 10,
+                      childAspectRatio: 0.7,
+                    ),
+                    controller: _scrollController,
+                    itemCount: _productController.productItems.length,
+                    itemBuilder: (context, index) {
+                      if (index == _productController.productItems.length) {
+                        if (_productController.hasMore.value) {
+                          return itemLoading();
+                        } else {
+                          return const SizedBox.shrink();
+                        }
                       }
-                    }
-                    final product = _productController.productItems[index];
-                    return itemGridView(product);
-                  },
+                      final product = _productController.productItems[index];
+                      return itemGridView(product);
+                    },
+                  ),
                 );
               },
             ),
@@ -394,7 +419,15 @@ Widget itemGridView(Products proItem) {
               height: 100,
               width: 100,
               fit: BoxFit.cover,
-              placeholder: (context, url) => const CircularProgressIndicator(),
+              placeholder: (context, url) => Shimmer.fromColors(
+                baseColor: Colors.grey.shade200,
+                highlightColor: Colors.grey.shade400,
+                child: Container(
+                  height: 100,
+                  width: 100,
+                  color: Colors.white,
+                ),
+              ),
               fadeInDuration: const Duration(milliseconds: 200),
               fadeOutDuration: const Duration(milliseconds: 200),
               errorWidget: (context, url, error) => const Icon(Icons.error),
@@ -446,6 +479,85 @@ Widget itemGridView(Products proItem) {
             ),
           ],
         ),
+      ),
+    ),
+  );
+}
+
+Widget itemLoading() {
+  return Card(
+    color: Colors.grey.shade200,
+    elevation: 4,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10),
+    ),
+    child: Padding(
+      padding: const EdgeInsets.all(8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Shimmer.fromColors(
+            baseColor: Colors.grey.shade200,
+            highlightColor: Colors.grey.shade400,
+            child: Container(
+              height: 100,
+              width: 100,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10), // Added radius
+              ),
+            ),
+          ),
+          Shimmer.fromColors(
+            baseColor: Colors.grey.shade200,
+            highlightColor: Colors.grey.shade400,
+            child: Container(
+              height: 20,
+              width: 100,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10), // Added radius
+              ),
+            ),
+          ),
+          Shimmer.fromColors(
+            baseColor: Colors.grey.shade200,
+            highlightColor: Colors.grey.shade400,
+            child: Container(
+              height: 20,
+              width: 50,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10), // Added radius
+              ),
+            ),
+          ),
+          Shimmer.fromColors(
+            baseColor: Colors.grey.shade200,
+            highlightColor: Colors.grey.shade400,
+            child: Container(
+              height: 20,
+              width: 70,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10), // Added radius
+              ),
+            ),
+          ),
+          Shimmer.fromColors(
+            baseColor: Colors.grey.shade200,
+            highlightColor: Colors.grey.shade400,
+            child: Container(
+              height: 30,
+              width: 100,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10), // Added radius
+              ),
+            ),
+          ),
+        ],
       ),
     ),
   );

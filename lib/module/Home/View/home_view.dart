@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:math';
 
 // 🐦 Flutter imports:
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
@@ -11,6 +12,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shimmer/shimmer.dart';
 
 // 🌎 Project imports:
 import 'package:techshop_app/Routes/app_pages.dart';
@@ -57,15 +59,21 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Future<void> _refresh() async {
+    if (productController.isLoading.value) {
+      await Future.delayed(const Duration(seconds: 30), () {
+        _loadData();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<String?>(
       future: _retrieveUserData(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
+          return const Center(child: CircularProgressIndicator());
         }
         return Scaffold(
           // appBar: _buildAppBar(),
@@ -74,91 +82,96 @@ class _HomePageState extends State<HomePage> {
               if (productController.productsByCategory.isEmpty) {
                 return const Center(child: CircularProgressIndicator());
               }
-              return SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CarouselSlider(
-                      options: CarouselOptions(
-                        height: 250.0,
-                        enlargeCenterPage: true,
-                        autoPlay: true,
-                        aspectRatio: 16 / 9,
-                        autoPlayCurve: Curves.fastOutSlowIn,
-                        enableInfiniteScroll: true,
-                        autoPlayAnimationDuration: const Duration(seconds: 2),
-                        viewportFraction: 0.8,
-                      ),
-                      items: carouselImages.map((imageUrl) {
-                        return Builder(
-                          builder: (BuildContext context) {
-                            return GestureDetector(
-                              onTap: () {
-                                Get.toNamed(Routes.PRODUCT);
-                              },
-                              child: Container(
-                                width: MediaQuery.of(context).size.width,
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 5.0),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  image: DecorationImage(
-                                    image: AssetImage(imageUrl),
-                                    fit: BoxFit.cover,
+              return RefreshIndicator(
+                onRefresh: _refresh,
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CarouselSlider(
+                        options: CarouselOptions(
+                          height: 250.0,
+                          enlargeCenterPage: true,
+                          autoPlay: true,
+                          aspectRatio: 16 / 9,
+                          autoPlayCurve: Curves.fastOutSlowIn,
+                          enableInfiniteScroll: true,
+                          autoPlayAnimationDuration: const Duration(seconds: 2),
+                          viewportFraction: 0.8,
+                        ),
+                        items: carouselImages.map((imageUrl) {
+                          return Builder(
+                            builder: (BuildContext context) {
+                              return GestureDetector(
+                                onTap: () {
+                                  Get.toNamed(Routes.PRODUCT);
+                                },
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 5.0),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    image: DecorationImage(
+                                      image: AssetImage(imageUrl),
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            );
-                          },
-                        );
-                      }).toList(),
-                    ),
-                    const SizedBox(height: 80.0),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Text(
-                        'Thương hiệu',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
+                              );
+                            },
+                          );
+                        }).toList(),
                       ),
-                    ),
-                    const SizedBox(height: 20.0),
-                    BrandView(),
-                    ...categories.map(
-                      (category) {
-                        final products =
-                            productController.productsByCategory[category] ??
-                                [];
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 20.0),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16.0, vertical: 8.0),
-                              child: Text(
-                                category == '6552ee08ea3b4606a040af7a'
-                                    ? 'Laptop'
-                                    : category == '6552ee08ea3b4606a040af7b'
-                                        ? 'Chuột'
-                                        : category == '6552ee08ea3b4606a040af7c'
-                                            ? 'Bàn phím'
-                                            : 'Màn hình',
-                                style: const TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
+                      const SizedBox(height: 40.0),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Text(
+                          'Thương hiệu',
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      const SizedBox(height: 20.0),
+                      BrandView(),
+                      ...categories.map(
+                        (category) {
+                          final products =
+                              productController.productsByCategory[category] ??
+                                  [];
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 20.0),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0, vertical: 8.0),
+                                child: Text(
+                                  category == '6552ee08ea3b4606a040af7a'
+                                      ? 'Laptop'
+                                      : category == '6552ee08ea3b4606a040af7b'
+                                          ? 'Chuột'
+                                          : category ==
+                                                  '6552ee08ea3b4606a040af7c'
+                                              ? 'Bàn phím'
+                                              : 'Màn hình',
+                                  style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 8.0),
-                            SizedBox(
-                              height: 220,
-                              child: _buildProductList(products),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 120),
-                  ],
+                              const SizedBox(height: 8.0),
+                              SizedBox(
+                                height: 220,
+                                child: _buildProductList(products),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 120),
+                    ],
+                  ),
                 ),
               );
             },
@@ -207,7 +220,7 @@ class _HomePageState extends State<HomePage> {
         // print('Product tapped: ${product.name}');
         // print('Product slug: ${product.slug}');
         // print('Product images: ${product.proImg}');
-        Get.toNamed('/product/detail', parameters: {'slug': product.slug!});
+        Get.toNamed(Routes.PRODUCTDETAIL, parameters: {'slug': product.slug!});
       },
       child: Container(
         width: 180,
@@ -224,12 +237,24 @@ class _HomePageState extends State<HomePage> {
                 // width: double.infinity,
                 child: CachedNetworkImage(
                   imageUrl: product.proImg?.elementAt(0).img ?? 'N/A',
-                  errorWidget: (context, url, error) => const Icon(Icons.image),
+                  errorWidget: (context, url, error) => const Icon(
+                    FluentIcons.image_off_20_filled,
+                  ),
                   fit: BoxFit.cover,
                   progressIndicatorBuilder: (context, url, downloadProgress) =>
                       Center(
-                    child: CircularProgressIndicator(
-                        value: downloadProgress.progress),
+                    child: Shimmer.fromColors(
+                      baseColor: Colors.grey.shade200,
+                      highlightColor: Colors.grey.shade400,
+                      child: Container(
+                        height: 100,
+                        width: 180,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -290,10 +315,10 @@ class _HomePageState extends State<HomePage> {
       margin: const EdgeInsets.only(right: 16),
       child: Card(
         child: InkWell(
-          onTap: () => Get.toNamed('/product'),
+          onTap: () => Get.toNamed(Routes.PRODUCT),
           child: const Center(
             child: Text(
-              "Show More",
+              "Xem thêm",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ),

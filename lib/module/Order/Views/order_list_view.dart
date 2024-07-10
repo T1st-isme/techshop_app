@@ -1,12 +1,9 @@
-// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
-
-// 📦 Package imports:
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-
-// 🌎 Project imports:
+import 'package:shimmer/shimmer.dart';
 import 'package:techshop_app/Routes/app_pages.dart';
+import 'package:techshop_app/models/order.dart';
 import 'package:techshop_app/module/Auth/Controller/auth_controller.dart';
 import 'package:techshop_app/module/Auth/Views/check_login_view.dart';
 import 'package:techshop_app/module/Order/Controller/order_controller.dart';
@@ -42,15 +39,24 @@ class _OrderListViewState extends State<OrderListView> {
     orderController.getOrder();
   }
 
+  bool shimmer = false;
+  Future<void> _refresh() async {
+    setState(() {
+      shimmer = true;
+    });
+    return Future.microtask(() {
+      orderController.getOrder(orderStatus: selectedOrderStatus);
+      setState(() {
+        shimmer = false;
+      });
+    });
+  }
+
   Widget buildFilterChip(String label, String orderStatus, String apiStatus) {
     return FilterChip(
       checkmarkColor: Colors.white,
       label: Text(
         label,
-        // style: TextStyle(
-        //   color:
-        //       selectedOrderStatus == orderStatus ? Colors.white : Colors.black,
-        // ),
       ),
       selected: selectedOrderStatus == orderStatus,
       onSelected: (bool value) {
@@ -67,6 +73,7 @@ class _OrderListViewState extends State<OrderListView> {
       if (!authController.isLoggedIn) {
         return const CheckLoginView();
       }
+
       return Scaffold(
         appBar: AppBar(
           title: const Text('Đơn hàng',
@@ -114,59 +121,29 @@ class _OrderListViewState extends State<OrderListView> {
             Expanded(
               child: Obx(() {
                 if (orderController.status.value.isLoading) {
-                  return const Center(child: CircularProgressIndicator());
+                  return ListView.builder(
+                    itemCount: 10,
+                    itemBuilder: (context, index) {
+                      return itemLoading();
+                    },
+                  );
                 }
                 if (orderController.orders.isEmpty) {
                   return const OrderEmptyView();
                 }
 
-                return ListView.builder(
-                  itemCount: orderController.orders.length,
-                  itemBuilder: (context, index) {
-                    final order = orderController.orders[index];
-                    //format orderdate
-                    final formattedDate = DateFormat('dd/MM/yy')
-                        .format(DateTime.parse(order.createdAt!));
-                    return Card(
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 16.0),
-                      child: ListTile(
-                        leading: const Icon(Icons.receipt_long),
-                        title: Text(
-                          'Đơn #${order.orderCode}',
-                          style: const TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('${order.items?.length ?? 0} sản phẩm'),
-                            Text('Trạng thái: ${order.orderStatus}'),
-                          ],
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              formattedDate,
-                              style: const TextStyle(fontSize: 14),
-                            ),
-                            const SizedBox(width: 8),
-                            const Icon(Icons.arrow_forward_ios),
-                          ],
-                        ),
-                        onTap: () {
-                          if (order.sId != null && order.sId!.isNotEmpty) {
-                            Get.toNamed(
-                              Routes.ORDERDETAIL,
-                              parameters: {'orderId': order.sId!},
-                            );
-                          } else {
-                            Get.snackbar('Error', 'Order ID is null or empty');
-                          }
-                        },
-                      ),
-                    );
-                  },
+                return RefreshIndicator(
+                  onRefresh: _refresh,
+                  child: ListView.builder(
+                    itemCount: orderController.orders.length,
+                    itemBuilder: (context, index) {
+                      final order = orderController.orders[index];
+                      //format orderdate
+                      // final formattedDate = DateFormat('dd/MM/yy')
+                      //     .format(DateTime.parse(order.createdAt!));
+                      return shimmer ? itemLoading() : itemListView(order);
+                    },
+                  ),
                 );
               }),
             )
@@ -175,4 +152,107 @@ class _OrderListViewState extends State<OrderListView> {
       );
     });
   }
+
+  Widget itemListView(Data order) {
+    final formattedDate =
+        DateFormat('dd/MM/yy').format(DateTime.parse(order.createdAt!));
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      child: ListTile(
+        leading: const Icon(Icons.receipt_long),
+        title: Text(
+          'Đơn #${order.orderCode}',
+          style: const TextStyle(fontWeight: FontWeight.w600),
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('${order.items?.length ?? 0} sản phẩm'),
+            Text('Trạng thái: ${order.orderStatus}'),
+          ],
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              formattedDate,
+              style: const TextStyle(fontSize: 14),
+            ),
+            const SizedBox(width: 8),
+            const Icon(Icons.arrow_forward_ios),
+          ],
+        ),
+        onTap: () {
+          if (order.sId != null && order.sId!.isNotEmpty) {
+            Get.toNamed(
+              Routes.ORDERDETAIL,
+              parameters: {'orderId': order.sId!},
+            );
+          } else {
+            Get.snackbar('Error', 'Order ID is null or empty');
+          }
+        },
+      ),
+    );
+  }
+}
+
+Widget itemLoading() {
+  return Card(
+    margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+    elevation: 4,
+    child: Shimmer.fromColors(
+      baseColor: Colors.grey.shade200,
+      highlightColor: Colors.grey.shade400,
+      child: ListTile(
+        leading: const Icon(Icons.receipt_long),
+        title: Container(
+          width: 100,
+          height: 20,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 4),
+            Container(
+              width: 50,
+              height: 20,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            const SizedBox(height: 4),
+            Container(
+              width: 100,
+              height: 20,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          ],
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 30,
+              height: 20,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            const SizedBox(width: 8),
+            const Icon(Icons.arrow_forward_ios),
+          ],
+        ),
+      ),
+    ),
+  );
 }
