@@ -4,8 +4,9 @@ class AppUrl {
   AppUrl._();
 
   // base url
-  static const String baseUrl = 'http://192.168.0.101:8080'; // For Home network
-  // 'http://192.168.148.209:8080'; // For School network
+  static const String baseUrl =
+      // 'http://192.168.0.101:8080'; // For Home network
+      'http://192.168.172.162:8080'; // For School network
   // static const String baseUrl = 'http://10.0.2.2:8080'; // For Android Emulator
   // static const String baseUrl = 'http://127.0.0.1:8080'; // For Web
 

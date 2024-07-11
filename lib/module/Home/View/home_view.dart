@@ -3,12 +3,13 @@ import 'dart:convert';
 import 'dart:math';
 
 // 🐦 Flutter imports:
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -236,7 +237,7 @@ class _HomePageState extends State<HomePage> {
                 alignment: Alignment.center,
                 // width: double.infinity,
                 child: CachedNetworkImage(
-                  imageUrl: product.proImg?.elementAt(0).img ?? 'N/A',
+                  imageUrl: product.proImg?.elementAt(0).img ?? '',
                   errorWidget: (context, url, error) => const Icon(
                     FluentIcons.image_off_20_filled,
                   ),
@@ -297,8 +298,11 @@ class _HomePageState extends State<HomePage> {
                       shape: const CircleBorder(),
                       padding: const EdgeInsets.all(8),
                     ),
-                    child: const Icon(Icons.add_shopping_cart,
-                        color: Colors.white, size: 20),
+                    child: const FaIcon(
+                      FontAwesomeIcons.cartPlus,
+                      color: Colors.white,
+                      size: 18,
+                    ),
                   ),
                 ],
               ),

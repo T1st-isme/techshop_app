@@ -45,7 +45,6 @@ class OrderController extends GetxController {
           () => status.value = RxStatus.error(apiException.toString()));
       print(e);
     }
-    Future.microtask(() => status.value = RxStatus.empty());
     update();
   }
 
@@ -95,6 +94,29 @@ class OrderController extends GetxController {
     } else if (url.contains('order-failed')) {
       await orderService.updatePaymentStatus(orderId, 'cancelled');
     }
+  }
+
+  Future<void> addOrder(Map<String, dynamic> orderData) async {
+    Future.microtask(() => status.value = RxStatus.loading());
+    try {
+      final response = await orderService.addOrder(orderData);
+      if (response['success']) {
+        Future.microtask(() => status.value = RxStatus.success());
+        print('Order added successfully: ${response['order']}');
+      } else {
+        print('Failed to add order');
+      }
+    } on DioException catch (e) {
+      final ApiException apiException = ApiException.fromDioException(e);
+      Future.microtask(
+          () => status.value = RxStatus.error(apiException.toString()));
+      print(e);
+    }
+  }
+
+  //vnpay
+  Future<String> vnpayPayment(int orderId, int amount, String bankCode) async {
+    return await orderService.vnpayPayment(orderId, amount, bankCode);
   }
 
   void resetOrder() {

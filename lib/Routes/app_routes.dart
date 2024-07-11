@@ -13,6 +13,8 @@ abstract class Routes {
   static const CART = _Paths.CART;
   static const ORDER = _Paths.ORDER;
   static const ORDERDETAIL = _Paths.ORDERDETAIL;
+  static const ORDER_SUCCESS = _Paths.ORDER_SUCCESS;
+  static const ORDER_FAIL = _Paths.ORDER_FAIL;
   static const PROFILE = _Paths.PROFILE;
   static const UPDATEPROFILE = _Paths.UPDATEPROFILE;
   // static const WAITING = _Paths.WAITING;
@@ -31,6 +33,8 @@ abstract class _Paths {
   static const CART = '/cart';
   static const ORDER = '/order';
   static const ORDERDETAIL = '/order/detail';
+  static const ORDER_SUCCESS = '/checkout/order-success';
+  static const ORDER_FAIL = '/checkout/order-failed';
   static const PROFILE = '/profile';
   static const UPDATEPROFILE = '/profile/update';
   // static const WAITING = '/waiting';

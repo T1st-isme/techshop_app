@@ -165,7 +165,15 @@ class _CartPageState extends State<CartPage> {
                               errorWidget: (context, url, error) =>
                                   const Icon(Icons.error),
                             ),
-                            title: Text(item.cartItem!.name!),
+                            title: Text(
+                              item.cartItem!.name!,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [

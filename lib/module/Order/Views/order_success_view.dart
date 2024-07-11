@@ -1,5 +1,7 @@
 // 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:techshop_app/Routes/app_pages.dart';
 
 // 🌎 Project imports:
 import 'package:techshop_app/constants/AppUrl.dart';
@@ -46,6 +48,7 @@ class OrderSuccessView extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 32.0,
                       fontWeight: FontWeight.bold,
+                      color: Colors.black,
                     ),
                   ),
                   const SizedBox(height: 20.0),
@@ -60,7 +63,7 @@ class OrderSuccessView extends StatelessWidget {
                   const SizedBox(height: 40),
                   ElevatedButton(
                     onPressed: () {
-                      // Add your onPressed code here!
+                      Get.toNamed(Routes.DASHBOARD, arguments: 2);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 162, 95, 230),

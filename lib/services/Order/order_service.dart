@@ -85,4 +85,45 @@ class OrderService {
       rethrow;
     }
   }
+
+  //add order
+  Future<Map<String, dynamic>> addOrder(Map<String, dynamic> orderData) async {
+    try {
+      final response =
+          await _apiService.post('/order/add-order', data: orderData);
+      print("Thêm đơn hàng: ${response.data}");
+      return response.data;
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  //vnpay
+
+  Future<String> vnpayPayment(int orderId, int amount, String bankCode) async {
+    try {
+      final response = await _apiService.post(
+        '/order/create_payment_url',
+        data: {
+          'orderId': orderId,
+          'amount': amount,
+          'bankCode': bankCode,
+        },
+        options: Options(
+          validateStatus: (status) {
+            return status! < 500; // Accept all status codes below 500
+          },
+        ),
+      );
+      if (response.statusCode == 302) {
+        return response.headers['location']?.first ?? '';
+      } else {
+        throw Exception('Failed to create VNPay payment URL');
+      }
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
 }

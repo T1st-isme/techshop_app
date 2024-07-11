@@ -54,13 +54,13 @@ class _ProfilePageState extends State<ProfilePage> {
                 GestureDetector(
                   onTap: () {
                     Get.to(() => AvatarView(
-                          avatarUrl: user.user?.avatar ?? '',
+                          avatarUrl: user.user!.avatar!,
                         ));
                   },
                   child: CircleAvatar(
                     radius: 50,
                     backgroundImage:
-                        CachedNetworkImageProvider(user.user?.avatar ?? ''),
+                        CachedNetworkImageProvider(user.user!.avatar!),
                   ),
                 ),
                 const SizedBox(height: 10),

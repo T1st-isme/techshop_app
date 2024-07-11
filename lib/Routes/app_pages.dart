@@ -90,12 +90,12 @@ class AppPages {
       binding: BrandBinding(),
     ),
     GetPage(
-      name: '/checkout/order-success',
+      name: _Paths.ORDER_SUCCESS,
       page: () => const OrderSuccessView(),
       binding: OrderBinding(),
     ),
     GetPage(
-      name: '/checkout/order-failed',
+      name: _Paths.ORDER_FAIL,
       page: () => const OrderFailedView(),
       binding: OrderBinding(),
     ),

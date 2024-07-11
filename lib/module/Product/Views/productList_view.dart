@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // 📦 Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
@@ -263,8 +264,9 @@ class _ProductListPageState extends State<ProductListPage> {
                         );
                       }
                     },
-                    icon: const Icon(
-                      FluentIcons.caret_down_16_filled,
+                    icon: const FaIcon(
+                      FontAwesomeIcons.sort,
+                      size: 16,
                       color: Colors.black,
                     ),
                   ),
@@ -321,8 +323,9 @@ class _ProductListPageState extends State<ProductListPage> {
                         );
                       }
                     },
-                    icon: const Icon(
-                      FluentIcons.caret_down_16_filled,
+                    icon: const FaIcon(
+                      FontAwesomeIcons.filter,
+                      size: 16,
                       color: Colors.black,
                     ),
                   ),
@@ -430,7 +433,10 @@ Widget itemGridView(Products proItem) {
               ),
               fadeInDuration: const Duration(milliseconds: 200),
               fadeOutDuration: const Duration(milliseconds: 200),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
+              errorWidget: (context, url, error) => const FaIcon(
+                FontAwesomeIcons.image,
+                size: 16,
+              ),
             ),
             Text(
               proItem.name ?? 'N/A',
@@ -468,7 +474,11 @@ Widget itemGridView(Products proItem) {
               child: const Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.shopping_cart, color: Colors.white),
+                  FaIcon(
+                    FontAwesomeIcons.cartPlus,
+                    size: 18,
+                    color: Colors.white,
+                  ),
                   SizedBox(width: 5),
                   Text(
                     'Thêm vào giỏ',

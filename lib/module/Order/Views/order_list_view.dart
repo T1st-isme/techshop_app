@@ -1,7 +1,12 @@
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
+
+// 🌎 Project imports:
 import 'package:techshop_app/Routes/app_pages.dart';
 import 'package:techshop_app/models/order.dart';
 import 'package:techshop_app/module/Auth/Controller/auth_controller.dart';
@@ -19,7 +24,7 @@ class OrderListView extends StatefulWidget {
 class _OrderListViewState extends State<OrderListView> {
   final OrderController orderController = Get.find<OrderController>();
   final AuthController authController = Get.find<AuthController>();
-  String selectedOrderStatus = '';
+  String? selectedOrderStatus;
   final List<String> orderStatuses = [
     'Đang xử lý',
     'Vận chuyển',
@@ -79,7 +84,6 @@ class _OrderListViewState extends State<OrderListView> {
           title: const Text('Đơn hàng',
               style: TextStyle(fontWeight: FontWeight.bold)),
           centerTitle: true,
-          automaticallyImplyLeading: false,
         ),
         body: Column(
           children: [

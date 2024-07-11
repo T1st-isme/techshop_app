@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 // 📦 Package imports:
 import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:techshop_app/Routes/app_pages.dart';
 
 // 🌎 Project imports:
 import 'package:techshop_app/module/Auth/Controller/auth_controller.dart';
@@ -30,9 +32,10 @@ class _DashboardPageState extends State<DashboardPage> {
   final OrderController orderController = Get.find<OrderController>();
   final AuthController authController = Get.find<AuthController>();
 
-  final PageController _pageController = PageController(initialPage: 0);
+  final PageController _pageController =
+      PageController(initialPage: Get.arguments ?? 0);
   final NotchBottomBarController _controller =
-      NotchBottomBarController(index: 0);
+      NotchBottomBarController(index: Get.arguments ?? 0);
 
   final List<Widget> _children = [
     const HomePage(),
@@ -58,6 +61,8 @@ class _DashboardPageState extends State<DashboardPage> {
     return Obx(
       () => Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
           leading: IconButton(
             icon: const Icon(Icons.menu),
             onPressed: () {},
@@ -66,9 +71,12 @@ class _DashboardPageState extends State<DashboardPage> {
             Stack(
               children: <Widget>[
                 IconButton(
-                  icon: const Icon(Icons.shopping_cart),
+                  icon: const FaIcon(
+                    FontAwesomeIcons.cartShopping,
+                    size: 18,
+                  ),
                   onPressed: () {
-                    Get.toNamed('/cart');
+                    Get.toNamed(Routes.CART);
                   },
                 ),
                 Positioned(
@@ -168,6 +176,7 @@ class _DashboardPageState extends State<DashboardPage> {
           onTap: (index) {
             log('current selected index $index');
             _pageController.jumpToPage(index);
+            _controller.index = index;
           },
           kIconSize: 24.0,
         ),
