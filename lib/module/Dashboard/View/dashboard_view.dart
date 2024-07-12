@@ -24,7 +24,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
   final List<Widget> _children = [
     const HomePage(),
-    const ProductListPage(),
+    const CategoryList(),
     const OrderListView(),
     const ProfileView(),
   ];
