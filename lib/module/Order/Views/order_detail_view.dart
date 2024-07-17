@@ -172,12 +172,12 @@ class _OrderDetailViewState extends State<OrderDetailView> {
       {
         'status': 'Đang xử lý',
         'date': '29/5/2024',
-        'isCompleted': orderStatus != 'pending'
+        'isCompleted': orderStatus != 'Đang xử lý'
       },
       {
         'status': 'Đã giao hàng',
         'date': '30/5/2024',
-        'isCompleted': orderStatus == 'delivered'
+        'isCompleted': orderStatus == 'Đã giao'
       },
     ];
 

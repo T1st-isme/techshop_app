@@ -457,36 +457,45 @@ Widget itemGridView(Products proItem) {
                     color: Colors.red,
                     fontSize: 15,
                     fontWeight: FontWeight.bold)),
-            ElevatedButton(
-              onPressed: () {
-                cartController.addToCart([
-                  {'product': proItem.sId, 'quantity': 1}
-                ]);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 162, 95, 230),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12.0, vertical: 5.0),
-              ),
-              child: const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  FaIcon(
-                    FontAwesomeIcons.cartPlus,
-                    size: 18,
-                    color: Colors.white,
+            proItem.stock == 0
+                ? const Text(
+                    'Hết hàng',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red,
+                    ),
+                  )
+                : ElevatedButton(
+                    onPressed: () {
+                      cartController.addToCart([
+                        {'product': proItem.sId, 'quantity': 1}
+                      ]);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 162, 95, 230),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12.0, vertical: 5.0),
+                    ),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        FaIcon(
+                          FontAwesomeIcons.cartPlus,
+                          size: 18,
+                          color: Colors.white,
+                        ),
+                        SizedBox(width: 5),
+                        Text(
+                          'Thêm vào giỏ',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ],
+                    ),
                   ),
-                  SizedBox(width: 5),
-                  Text(
-                    'Thêm vào giỏ',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ],
-              ),
-            ),
           ],
         ),
       ),

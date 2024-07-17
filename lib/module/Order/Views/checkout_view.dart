@@ -99,7 +99,7 @@ class _CheckoutView extends State<CheckoutView> {
               "purchasedQty": cartItem.cartItem!.quantity
             };
           }).toList(),
-          "paymentStatus": "pending",
+          "paymentStatus": "Đang xử lý",
           "paymentType": "COD"
         };
 
@@ -203,24 +203,12 @@ class _CheckoutView extends State<CheckoutView> {
         padding: const EdgeInsets.all(16.0),
         child: Obx(
           () {
-            // if (!authController.isLoggedIn) {
-            //   return Column(
-            //     mainAxisAlignment: MainAxisAlignment.center,
-            //     children: [
-            //       const Text(
-            //         'Bạn phải đăng nhập để mua hàng!!!',
-            //         style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            //       ),
-            //       const SizedBox(height: 20),
-            //       ElevatedButton(
-            //         onPressed: () {
-            //           Get.toNamed(Routes.LOGIN);
-            //         },
-            //         child: const Text('Đăng nhập'),
-            //       ),
-            //     ],
-            //   );
-            // }
+            if (orderController.status.value.isLoading ||
+                authController.status.value.isLoading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
 
             return Column(
               children: [

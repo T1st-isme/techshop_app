@@ -145,8 +145,6 @@ class ProductController extends GetxController with StateMixin<List<Products>> {
       if (response.statusCode == 200 && response.data != null) {
         final pro = Products.fromJson(response.data['data']);
         currentProduct.value = pro;
-        productItems.add(pro);
-        change(productItems, status: RxStatus.success());
       }
     } on DioException catch (e) {
       final ApiException apiException = ApiException.fromDioException(e);

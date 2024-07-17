@@ -287,23 +287,33 @@ class _HomePageState extends State<HomePage> {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      cartController.addToCart([
-                        {'product': product.sId, 'quantity': 1}
-                      ]);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 162, 95, 230),
-                      shape: const CircleBorder(),
-                      padding: const EdgeInsets.all(8),
-                    ),
-                    child: const FaIcon(
-                      FontAwesomeIcons.cartPlus,
-                      color: Colors.white,
-                      size: 18,
-                    ),
-                  ),
+                  product.stock == 0
+                      ? const Text(
+                          'Hết hàng',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.red,
+                          ),
+                        )
+                      : ElevatedButton(
+                          onPressed: () {
+                            cartController.addToCart([
+                              {'product': product.sId, 'quantity': 1}
+                            ]);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                const Color.fromARGB(255, 162, 95, 230),
+                            shape: const CircleBorder(),
+                            padding: const EdgeInsets.all(8),
+                          ),
+                          child: const FaIcon(
+                            FontAwesomeIcons.cartPlus,
+                            color: Colors.white,
+                            size: 18,
+                          ),
+                        ),
                 ],
               ),
             ],

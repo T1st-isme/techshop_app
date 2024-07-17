@@ -47,7 +47,9 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   void initState() {
     super.initState();
-    cartController.fetchCartItems();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      cartController.fetchCartItems();
+    });
   }
 
   @override
@@ -59,128 +61,131 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     return Obx(
-      () => Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () {},
-          ),
-          actions: <Widget>[
-            Stack(
-              children: <Widget>[
-                IconButton(
-                  icon: const FaIcon(
-                    FontAwesomeIcons.cartShopping,
-                    size: 18,
+      () {
+        final totalItem = cartController.totalItems.value;
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.menu),
+              onPressed: () {},
+            ),
+            actions: <Widget>[
+              Stack(
+                children: <Widget>[
+                  IconButton(
+                    icon: const FaIcon(
+                      FontAwesomeIcons.cartShopping,
+                      size: 18,
+                    ),
+                    onPressed: () {
+                      Get.toNamed(Routes.CART);
+                    },
                   ),
-                  onPressed: () {
-                    Get.toNamed(Routes.CART);
-                  },
-                ),
-                Positioned(
-                  right: 7,
-                  top: 7,
-                  child: Container(
-                    padding: const EdgeInsets.all(2),
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    constraints: const BoxConstraints(
-                      minWidth: 14,
-                      minHeight: 14,
-                    ),
-                    child: Text(
-                      cartController.totalItems.toString(), //Count item in cart
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 8,
+                  Positioned(
+                    right: 7,
+                    top: 7,
+                    child: Container(
+                      padding: const EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(6),
                       ),
-                      textAlign: TextAlign.center,
+                      constraints: const BoxConstraints(
+                        minWidth: 14,
+                        minHeight: 14,
+                      ),
+                      child: Text(
+                        totalItem.toString(), //Count item in cart
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 8,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
+                ],
+              ),
+            ],
+          ),
+          body: PageView(
+            controller: _pageController,
+            physics: const NeverScrollableScrollPhysics(),
+            children: _children,
+          ),
+          extendBody: true,
+          bottomNavigationBar: AnimatedNotchBottomBar(
+            notchBottomBarController: _controller,
+            color: const Color.fromARGB(255, 162, 95, 230),
+            showLabel: false,
+            textOverflow: TextOverflow.visible,
+            maxLine: 1,
+            shadowElevation: 5,
+            kBottomRadius: 16.0,
+            notchColor: Colors.black54,
+            removeMargins: false,
+            bottomBarWidth: 500,
+            showShadow: false,
+            durationInMilliSeconds: 300,
+            itemLabelStyle: const TextStyle(fontSize: 10),
+            elevation: 1,
+            bottomBarItems: const [
+              BottomBarItem(
+                inActiveItem: Icon(
+                  FluentIcons.home_32_regular,
+                  color: Colors.white,
                 ),
-              ],
-            ),
-          ],
-        ),
-        body: PageView(
-          controller: _pageController,
-          physics: const NeverScrollableScrollPhysics(),
-          children: _children,
-        ),
-        extendBody: true,
-        bottomNavigationBar: AnimatedNotchBottomBar(
-          notchBottomBarController: _controller,
-          color: const Color.fromARGB(255, 162, 95, 230),
-          showLabel: false,
-          textOverflow: TextOverflow.visible,
-          maxLine: 1,
-          shadowElevation: 5,
-          kBottomRadius: 16.0,
-          notchColor: Colors.black54,
-          removeMargins: false,
-          bottomBarWidth: 500,
-          showShadow: false,
-          durationInMilliSeconds: 300,
-          itemLabelStyle: const TextStyle(fontSize: 10),
-          elevation: 1,
-          bottomBarItems: const [
-            BottomBarItem(
-              inActiveItem: Icon(
-                FluentIcons.home_32_regular,
-                color: Colors.white,
+                activeItem: Icon(
+                  FluentIcons.home_32_filled,
+                  color: Color.fromARGB(255, 162, 95, 230),
+                ),
+                itemLabel: 'Trang chủ',
               ),
-              activeItem: Icon(
-                FluentIcons.home_32_filled,
-                color: Color.fromARGB(255, 162, 95, 230),
+              BottomBarItem(
+                inActiveItem: Icon(
+                  FluentIcons.grid_28_regular,
+                  color: Colors.white,
+                ),
+                activeItem: Icon(
+                  FluentIcons.filter_32_filled,
+                  color: Color.fromARGB(255, 162, 95, 230),
+                ),
+                itemLabel: 'Danh mục',
               ),
-              itemLabel: 'Trang chủ',
-            ),
-            BottomBarItem(
-              inActiveItem: Icon(
-                FluentIcons.grid_28_regular,
-                color: Colors.white,
+              BottomBarItem(
+                inActiveItem: Icon(
+                  FluentIcons.receipt_32_regular,
+                  color: Colors.white,
+                ),
+                activeItem: Icon(
+                  FluentIcons.receipt_32_filled,
+                  color: Color.fromARGB(255, 162, 95, 230),
+                ),
+                itemLabel: 'Đơn hàng',
               ),
-              activeItem: Icon(
-                FluentIcons.filter_32_filled,
-                color: Color.fromARGB(255, 162, 95, 230),
+              BottomBarItem(
+                inActiveItem: Icon(
+                  FluentIcons.person_32_regular,
+                  color: Colors.white,
+                ),
+                activeItem: Icon(
+                  FluentIcons.person_32_filled,
+                  color: Color.fromARGB(255, 162, 95, 230),
+                ),
+                itemLabel: 'Tôi',
               ),
-              itemLabel: 'Danh mục',
-            ),
-            BottomBarItem(
-              inActiveItem: Icon(
-                FluentIcons.receipt_32_regular,
-                color: Colors.white,
-              ),
-              activeItem: Icon(
-                FluentIcons.receipt_32_filled,
-                color: Color.fromARGB(255, 162, 95, 230),
-              ),
-              itemLabel: 'Đơn hàng',
-            ),
-            BottomBarItem(
-              inActiveItem: Icon(
-                FluentIcons.person_32_regular,
-                color: Colors.white,
-              ),
-              activeItem: Icon(
-                FluentIcons.person_32_filled,
-                color: Color.fromARGB(255, 162, 95, 230),
-              ),
-              itemLabel: 'Tôi',
-            ),
-          ],
-          onTap: (index) {
-            log('current selected index $index');
-            _pageController.jumpToPage(index);
-            _controller.index = index;
-          },
-          kIconSize: 24.0,
-        ),
-      ),
+            ],
+            onTap: (index) {
+              log('current selected index $index');
+              _pageController.jumpToPage(index);
+              _controller.index = index;
+            },
+            kIconSize: 24.0,
+          ),
+        );
+      },
     );
   }
 }

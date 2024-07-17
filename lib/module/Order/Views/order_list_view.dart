@@ -24,7 +24,7 @@ class OrderListView extends StatefulWidget {
 class _OrderListViewState extends State<OrderListView> {
   final OrderController orderController = Get.find<OrderController>();
   final AuthController authController = Get.find<AuthController>();
-  String? selectedOrderStatus;
+  String selectedOrderStatus = '';
   final List<String> orderStatuses = [
     'Đang xử lý',
     'Vận chuyển',
@@ -101,22 +101,22 @@ class _OrderListViewState extends State<OrderListView> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 4.0),
                       child: buildFilterChip(
-                          orderStatuses[0], orderStatuses[0], 'processing'),
+                          orderStatuses[0], orderStatuses[0], 'Đang xử lý'),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 4.0),
                       child: buildFilterChip(
-                          orderStatuses[1], orderStatuses[1], 'shipping'),
+                          orderStatuses[1], orderStatuses[1], 'Vận chuyển'),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 4.0),
                       child: buildFilterChip(
-                          orderStatuses[2], orderStatuses[2], 'delivered'),
+                          orderStatuses[2], orderStatuses[2], 'Đã giao'),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 4.0),
                       child: buildFilterChip(
-                          orderStatuses[3], orderStatuses[3], 'cancelled'),
+                          orderStatuses[3], orderStatuses[3], 'Đã hủy'),
                     ),
                   ],
                 ),

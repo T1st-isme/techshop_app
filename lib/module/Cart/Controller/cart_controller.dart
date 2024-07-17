@@ -21,19 +21,23 @@ class CartController extends GetxController with StateMixin<List<CartItems>> {
       final response = await _cartService.getCartItems();
       if (response.statusCode == 200) {
         final dataCart = response.data['cartItems'];
-        List<CartItems> cartItemsList = dataCart
-            .map<CartItems>((item) => CartItems.fromJson(item))
-            .toList();
-        cartItems.assignAll(cartItemsList);
+        if (dataCart != null) {
+          List<CartItems> cartItemsList = dataCart
+              .map<CartItems>((item) => CartItems.fromJson(item))
+              .toList();
+          cartItems.assignAll(cartItemsList);
+          totalItems.value = response.data['total_items'];
+          totalPrice.value = double.parse(response.data['total_price']);
+          totalQuantity.value = response.data['total_quantity'];
+        }
         change(cartItems, status: RxStatus.success());
-        totalItems.value = response.data['total_items'];
-        totalPrice.value = double.parse(response.data['total_price']);
-        totalQuantity.value = response.data['total_quantity'];
       } else {
         print('Error: Failed to fetch cart items');
+        change(cartItems, status: RxStatus.error('Failed to fetch cart items'));
       }
     } on DioException catch (e) {
       print('Error: Failed to fetch cart items: ${e.message}');
+      change(cartItems, status: RxStatus.error(e.message));
     }
     isLoading.value = false;
     update();

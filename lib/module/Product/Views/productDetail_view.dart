@@ -32,6 +32,7 @@ class _ProductDetailState extends State<ProductDetailView> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       productController.fetchProductBySlug(slug!);
     });
+    // productController.fetchProductBySlug(slug!);
   }
 
   @override
@@ -58,8 +59,10 @@ class _ProductDetailState extends State<ProductDetailView> {
             return const Center(child: CircularProgressIndicator());
           }
           //get product detail by slug from productList
-          final Products product = productController.productItems.value
-              .firstWhere((product) => product.slug == slug);
+          final Products product = productController.currentProduct.value!;
+          // .firstWhere((product) => product.slug == slug);
+
+          // final product = productController.currentProduct;
 
           //price format
           final formatter = NumberFormat('#,###', 'vi_VN');
@@ -80,7 +83,7 @@ class _ProductDetailState extends State<ProductDetailView> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Text(
-                    product.name!,
+                    product.name ?? 'N/A',
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -103,10 +106,11 @@ class _ProductDetailState extends State<ProductDetailView> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Text(
                     _isExpanded
-                        ? product.description!
-                        : product.description!.length > 100
+                        ? product.description ?? 'N/A'
+                        : product.description != null &&
+                                product.description!.length > 100
                             ? '${product.description!.substring(0, 100)}...'
-                            : product.description!,
+                            : product.description ?? 'N/A',
                     style: const TextStyle(
                       fontSize: 16,
                     ),
@@ -124,30 +128,39 @@ class _ProductDetailState extends State<ProductDetailView> {
                 Container(
                   alignment: Alignment.center,
                   width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      //add product to cart
-                      cartController.addToCart([
-                        {'product': product.sId, 'quantity': 1}
-                      ]);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 162, 95, 230),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 25.0, vertical: 20.0),
-                    ),
-                    child: const Text(
-                      'Thêm vào giỏ hàng',
-                      style: TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+                  child: product.stock == 0
+                      ? const Text(
+                          'Hết hàng',
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.red,
+                          ),
+                        )
+                      : ElevatedButton(
+                          onPressed: () {
+                            cartController.addToCart([
+                              {'product': product.sId ?? 'N/A', 'quantity': 1}
+                            ]);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                const Color.fromARGB(255, 162, 95, 230),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 25.0, vertical: 20.0),
+                          ),
+                          child: const Text(
+                            'Thêm vào giỏ hàng',
+                            style: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
                 ),
                 //related products
                 const SizedBox(height: 16),
