@@ -9,9 +9,9 @@ import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_not
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:techshop_app/Routes/app_pages.dart';
 
 // 🌎 Project imports:
+import 'package:techshop_app/Routes/app_pages.dart';
 import 'package:techshop_app/module/Auth/Controller/auth_controller.dart';
 import 'package:techshop_app/module/Auth/Views/Proflie/user_profile_view.dart';
 import 'package:techshop_app/module/Cart/Controller/cart_controller.dart';

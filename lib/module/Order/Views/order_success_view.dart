@@ -1,9 +1,11 @@
 // 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
 import 'package:get/get.dart';
-import 'package:techshop_app/Routes/app_pages.dart';
 
 // 🌎 Project imports:
+import 'package:techshop_app/Routes/app_pages.dart';
 import 'package:techshop_app/constants/AppUrl.dart';
 
 class OrderSuccessView extends StatelessWidget {

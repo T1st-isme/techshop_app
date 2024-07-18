@@ -1,15 +1,16 @@
-// 🐦 Flutter imports:
+// 🎯 Dart imports:
 import 'dart:async';
 
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
 import 'package:get/get.dart';
+import 'package:uni_links/uni_links.dart';
 
 // 🌎 Project imports:
 import 'package:techshop_app/Core/Theme/app_theme.dart';
 import 'package:techshop_app/module/Auth/Binding/auth_binding.dart';
-import 'package:uni_links/uni_links.dart';
 import 'Routes/app_pages.dart';
 
 void main() async {
