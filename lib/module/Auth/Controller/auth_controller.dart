@@ -85,7 +85,7 @@ class AuthController extends GetxController {
   }
 
   //update user profile
-  Future<void> updateUserProfile(String fullname, String email, String password,
+  Future<bool> updateUserProfile(String fullname, String email, String password,
       String phone, String address, XFile? avatar) async {
     Future.microtask(() => status.value = RxStatus.loading());
     try {
@@ -94,11 +94,13 @@ class AuthController extends GetxController {
       if (response.statusCode == 200) {
         _user.value = User.fromJson(response.data);
         Future.microtask(() => status.value = RxStatus.success());
+        return true;
       }
     } on dio.DioException catch (e) {
       final ApiException apiException = ApiException.fromDioException(e);
       Future.microtask(
           () => status.value = RxStatus.error(apiException.toString()));
     }
+    return false;
   }
 }

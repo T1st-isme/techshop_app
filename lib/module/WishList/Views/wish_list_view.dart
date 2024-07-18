@@ -32,6 +32,10 @@ class _WishListViewState extends State<WishListView> {
     });
   }
 
+  Future<void> onWishListRefresh() async {
+    await _wishListController.getWishList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,87 +60,96 @@ class _WishListViewState extends State<WishListView> {
         }
         final wishList = _wishListController.wishList;
 
-        return ListView.builder(
-          itemCount: wishList.length,
-          itemBuilder: (context, index) {
-            final item = wishList[index];
-            //format date
-            final formattedDate =
-                DateFormat('dd/MM/yyyy').format(DateTime.parse(item.addedAt!));
-            //format price
-            final formatter = NumberFormat('#,###', 'vi_VN');
-            final value = item.product!.price!.$numberDecimal!;
-            final formatPrice = formatter.format(double.parse(value) * 1000000);
+        return RefreshIndicator(
+          onRefresh: onWishListRefresh,
+          child: ListView.builder(
+            itemCount: wishList.length,
+            itemBuilder: (context, index) {
+              final item = wishList[index];
+              //format date
+              final formattedDate = DateFormat('dd/MM/yyyy')
+                  .format(DateTime.parse(item.addedAt!));
+              //format price
+              final formatter = NumberFormat('#,###', 'vi_VN');
+              final value = item.product!.price!.$numberDecimal!;
+              final formatPrice =
+                  formatter.format(double.parse(value) * 1000000);
 
-            return GestureDetector(
-              onTap: () {
-                Get.toNamed(Routes.PRODUCTDETAIL,
-                    parameters: {'slug': item.product!.slug!});
-              },
-              child: Container(
-                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                child: Card(
-                  elevation: 2,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        item.product!.proImg != null &&
-                                item.product!.proImg!.isNotEmpty
-                            ? CachedNetworkImage(
-                                imageUrl: item.product!.proImg!.first.img ?? '',
-                                width: 50,
-                                height: 50,
-                              )
-                            : const Icon(Icons.image, size: 50),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(item.product!.name ?? 'No Name',
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16)),
-                              const SizedBox(height: 4),
-                              Text('Giá: $formatPrice ₫'),
-                              Text('Ngày thêm: $formattedDate'),
+              return GestureDetector(
+                onTap: () {
+                  Get.toNamed(Routes.PRODUCTDETAIL,
+                      parameters: {'slug': item.product!.slug!});
+                },
+                child: Container(
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  child: Card(
+                    elevation: 2,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          item.product!.proImg != null &&
+                                  item.product!.proImg!.isNotEmpty
+                              ? CachedNetworkImage(
+                                  imageUrl:
+                                      item.product!.proImg!.first.img ?? '',
+                                  width: 50,
+                                  height: 50,
+                                )
+                              : const Icon(Icons.image, size: 50),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(item.product!.name ?? 'No Name',
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16)),
+                                const SizedBox(height: 4),
+                                Text('Giá: $formatPrice ₫'),
+                                Text('Ngày thêm: $formattedDate'),
+                              ],
+                            ),
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              IconButton(
+                                icon: const FaIcon(
+                                    FontAwesomeIcons.heartCircleXmark,
+                                    color: Colors.red),
+                                onPressed: () {
+                                  _wishListController
+                                      .removeFromWishList(item.product!.sId!);
+                                },
+                              ),
+                              const SizedBox(height: 8),
+                              IconButton(
+                                icon: const FaIcon(
+                                  FontAwesomeIcons.cartPlus,
+                                  color: Color.fromARGB(255, 162, 95, 230),
+                                ),
+                                onPressed: () {
+                                  _cartController.addToCart([
+                                    {
+                                      'product': item.product!.sId,
+                                      'quantity': 1
+                                    }
+                                  ]);
+                                },
+                              ),
                             ],
                           ),
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            IconButton(
-                              icon: const FaIcon(
-                                  FontAwesomeIcons.heartCircleXmark,
-                                  color: Colors.red),
-                              onPressed: () {
-                                _wishListController
-                                    .removeFromWishList(item.product!.sId!);
-                              },
-                            ),
-                            const SizedBox(height: 8),
-                            IconButton(
-                              icon: const FaIcon(
-                                FontAwesomeIcons.cartPlus,
-                                color: Color.fromARGB(255, 162, 95, 230),
-                              ),
-                              onPressed: () {
-                                _cartController.addToCart([
-                                  {'product': item.product!.sId, 'quantity': 1}
-                                ]);
-                              },
-                            ),
-                          ],
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         );
       }),
     );

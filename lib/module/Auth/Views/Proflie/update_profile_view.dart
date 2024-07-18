@@ -2,6 +2,7 @@
 import 'dart:io';
 
 // 🐦 Flutter imports:
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -118,7 +119,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                       addressController),
                   const SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       final updatedUser = User(
                         user: UserPro(
                           fullname: nameController.text.isEmpty
@@ -139,13 +140,30 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                         ),
                       );
                       print(updatedUser.user.toString());
-                      _authController.updateUserProfile(
+                      bool success = await _authController.updateUserProfile(
                           updatedUser.user!.fullname!,
                           updatedUser.user!.email!,
                           updatedUser.user!.password!,
                           updatedUser.user!.phone!,
                           updatedUser.user!.address!,
                           _image);
+                      if (success) {
+                        CoolAlert.show(
+                          context: context,
+                          type: CoolAlertType.success,
+                          text: "Cập nhật thông tin thành công!",
+                          onConfirmBtnTap: () {
+                            Get.back();
+                          },
+                        );
+                      } else {
+                        CoolAlert.show(
+                          context: context,
+                          type: CoolAlertType.error,
+                          text:
+                              "Cập nhật thông tin thất bại. Vui lòng thử lại.",
+                        );
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 162, 95, 230),

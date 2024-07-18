@@ -61,11 +61,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _refresh() async {
-    if (productController.isLoading.value) {
-      await Future.delayed(const Duration(seconds: 30), () {
-        _loadData();
-      });
-    }
+    await _loadData();
+    // if (productController.isLoading.value) {
+
+    //   // Future.delayed(const Duration(seconds: 30), () {});
+    // }
   }
 
   @override
