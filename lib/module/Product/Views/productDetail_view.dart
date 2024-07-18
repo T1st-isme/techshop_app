@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 // 📦 Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -12,6 +13,7 @@ import 'package:intl/intl.dart';
 import 'package:techshop_app/models/product.dart';
 import 'package:techshop_app/module/Cart/Controller/cart_controller.dart';
 import 'package:techshop_app/module/Product/Controller/product_controller.dart';
+import 'package:techshop_app/module/WishList/Controller/wish_list_controller.dart';
 
 class ProductDetailView extends StatefulWidget {
   const ProductDetailView({super.key});
@@ -23,6 +25,7 @@ class ProductDetailView extends StatefulWidget {
 class _ProductDetailState extends State<ProductDetailView> {
   final ProductController productController = Get.find<ProductController>();
   final CartController cartController = Get.find<CartController>();
+  final WishListController wishListController = Get.find<WishListController>();
   bool _isExpanded = false;
   final String? slug = Get.parameters['slug'];
 
@@ -31,6 +34,7 @@ class _ProductDetailState extends State<ProductDetailView> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       productController.fetchProductBySlug(slug!);
+      wishListController.getWishList();
     });
     // productController.fetchProductBySlug(slug!);
   }
@@ -64,6 +68,9 @@ class _ProductDetailState extends State<ProductDetailView> {
 
           // final product = productController.currentProduct;
 
+          // Check if product is in wishlist
+          final isInWishlist = wishListController.isInWishlist;
+          print("isInWishlist: $isInWishlist");
           //price format
           final formatter = NumberFormat('#,###', 'vi_VN');
           final value = product.price!.$numberDecimal!;
@@ -137,29 +144,57 @@ class _ProductDetailState extends State<ProductDetailView> {
                             color: Colors.red,
                           ),
                         )
-                      : ElevatedButton(
-                          onPressed: () {
-                            cartController.addToCart([
-                              {'product': product.sId ?? 'N/A', 'quantity': 1}
-                            ]);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                const Color.fromARGB(255, 162, 95, 230),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                cartController.addToCart([
+                                  {
+                                    'product': product.sId ?? 'N/A',
+                                    'quantity': 1
+                                  }
+                                ]);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    const Color.fromARGB(255, 162, 95, 230),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 25.0, vertical: 20.0),
+                              ),
+                              child: const Text(
+                                'Thêm vào giỏ hàng',
+                                style: TextStyle(
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
                             ),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 25.0, vertical: 20.0),
-                          ),
-                          child: const Text(
-                            'Thêm vào giỏ hàng',
-                            style: TextStyle(
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                            IconButton(
+                              onPressed: () {
+                                if (wishListController.wishList.any((item) =>
+                                    item.product!.sId == product.sId)) {
+                                  wishListController
+                                      .removeFromWishList(product.sId ?? 'N/A');
+                                } else {
+                                  wishListController
+                                      .addToWishList(product.sId ?? 'N/A');
+                                }
+                              },
+                              icon: FaIcon(
+                                wishListController.wishList.any((item) =>
+                                        item.product!.sId == product.sId)
+                                    ? FontAwesomeIcons.solidHeart
+                                    : FontAwesomeIcons.heart,
+                                color: Colors.red,
+                                size: 35,
+                              ),
                             ),
-                          ),
+                          ],
                         ),
                 ),
                 //related products

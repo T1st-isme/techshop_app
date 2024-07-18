@@ -4,6 +4,8 @@ analyzer:
     avoid_print: ignore
     constant_identifier_names: ignore
     library_private_types_in_public_api: ignore
+    unnecessary_import: ignore
+    file_names: ignore
   exclude:
     # ignore vscode .history files
     - .history/**

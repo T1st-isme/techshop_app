@@ -31,7 +31,8 @@
     "prefs",
     "techshop",
     "Thương",
-    "Trang"
+    "Trang",
+    "useanimations"
   ],
   "terminal.integrated.rescaleOverlappingGlyphs": false,
   "gitlens.blame.fontFamily": "JetBrainsMono Nerd Font, 'Courier New', monospace",

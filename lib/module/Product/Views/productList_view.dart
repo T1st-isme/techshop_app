@@ -1,4 +1,5 @@
 // 🐦 Flutter imports:
+import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
@@ -10,11 +11,13 @@ import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 
 // 🌎 Project imports:
+import 'package:techshop_app/Routes/app_pages.dart';
 import 'package:techshop_app/models/category.dart';
 import 'package:techshop_app/models/product.dart';
 import 'package:techshop_app/module/Cart/Controller/cart_controller.dart';
 import 'package:techshop_app/module/Category/Controller/category_controller.dart';
 import 'package:techshop_app/module/Product/Controller/product_controller.dart';
+import 'package:techshop_app/module/WishList/Controller/wish_list_controller.dart';
 
 class ProductListPage extends StatefulWidget {
   const ProductListPage({super.key});
@@ -23,7 +26,8 @@ class ProductListPage extends StatefulWidget {
   State<ProductListPage> createState() => _ProductListPageState();
 }
 
-class _ProductListPageState extends State<ProductListPage> {
+class _ProductListPageState extends State<ProductListPage>
+    with TickerProviderStateMixin {
   final ProductController _productController = Get.find<ProductController>();
   final CategoryController _categoryController = Get.put(CategoryController());
   final ScrollController _scrollController = ScrollController();
@@ -394,113 +398,176 @@ class _ProductListPageState extends State<ProductListPage> {
       ),
     );
   }
-}
 
-Widget itemGridView(Products proItem) {
-  final CartController cartController = Get.find<CartController>();
-  final formatter = NumberFormat('#,###', 'vi_VN');
-  final value = proItem.price!.$numberDecimal!;
-  final formatPrice = formatter.format(double.parse(value) * 1000000);
-  return GestureDetector(
-    onTap: () => {
-      Get.toNamed('/product/detail', parameters: {'slug': proItem.slug!})
-    },
-    child: Card(
-      color: Colors.grey.shade200,
-      elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            CachedNetworkImage(
-              imageUrl: proItem.proImg?.elementAt(0).img ?? 'N/A',
-              height: 100,
-              width: 100,
-              fit: BoxFit.cover,
-              placeholder: (context, url) => Shimmer.fromColors(
-                baseColor: Colors.grey.shade200,
-                highlightColor: Colors.grey.shade400,
-                child: Container(
-                  height: 100,
-                  width: 100,
-                  color: Colors.white,
-                ),
-              ),
-              fadeInDuration: const Duration(milliseconds: 200),
-              fadeOutDuration: const Duration(milliseconds: 200),
-              errorWidget: (context, url, error) => const FaIcon(
-                FontAwesomeIcons.image,
-                size: 16,
-              ),
-            ),
-            Text(
-              proItem.name ?? 'N/A',
-              maxLines: 2,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Colors.black,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              proItem.brand ?? 'N/A',
-              style: const TextStyle(color: Colors.grey, fontSize: 13),
-            ),
-            Text(' $formatPrice ₫',
-                style: const TextStyle(
-                    color: Colors.red,
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold)),
-            proItem.stock == 0
-                ? const Text(
-                    'Hết hàng',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.red,
-                    ),
-                  )
-                : ElevatedButton(
-                    onPressed: () {
-                      cartController.addToCart([
-                        {'product': proItem.sId, 'quantity': 1}
-                      ]);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 162, 95, 230),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
+  Widget itemGridView(Products proItem) {
+    final wishListController = Get.find<WishListController>();
+    final CartController cartController = Get.find<CartController>();
+    final formatter = NumberFormat('#,###', 'vi_VN');
+    final value = proItem.price!.$numberDecimal!;
+    final formatPrice = formatter.format(double.parse(value) * 1000000);
+
+// Animation controller
+    final AnimationController controller = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      value: 1.0,
+      upperBound: 1.3,
+      lowerBound: 1.0,
+      vsync: this,
+    );
+    final AnimationController colorAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    );
+    final Animation<Color?> changeColor = ColorTween(
+      begin: Colors.grey,
+      end: Colors.red,
+    ).animate(colorAnimationController);
+    bool isActive = false;
+
+    return GestureDetector(
+      onTap: () => {
+        Get.toNamed(Routes.PRODUCTDETAIL, parameters: {'slug': proItem.slug!})
+      },
+      child: Card(
+        color: Colors.grey.shade200,
+        elevation: 4,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Stack(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  CachedNetworkImage(
+                    imageUrl: proItem.proImg?.elementAt(0).img ?? 'N/A',
+                    height: 100,
+                    width: 100,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Shimmer.fromColors(
+                      baseColor: Colors.grey.shade200,
+                      highlightColor: Colors.grey.shade400,
+                      child: Container(
+                        height: 100,
+                        width: 100,
+                        color: Colors.white,
                       ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12.0, vertical: 5.0),
                     ),
-                    child: const Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        FaIcon(
-                          FontAwesomeIcons.cartPlus,
-                          size: 18,
-                          color: Colors.white,
-                        ),
-                        SizedBox(width: 5),
-                        Text(
-                          'Thêm vào giỏ',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ],
+                    fadeInDuration: const Duration(milliseconds: 200),
+                    fadeOutDuration: const Duration(milliseconds: 200),
+                    errorWidget: (context, url, error) => const FaIcon(
+                      FontAwesomeIcons.image,
+                      size: 16,
                     ),
                   ),
-          ],
+                  Text(
+                    proItem.name ?? 'N/A',
+                    maxLines: 2,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    proItem.brand ?? 'N/A',
+                    style: const TextStyle(color: Colors.grey, fontSize: 13),
+                  ),
+                  Text(
+                    ' $formatPrice ₫',
+                    style: const TextStyle(
+                      color: Colors.red,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  proItem.stock == 0
+                      ? const Text(
+                          'Hết hàng',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.red,
+                          ),
+                        )
+                      : ElevatedButton(
+                          onPressed: () {
+                            cartController.addToCart([
+                              {'product': proItem.sId, 'quantity': 1}
+                            ]);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                const Color.fromARGB(255, 162, 95, 230),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(13.0),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12.0, vertical: 5.0),
+                          ),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              FaIcon(
+                                FontAwesomeIcons.cartPlus,
+                                size: 18,
+                                color: Colors.white,
+                              ),
+                              SizedBox(width: 5),
+                              Text(
+                                'Thêm vào giỏ',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        ),
+                ],
+              ),
+              Positioned(
+                right: 1,
+                child: GestureDetector(
+                  onTap: () async {
+                    if (wishListController.wishList
+                        .any((item) => item.product!.sId == proItem.sId)) {
+                      await wishListController
+                          .removeFromWishList(proItem.sId ?? 'N/A');
+                    } else {
+                      await wishListController
+                          .addToWishList(proItem.sId ?? 'N/A');
+                      controller.forward().then((_) => controller.reverse());
+                    }
+                    if (isActive) {
+                      colorAnimationController.reverse();
+                    } else {
+                      colorAnimationController.forward();
+                    }
+                    isActive = !isActive;
+                  },
+                  child: ScaleTransition(
+                    scale: controller,
+                    child: AnimatedBuilder(
+                      animation: colorAnimationController,
+                      builder: (context, child) => Icon(
+                        Icons.favorite,
+                        color: wishListController.wishList
+                                .any((item) => item.product!.sId == proItem.sId)
+                            ? Colors.red
+                            : Colors.grey,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 Widget itemLoading() {

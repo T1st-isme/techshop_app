@@ -164,7 +164,12 @@ class _ProfilePageState extends State<ProfilePage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          buildUtilityItem(Icons.favorite, 'Yêu thích'),
+          GestureDetector(
+            onTap: () {
+              Get.toNamed(Routes.WISHLIST);
+            },
+            child: buildUtilityItem(Icons.favorite, 'Yêu thích'),
+          ),
           buildUtilityItem(Icons.notifications, 'Thông báo'),
         ],
       ),

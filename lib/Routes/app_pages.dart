@@ -28,6 +28,8 @@ import 'package:techshop_app/module/Order/Views/order_success_view.dart';
 import 'package:techshop_app/module/Product/Binding/product_binding.dart';
 import 'package:techshop_app/module/Product/Views/productDetail_view.dart';
 import 'package:techshop_app/module/Product/Views/productList_view.dart';
+import 'package:techshop_app/module/WishList/Binding/wish_list_binding.dart';
+import 'package:techshop_app/module/WishList/Views/wish_list_view.dart';
 
 part 'app_routes.dart';
 
@@ -118,6 +120,11 @@ class AppPages {
       name: _Paths.ORDERDETAIL,
       page: () => const OrderDetailView(),
       binding: OrderBinding(),
+    ),
+    GetPage(
+      name: _Paths.WISHLIST,
+      page: () => const WishListView(),
+      binding: WishListBinding(),
     ),
   ];
 }
