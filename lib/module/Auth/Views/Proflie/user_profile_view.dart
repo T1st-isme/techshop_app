@@ -31,12 +31,13 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Obx(
       () {
-        if (authController.status.value.isLoading) {
-          return const Center(child: CircularProgressIndicator());
-        }
         if (!authController.isLoggedIn) {
           return const CheckLoginView();
         }
+        if (authController.status.value.isLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
         final user = authController.user;
         return Scaffold(
           appBar: AppBar(
@@ -50,7 +51,6 @@ class _ProfilePageState extends State<ProfilePage> {
           body: SingleChildScrollView(
             child: Column(
               children: [
-                const SizedBox(height: 20),
                 GestureDetector(
                   onTap: () {
                     Get.to(() => AvatarView(
@@ -73,7 +73,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 162, 95, 230),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(15),
                     ),
                   ),
                   child: const Text(
@@ -85,14 +85,21 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
-                buildSectionTitle('Đơn mua'),
-                buildOrderSection(),
-                const SizedBox(height: 20),
-                buildSectionTitle('Tiện ích'),
-                buildUtilitySection(),
-                const SizedBox(height: 20),
-                buildSettingsSection(),
+                const SizedBox(height: 15),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    children: [
+                      buildSectionTitle('Đơn mua'),
+                      buildOrderSection(),
+                      const SizedBox(height: 20),
+                      buildSectionTitle('Tiện ích'),
+                      buildUtilitySection(),
+                      const SizedBox(height: 20),
+                      buildSettingsSection(),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
@@ -116,7 +123,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey[300],
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(15),
       ),
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: Row(
@@ -158,7 +165,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey[300],
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(15),
       ),
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: Row(
@@ -196,7 +203,7 @@ class _ProfilePageState extends State<ProfilePage> {
         Container(
           decoration: BoxDecoration(
             color: Colors.grey[300],
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(15),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: ListTile(
@@ -216,7 +223,7 @@ class _ProfilePageState extends State<ProfilePage> {
         Container(
           decoration: BoxDecoration(
             color: Colors.grey[300],
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(15),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: ListTile(
@@ -239,7 +246,7 @@ class _ProfilePageState extends State<ProfilePage> {
         Container(
           decoration: BoxDecoration(
             color: Colors.grey[300],
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(15),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: ListTile(

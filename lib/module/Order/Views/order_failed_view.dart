@@ -25,7 +25,7 @@ class OrderFailedView extends StatelessWidget {
               color: Colors.red,
               child: Center(
                 child: Image.asset(
-                  '${AppUrl.imageUrl}Order/order_failed.png',
+                  '${AppUrl.imageUrl}Order/failed_order.png',
                   height: 400,
                   width: 400,
                 ),
@@ -51,6 +51,7 @@ class OrderFailedView extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 32.0,
                       fontWeight: FontWeight.bold,
+                      color: Colors.red,
                     ),
                   ),
                   const SizedBox(height: 20.0),

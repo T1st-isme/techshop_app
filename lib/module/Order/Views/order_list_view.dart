@@ -78,6 +78,11 @@ class _OrderListViewState extends State<OrderListView> {
       if (!authController.isLoggedIn) {
         return const CheckLoginView();
       }
+      // if (orderController.status.value.isLoading) {
+      //   return const Center(
+      //     child: CircularProgressIndicator(),
+      //   );
+      // }
 
       return Scaffold(
         appBar: AppBar(
