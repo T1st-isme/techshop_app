@@ -29,6 +29,7 @@ class ProductListPage extends StatefulWidget {
 class _ProductListPageState extends State<ProductListPage>
     with TickerProviderStateMixin {
   final ProductController _productController = Get.find<ProductController>();
+  final WishListController _wishListController = Get.find<WishListController>();
   final CategoryController _categoryController = Get.put(CategoryController());
   final ScrollController _scrollController = ScrollController();
   final Map<String, String?> data = Get.arguments ?? {};
@@ -58,7 +59,8 @@ class _ProductListPageState extends State<ProductListPage>
             category: data['category'], brand: data['brand']);
       }
     });
-    _categoryController.getCategories(); // Fetch categories
+    _categoryController.getCategories();
+    _wishListController.getWishList();
   }
 
   final Map<String, String> sortOptions = {
@@ -400,7 +402,7 @@ class _ProductListPageState extends State<ProductListPage>
   }
 
   Widget itemGridView(Products proItem) {
-    final wishListController = Get.find<WishListController>();
+    // final wishListController = Get.find<WishListController>();
     final CartController cartController = Get.find<CartController>();
     final formatter = NumberFormat('#,###', 'vi_VN');
     final value = proItem.price!.$numberDecimal!;
@@ -531,12 +533,12 @@ class _ProductListPageState extends State<ProductListPage>
                 right: 1,
                 child: GestureDetector(
                   onTap: () async {
-                    if (wishListController.wishList
+                    if (_wishListController.wishList
                         .any((item) => item.product!.sId == proItem.sId)) {
-                      await wishListController
+                      await _wishListController
                           .removeFromWishList(proItem.sId ?? 'N/A');
                     } else {
-                      await wishListController
+                      await _wishListController
                           .addToWishList(proItem.sId ?? 'N/A');
                       controller.forward().then((_) => controller.reverse());
                     }
@@ -553,7 +555,7 @@ class _ProductListPageState extends State<ProductListPage>
                       animation: colorAnimationController,
                       builder: (context, child) => Icon(
                         Icons.favorite,
-                        color: wishListController.wishList
+                        color: _wishListController.wishList
                                 .any((item) => item.product!.sId == proItem.sId)
                             ? Colors.red
                             : Colors.grey,

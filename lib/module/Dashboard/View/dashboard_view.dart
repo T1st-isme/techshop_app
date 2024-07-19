@@ -149,7 +149,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   color: Colors.white,
                 ),
                 activeItem: Icon(
-                  FluentIcons.filter_32_filled,
+                  FluentIcons.grid_28_filled,
                   color: Color.fromARGB(255, 162, 95, 230),
                 ),
                 itemLabel: 'Danh mục',

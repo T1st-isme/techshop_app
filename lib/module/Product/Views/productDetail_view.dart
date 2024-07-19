@@ -136,13 +136,39 @@ class _ProductDetailState extends State<ProductDetailView> {
                   alignment: Alignment.center,
                   width: double.infinity,
                   child: product.stock == 0
-                      ? const Text(
-                          'Hết hàng',
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.red,
-                          ),
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              'Hết hàng',
+                              style: TextStyle(
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red,
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            IconButton(
+                              onPressed: () {
+                                if (wishListController.wishList.any((item) =>
+                                    item.product!.sId == product.sId)) {
+                                  wishListController
+                                      .removeFromWishList(product.sId ?? 'N/A');
+                                } else {
+                                  wishListController
+                                      .addToWishList(product.sId ?? 'N/A');
+                                }
+                              },
+                              icon: FaIcon(
+                                wishListController.wishList.any((item) =>
+                                        item.product!.sId == product.sId)
+                                    ? FontAwesomeIcons.solidHeart
+                                    : FontAwesomeIcons.heart,
+                                color: Colors.red,
+                                size: 30,
+                              ),
+                            ),
+                          ],
                         )
                       : Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -191,7 +217,7 @@ class _ProductDetailState extends State<ProductDetailView> {
                                     ? FontAwesomeIcons.solidHeart
                                     : FontAwesomeIcons.heart,
                                 color: Colors.red,
-                                size: 35,
+                                size: 30,
                               ),
                             ),
                           ],
