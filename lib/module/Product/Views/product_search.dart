@@ -1,7 +1,12 @@
-import 'package:cached_network_image/cached_network_image.dart';
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:get/get.dart';
 import 'package:material_floating_search_bar_2/material_floating_search_bar_2.dart';
+
+// 🌎 Project imports:
 import 'package:techshop_app/Routes/app_pages.dart';
 import 'package:techshop_app/module/Product/Controller/product_controller.dart';
 
@@ -84,6 +89,10 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
     return FloatingSearchBar(
       controller: _searchBarController,
       hint: 'Tìm kiếm sản phẩm',
+      hintStyle: const TextStyle(color: Colors.grey, fontSize: 16),
+      backgroundColor: Colors.white,
+      iconColor: Colors.black,
+      borderRadius: BorderRadius.circular(15),
       transitionDuration: const Duration(milliseconds: 300),
       transitionCurve: Curves.easeInOut,
       physics: const ScrollPhysics(),

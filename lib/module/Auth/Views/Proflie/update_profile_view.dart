@@ -2,11 +2,11 @@
 import 'dart:io';
 
 // 🐦 Flutter imports:
-import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
+import 'package:cool_alert/cool_alert.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
