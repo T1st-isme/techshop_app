@@ -1,4 +1,5 @@
 // 🐦 Flutter imports:
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
@@ -86,12 +87,16 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                                       fit: BoxFit.cover)
                                   : null,
                               title: Text(item.productId?.name ?? '',
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(color: Colors.black)),
-                              subtitle: Text('Số lượng: ${item.purchasedQty}'),
+                              subtitle: Text('Số lượng: ${item.purchasedQty}',
+                                  style: const TextStyle(color: Colors.grey)),
                               trailing: Text(
                                   '${formatter.format(item.payablePrice! * 1000000)} đ',
                                   style: const TextStyle(
                                       color: Colors.black,
+                                      fontSize: 14,
                                       fontWeight: FontWeight.bold)),
                             ),
                           )) ??
@@ -156,6 +161,36 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                       ],
                     ),
                   ),
+                  const SizedBox(height: 20),
+                  if (order.orderStatus == 'Đã đặt hàng')
+                    ElevatedButton(
+                      onPressed: () {
+                        CoolAlert.show(
+                          context: context,
+                          type: CoolAlertType.confirm,
+                          title: 'Hủy đơn hàng',
+                          text: 'Bạn có chắc muốn hủy đơn hàng không?',
+                          confirmBtnText: 'Hủy đơn hàng',
+                          cancelBtnText: 'Quay lại',
+                          confirmBtnColor: Colors.red,
+                          onConfirmBtnTap: () {
+                            orderController.cancelOrder(order.sId!);
+                          },
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 12),
+                      ),
+                      child: const Text(
+                        'Hủy đơn hàng',
+                        style: TextStyle(fontSize: 16, color: Colors.white),
+                      ),
+                    ),
                 ],
               ),
             );

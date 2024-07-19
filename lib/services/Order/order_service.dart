@@ -29,6 +29,17 @@ class OrderService {
     }
   }
 
+  //cancel order
+  Future<Response> cancelOrder(String id) async {
+    try {
+      final response = await _apiService.put('/order/cancel-order/$id');
+      return response;
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
   //get order detail
   Future<Response> getOrderDetail(String orderId) async {
     try {

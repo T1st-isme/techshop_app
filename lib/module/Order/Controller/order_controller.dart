@@ -114,6 +114,24 @@ class OrderController extends GetxController {
     }
   }
 
+  //cancel order
+  Future<void> cancelOrder(String id) async {
+    Future.microtask(() => status.value = RxStatus.loading());
+    try {
+      final response = await orderService.cancelOrder(id);
+      if (response.statusCode == 200) {
+        print('Order cancelled successfully');
+        await getOrderDetail(id);
+        Future.microtask(() => status.value = RxStatus.success());
+      }
+    } on DioException catch (e) {
+      final ApiException apiException = ApiException.fromDioException(e);
+      Future.microtask(
+          () => status.value = RxStatus.error(apiException.toString()));
+      print(e);
+    }
+  }
+
   //vnpay
   Future<String> vnpayPayment(int orderId, int amount, String bankCode) async {
     return await orderService.vnpayPayment(orderId, amount, bankCode);

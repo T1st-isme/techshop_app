@@ -14,6 +14,7 @@ import 'package:techshop_app/module/Auth/Binding/auth_binding.dart';
 import 'Routes/app_pages.dart';
 
 void main() async {
+  // Get.put(CacheService());
   runApp(const MyApp());
 }
 

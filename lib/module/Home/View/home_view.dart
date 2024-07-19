@@ -61,6 +61,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _refresh() async {
+    BrandView();
     await _loadData();
     // if (productController.isLoading.value) {
 
