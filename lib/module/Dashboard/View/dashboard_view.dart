@@ -1,24 +1,19 @@
-// 🎯 Dart imports:
 import 'dart:developer';
 
-// 🐦 Flutter imports:
-import 'package:flutter/material.dart';
-
-// 📦 Package imports:
 import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-// 🌎 Project imports:
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:techshop_app/Routes/app_pages.dart';
 import 'package:techshop_app/module/Auth/Controller/auth_controller.dart';
-import 'package:techshop_app/module/Auth/Views/Proflie/user_profile_view.dart';
 import 'package:techshop_app/module/Cart/Controller/cart_controller.dart';
-import 'package:techshop_app/module/Category/Views/category_view.dart';
-import 'package:techshop_app/module/Home/View/home_view.dart';
 import 'package:techshop_app/module/Order/Controller/order_controller.dart';
+import 'package:techshop_app/module/Home/View/home_view.dart';
+import 'package:techshop_app/module/Category/Views/category_view.dart';
 import 'package:techshop_app/module/Order/Views/order_list_view.dart';
+import 'package:techshop_app/module/Auth/Views/Proflie/user_profile_view.dart';
+import 'package:techshop_app/module/Product/Views/product_search.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -72,6 +67,12 @@ class _DashboardPageState extends State<DashboardPage> {
               onPressed: () {},
             ),
             actions: <Widget>[
+              IconButton(
+                icon: const Icon(Icons.search),
+                onPressed: () {
+                  Get.to(() => const ProductSearchPage());
+                },
+              ),
               Stack(
                 children: <Widget>[
                   IconButton(

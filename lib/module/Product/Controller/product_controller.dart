@@ -25,10 +25,10 @@ class ProductController extends GetxController with StateMixin<List<Products>> {
   }
 
   Future<void> fetchProductsByCategory(String category) async {
-    isLoading.value = true;
-    hasMore.value = false;
     resetState();
     try {
+      isLoading.value = true;
+      hasMore.value = false;
       final response = await _productService.getProducts(
         currentPage.value,
         category: category,
@@ -52,6 +52,10 @@ class ProductController extends GetxController with StateMixin<List<Products>> {
     update();
   }
 
+  void searchProducts(String keyword) {
+    fetchProducts(keyword: keyword, isSearchFetch: true);
+  }
+
   void fetchAllProducts() async {
     if (isLoading.value) return;
     resetState();
@@ -59,8 +63,6 @@ class ProductController extends GetxController with StateMixin<List<Products>> {
       final response = await _productService.getProducts(currentPage.value);
       if (response.statusCode == 200) {
         final pro = Product.fromJson(response.data);
-        // print(
-        //     "Fetched all products: ${pro.products!.length}"); // Debugging line
         productItems.addAll(pro.products!);
         change(productItems, status: RxStatus.success());
         hasMore.value = pro.products!.isNotEmpty;
@@ -79,7 +81,7 @@ class ProductController extends GetxController with StateMixin<List<Products>> {
   }
 
   void fetchProducts({
-    String keyword = "",
+    String? keyword = "",
     int resPerPage = 12,
     String? category,
     String? brand,
@@ -89,13 +91,19 @@ class ProductController extends GetxController with StateMixin<List<Products>> {
     bool isBrandFetch = false,
     bool isStockFetch = false,
     bool isSortFetch = false,
+    bool isSearchFetch = false,
   }) async {
-    if (isLoading.value || !hasMore.value) return;
-    if (isCategoryFetch || isBrandFetch || isStockFetch || isSortFetch) {
+    if (isCategoryFetch ||
+        isBrandFetch ||
+        isStockFetch ||
+        isSortFetch ||
+        isSearchFetch) {
       resetState();
     }
+    // if (isLoading.value || !hasMore.value) return;
     try {
       isLoading.value = true;
+      hasMore.value = false;
       final response = await _productService.getProducts(
         currentPage.value,
         keyword: keyword,
@@ -106,16 +114,11 @@ class ProductController extends GetxController with StateMixin<List<Products>> {
         stock: stock,
       );
       if (response.statusCode == 200) {
-        // final pro = Product.fromJson(response.data);
-        // // print("Fetched products: ${pro.products!.length}"); // Debugging line
-        // productItems.addAll(pro.products!);
         if (response.data is List) {
-          // If response.data is a list, map each item to a Products object
           productItems.addAll((response.data as List)
               .map((item) => Products.fromJson(item))
               .toList());
         } else {
-          // If response.data is not a list, handle it as before
           final pro = Product.fromJson(response.data);
           productItems.addAll(pro.products!);
           hasMore.value = pro.products!.isNotEmpty;
@@ -135,7 +138,6 @@ class ProductController extends GetxController with StateMixin<List<Products>> {
     update();
   }
 
-  //by slug
   var currentProduct = Rxn<Products>();
 
   Future<void> fetchProductBySlug(String slug) async {

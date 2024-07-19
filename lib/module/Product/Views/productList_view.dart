@@ -56,7 +56,9 @@ class _ProductListPageState extends State<ProductListPage>
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
         _productController.fetchProducts(
-            category: data['category'], brand: data['brand']);
+            category: data['category'],
+            brand: data['brand'],
+            keyword: data['keyword']);
       }
     });
     _categoryController.getCategories();
@@ -84,6 +86,11 @@ class _ProductListPageState extends State<ProductListPage>
         brand: data['brand'],
         isBrandFetch: true,
       );
+    } else if (data['keyword'] != null) {
+      _productController.fetchProducts(
+        keyword: data['keyword'],
+        isSearchFetch: true,
+      );
     } else {
       _productController.fetchAllProducts();
     }
@@ -101,6 +108,12 @@ class _ProductListPageState extends State<ProductListPage>
       _productController.fetchProducts(
         brand: data['brand'],
         isBrandFetch: true,
+      );
+    }
+    if (data['keyword'] != null) {
+      _productController.fetchProducts(
+        keyword: data['keyword'],
+        isSearchFetch: true,
       );
     }
     return Scaffold(
@@ -345,7 +358,9 @@ class _ProductListPageState extends State<ProductListPage>
               init: _productController,
               initState: (_) {
                 _productController.fetchProducts(
-                    category: data['category'], brand: data['brand']);
+                    category: data['category'],
+                    brand: data['brand'],
+                    keyword: data['keyword']);
               },
               builder: (_) {
                 if (_productController.isLoading.value) {
