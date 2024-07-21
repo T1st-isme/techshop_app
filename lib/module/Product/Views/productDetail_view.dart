@@ -3,6 +3,7 @@
 // 🐦 Flutter imports:
 import 'dart:math';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 
@@ -78,6 +79,8 @@ class _ProductDetailState extends State<ProductDetailView> {
           final products =
               productController.productsByCategory[product.category?.sId] ?? [];
           // final product = productController.currentProduct;
+          final List<String> carouselImages =
+              product.proImg?.map((image) => image.img ?? 'N/A').toList() ?? [];
 
           // Check if product is in wishlist
           final isInWishlist = wishListController.isInWishlist;
@@ -91,12 +94,45 @@ class _ProductDetailState extends State<ProductDetailView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CachedNetworkImage(
-                  imageUrl: product.proImg?.elementAt(0).img ?? 'N/A',
-                  placeholder: (context, url) =>
-                      const CircularProgressIndicator(),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
-                ),
+                if (carouselImages.isNotEmpty)
+                  CarouselSlider(
+                    options: CarouselOptions(
+                      height: 400.0,
+                      enlargeCenterPage: true,
+                      // autoPlay: true,
+                      // aspectRatio: 16 / 9,
+                      // autoPlayCurve: Curves.fastOutSlowIn,
+                      enableInfiniteScroll: true,
+                      // autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                      viewportFraction: 1.0,
+                    ),
+                    items: carouselImages.map((imageURL) {
+                      return Builder(builder: (BuildContext context) {
+                        return CachedNetworkImage(
+                          imageUrl: imageURL,
+                          errorWidget: (context, url, error) => const Icon(
+                            FluentIcons.image_off_20_filled,
+                          ),
+                          fit: BoxFit.cover,
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) => Center(
+                            child: Shimmer.fromColors(
+                              baseColor: Colors.grey.shade200,
+                              highlightColor: Colors.grey.shade400,
+                              child: Container(
+                                height: 400,
+                                width: 400,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      });
+                    }).toList(),
+                  ),
                 const SizedBox(height: 16),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -134,6 +170,83 @@ class _ProductDetailState extends State<ProductDetailView> {
                     ),
                   ),
                 ),
+                if (_isExpanded) ...[
+                  const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: const Text(
+                      'Thông số kỹ thuật',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Table(
+                      border: TableBorder.all(),
+                      children: [
+                        TableRow(children: [
+                          const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text('CPU'),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                                product.richdescription?.conggiaotiep ?? 'N/A'),
+                          ),
+                        ]),
+                        TableRow(children: [
+                          const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text('VGA'),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child:
+                                Text(product.richdescription?.dienang ?? 'N/A'),
+                          ),
+                        ]),
+                        TableRow(children: [
+                          const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text('Display'),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                                product.richdescription?.dophangiai ?? 'N/A'),
+                          ),
+                        ]),
+                        TableRow(children: [
+                          const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text('RAM'),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child:
+                                Text(product.richdescription?.dosang ?? 'N/A'),
+                          ),
+                        ]),
+                        TableRow(children: [
+                          const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text('SSD'),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                                product.richdescription?.kichthuoc ?? 'N/A'),
+                          ),
+                        ]),
+                      ],
+                    ),
+                  ),
+                ],
                 TextButton(
                   child: Text(_isExpanded ? "Thu gọn" : "Xem thêm"),
                   onPressed: () {
@@ -142,6 +255,7 @@ class _ProductDetailState extends State<ProductDetailView> {
                     });
                   },
                 ),
+
                 const SizedBox(height: 16),
                 Container(
                   alignment: Alignment.center,

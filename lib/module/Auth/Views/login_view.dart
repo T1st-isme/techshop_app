@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:techshop_app/module/Auth/Controller/auth_controller.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
@@ -8,10 +9,18 @@ class LoginPage extends StatelessWidget {
   final AuthController authController = Get.find<AuthController>();
   final FocusNode emailFocusNode = FocusNode();
   final FocusNode passwordFocusNode = FocusNode();
+  final Uri _youtubeUrl = Uri.parse(
+      'https://www.youtube.com/watch?v=OrDB4jpA1g8'); // Thay bằng URL video của bạn
   final ValueNotifier<bool> _obscureText = ValueNotifier<bool>(true);
   final ValueNotifier<bool> _isPasswordFocused = ValueNotifier<bool>(false);
 
   LoginPage({super.key});
+
+  Future<void> _launchURL() async {
+    if (!await launchUrl(_youtubeUrl)) {
+      throw 'Không thể chạy $_youtubeUrl';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -110,6 +119,21 @@ class LoginPage extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 20),
+
+                      // Thêm liên kết YouTube ở đây
+                      InkWell(
+                        onTap: _launchURL,
+                        child: const Text(
+                          'Xem video hướng dẫn trên YouTube',
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontSize: 15,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w700,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
