@@ -6,6 +6,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:techshop_app/constants/AppUrl.dart';
+import 'package:timeline_tile/timeline_tile.dart';
 
 // 🌎 Project imports:
 import 'package:techshop_app/module/Order/Controller/order_controller.dart';
@@ -66,7 +68,8 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 20)),
                   const SizedBox(height: 20),
-                  _buildOrderStatusTimeline(order.orderStatus),
+                  _buildOrderStatusTimeline(
+                      order.orderStatus, order.updatedAt, order.createdAt),
                   const SizedBox(height: 20),
                   const Text('Sản phẩm đã đặt',
                       style:
@@ -106,59 +109,67 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                   const SizedBox(height: 10),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16.0),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Người đặt hàng: ${order.user!.fullname}",
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black)),
-                        const SizedBox(height: 10),
-                        Text("Địa chỉ: ${order.user!.address}",
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black)),
-                        const SizedBox(height: 10),
-                        Text("SĐT: ${order.user!.phone}",
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black)),
-                      ],
+                  Card(
+                    margin: const EdgeInsets.symmetric(vertical: 8.0),
+                    elevation: 4,
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16.0),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Người đặt hàng: ${order.user!.fullname}",
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black)),
+                          const SizedBox(height: 10),
+                          Text("Địa chỉ: ${order.user!.address}",
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black)),
+                          const SizedBox(height: 10),
+                          Text("SĐT: ${order.user!.phone}",
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black)),
+                        ],
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16.0),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Phương thức thanh toán: ${order.paymentType}",
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black)),
-                        const SizedBox(height: 10),
-                        Text("Trạng thái thanh toán:  ${order.paymentStatus}",
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black)),
-                        const SizedBox(height: 10),
-                        Text("Trạng thái đơn hàng: ${order.orderStatus}",
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black)),
-                      ],
+                  const SizedBox(height: 12),
+                  Card(
+                    margin: const EdgeInsets.symmetric(vertical: 8.0),
+                    elevation: 4,
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16.0),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Phương thức thanh toán: ${order.paymentType}",
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black)),
+                          const SizedBox(height: 10),
+                          Text("Trạng thái thanh toán:  ${order.paymentStatus}",
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black)),
+                          const SizedBox(height: 10),
+                          Text("Trạng thái đơn hàng: ${order.orderStatus}",
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black)),
+                        ],
+                      ),
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -201,70 +212,97 @@ class _OrderDetailViewState extends State<OrderDetailView> {
     );
   }
 
-  Widget _buildOrderStatusTimeline(String? orderStatus) {
+  Widget _buildOrderStatusTimeline(
+      String? orderStatus, String? updatedAt, String? createdAt) {
+    print('Order status: $orderStatus');
+    print('Created at: $createdAt');
+    print('Updated at: $updatedAt');
+
+    if (orderStatus == 'Đã hủy') {
+      return Center(
+        child: SizedBox(
+          width: 320,
+          child: Image.asset(
+            '${AppUrl.imageUrl}Order/cancled_order.png',
+          ),
+        ),
+      );
+    }
+
     final statuses = [
-      {'status': 'Đã đặt hàng', 'date': '28/5/2024', 'isCompleted': true},
+      {'status': 'Đã đặt hàng', 'date': createdAt, 'isCompleted': true},
       {
         'status': 'Đang xử lý',
-        'date': '29/5/2024',
-        'isCompleted': orderStatus != 'Đang xử lý'
+        'date': updatedAt,
+        'isCompleted': orderStatus == 'Đang xử lý'
       },
       {
         'status': 'Đã giao hàng',
-        'date': '30/5/2024',
+        'date': updatedAt,
         'isCompleted': orderStatus == 'Đã giao'
       },
     ];
 
+    if (orderStatus == 'Đã giao') {
+      statuses.elementAt(1)['isCompleted'] = true;
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: statuses.map((status) {
-        return Column(
-          children: [
-            Row(
+        return TimelineTile(
+          alignment: TimelineAlign.start,
+          isFirst: status == statuses.first,
+          isLast: status == statuses.last,
+          indicatorStyle: IndicatorStyle(
+            width: 20,
+            color: status['isCompleted'] == true ? Colors.purple : Colors.grey,
+            iconStyle: status['isCompleted'] == true
+                ? IconStyle(
+                    iconData: Icons.check,
+                    color: Colors.white,
+                  )
+                : null,
+          ),
+          endChild: Container(
+            constraints: const BoxConstraints(minHeight: 80),
+            margin: const EdgeInsets.only(left: 8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  status['isCompleted'] != null
-                      ? Icons.check_circle
-                      : Icons.radio_button_unchecked,
-                  color: status['isCompleted'] != null
-                      ? Colors.purple
-                      : Colors.grey,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  status['status']!.toString(),
-                  style: TextStyle(
-                    color: status['isCompleted'] != null
-                        ? Colors.black
-                        : Colors.grey,
-                    fontWeight: status['isCompleted'] != null
-                        ? FontWeight.bold
-                        : FontWeight.normal,
-                  ),
-                ),
-                const Spacer(),
-                Text(
-                  status['date']!.toString(),
-                  style: const TextStyle(color: Colors.grey),
-                ),
-              ],
-            ),
-            if (status != statuses.last)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4.0),
-                child: Row(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const SizedBox(width: 12),
-                    Container(
-                      width: 2,
-                      height: 20,
-                      color: Colors.grey,
+                    Text(
+                      status['status'].toString(),
+                      style: TextStyle(
+                        color: status['isCompleted'] == true
+                            ? Colors.black
+                            : Colors.grey,
+                        fontWeight: status['isCompleted'] == true
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                      ),
+                    ),
+                    Text(
+                      DateFormat('dd/MM/yyyy')
+                          .format(DateTime.parse(status['date'].toString())),
+                      style: const TextStyle(color: Colors.grey),
                     ),
                   ],
                 ),
-              ),
-          ],
+              ],
+            ),
+          ),
+          beforeLineStyle: LineStyle(
+            color: status['isCompleted'] == true ? Colors.purple : Colors.grey,
+            thickness: 2,
+          ),
+          afterLineStyle: LineStyle(
+            color: status['isCompleted'] == true ? Colors.purple : Colors.grey,
+            thickness: 2,
+          ),
         );
       }).toList(),
     );

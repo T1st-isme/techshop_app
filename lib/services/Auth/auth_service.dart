@@ -24,7 +24,6 @@ class AuthService {
     if (response.statusCode == 200) {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('user', jsonEncode(response.data));
-      // print(response.data['token'] ?? '');
       await prefs.setString('token', response.data['token'] ?? '');
       return User.fromJson(response.data);
     } else {
@@ -32,15 +31,21 @@ class AuthService {
     }
   }
 
-  Future<User> register(String fullname, String email, String password) async {
+  Future<User> register(
+      String fullname, String email, String password, String phone) async {
     final response = await _apiService.post(
       '/user/signup',
-      data: {'fullname': fullname, 'email': email, 'password': password},
+      data: {
+        'fullname': fullname,
+        'email': email,
+        'password': password,
+        'phone': phone
+      },
     );
     if (response.statusCode == 201) {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('user', jsonEncode(response.data));
-      await prefs.setString('token', jsonEncode(response.data['token'] ?? ''));
+      await prefs.setString('token', response.data['token'] ?? '');
       return User.fromJson(response.data);
     } else {
       throw Exception('Failed to register');

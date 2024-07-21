@@ -34,6 +34,7 @@ class Data {
   String? orderStatus;
   String? orderCode;
   String? createdAt;
+  String? updatedAt;
   int? iV;
 
   Data(
@@ -46,6 +47,7 @@ class Data {
       this.orderStatus,
       this.orderCode,
       this.createdAt,
+      this.updatedAt,
       this.iV});
 
   Data.fromJson(Map<String, dynamic> json) {
@@ -65,6 +67,7 @@ class Data {
     orderStatus = json['orderStatus'];
     orderCode = json['orderCode'];
     createdAt = json['createdAt'];
+    updatedAt = json['updatedAt'];
     iV = json['__v'];
   }
 
@@ -85,6 +88,7 @@ class Data {
     data['orderStatus'] = orderStatus;
     data['orderCode'] = orderCode;
     data['createdAt'] = createdAt;
+    data['updatedAt'] = updatedAt;
     data['__v'] = iV;
     return data;
   }

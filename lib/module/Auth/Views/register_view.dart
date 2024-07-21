@@ -13,12 +13,20 @@ class RegisterPage extends StatelessWidget {
   final TextEditingController fullnameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final ValueNotifier<bool> _obscureText = ValueNotifier<bool>(true);
+  final ValueNotifier<bool> _isPasswordFocused = ValueNotifier<bool>(false);
+  final FocusNode passwordFocusNode = FocusNode();
 
   RegisterPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     final loading = ValueNotifier<bool>(false);
+
+    passwordFocusNode.addListener(() {
+      _isPasswordFocused.value = passwordFocusNode.hasFocus;
+    });
 
     return Stack(
       children: [
@@ -47,33 +55,33 @@ class RegisterPage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 50),
+                      buildTextField(
+                          'Họ và tên', fullnameController, Icons.person),
+                      const SizedBox(height: 16),
                       buildTextField('Email', emailController, Icons.email),
                       const SizedBox(height: 16),
                       buildTextField(
-                          'Số điện thoại', fullnameController, Icons.phone),
+                          'Số điện thoại', phoneController, Icons.phone),
                       const SizedBox(height: 16),
                       buildTextField('Mật khẩu', passwordController, Icons.lock,
-                          obscureText: true),
+                          obscureText: _obscureText,
+                          focusNode: passwordFocusNode),
                       const SizedBox(height: 40),
                       ElevatedButton(
-                        onPressed: () {
-                          loading.value
-                              ? null
-                              : () async {
-                                  loading.value = true;
-                                  bool success = await authController.register(
-                                      fullnameController.text,
-                                      emailController.text,
-                                      passwordController.text);
-                                  loading.value = false;
-                                  if (success) {
-                                    Get.toNamed('/');
-                                  } else {
-                                    // Xử lý thông báo lỗi nếu cần thiết
-                                    Get.snackbar('Đăng ký thất bại',
-                                        'Email hoặc mật khẩu không chính xác');
-                                  }
-                                };
+                        onPressed: () async {
+                          loading.value = true;
+                          bool success = await authController.register(
+                              fullnameController.text,
+                              emailController.text,
+                              passwordController.text,
+                              phoneController.text);
+                          loading.value = false;
+                          if (success) {
+                            Get.toNamed(Routes.DASHBOARD);
+                          } else {
+                            Get.snackbar(
+                                'Registration Failed', 'Please try again.');
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor:
@@ -154,7 +162,7 @@ class RegisterPage extends StatelessWidget {
 
   Widget buildTextField(
       String labelText, TextEditingController controller, IconData icon,
-      {bool obscureText = false}) {
+      {ValueNotifier<bool>? obscureText, FocusNode? focusNode}) {
     return Container(
       width: double.infinity,
       height: 56,
@@ -163,27 +171,53 @@ class RegisterPage extends StatelessWidget {
         color: const Color(0x268E6CEE),
         borderRadius: BorderRadius.circular(10),
       ),
-      child: TextField(
-        controller: controller,
-        obscureText: obscureText,
-        decoration: InputDecoration(
-          labelText: labelText,
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-            vertical: 15,
-            horizontal: 20,
-          ),
-          prefixIcon: Icon(
-            icon,
-            color: const Color(0xFF4E4E4E),
-          ),
-        ),
-        style: const TextStyle(
-          color: Color(0xFF4E4E4E),
-          fontSize: 16,
-          fontFamily: 'Arial',
-          fontWeight: FontWeight.w700,
-        ),
+      child: ValueListenableBuilder<bool>(
+        valueListenable: obscureText ?? ValueNotifier<bool>(false),
+        builder: (context, isObscure, child) {
+          return TextField(
+            controller: controller,
+            obscureText: isObscure,
+            focusNode: focusNode,
+            decoration: InputDecoration(
+              labelText: labelText,
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 15,
+                horizontal: 20,
+              ),
+              prefixIcon: Icon(
+                icon,
+                color: const Color(0xFF4E4E4E),
+              ),
+              suffixIcon: focusNode != null
+                  ? ValueListenableBuilder<bool>(
+                      valueListenable: _isPasswordFocused,
+                      builder: (context, isFocused, child) {
+                        return isFocused
+                            ? IconButton(
+                                icon: Icon(
+                                  isObscure
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                  color: const Color(0xFF4E4E4E),
+                                ),
+                                onPressed: () {
+                                  obscureText!.value = !obscureText.value;
+                                },
+                              )
+                            : const SizedBox.shrink();
+                      },
+                    )
+                  : const SizedBox.shrink(),
+            ),
+            style: const TextStyle(
+              color: Color(0xFF4E4E4E),
+              fontSize: 16,
+              fontFamily: 'Arial',
+              fontWeight: FontWeight.w600,
+            ),
+          );
+        },
       ),
     );
   }

@@ -1,6 +1,9 @@
 // ignore_for_file: file_names, invalid_use_of_protected_member
 
 // 🐦 Flutter imports:
+import 'dart:math';
+
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
@@ -8,6 +11,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:techshop_app/Routes/app_pages.dart';
 
 // 🌎 Project imports:
 import 'package:techshop_app/models/product.dart';
@@ -56,6 +61,11 @@ class _ProductDetailState extends State<ProductDetailView> {
           ),
         ),
         centerTitle: true,
+        //arrow back
+        leading: IconButton(
+          onPressed: () => Get.toNamed(Routes.DASHBOARD),
+          icon: const Icon(Icons.arrow_back),
+        ),
       ),
       body: Obx(
         () {
@@ -65,7 +75,8 @@ class _ProductDetailState extends State<ProductDetailView> {
           //get product detail by slug from productList
           final Products product = productController.currentProduct.value!;
           // .firstWhere((product) => product.slug == slug);
-
+          final products =
+              productController.productsByCategory[product.category?.sId] ?? [];
           // final product = productController.currentProduct;
 
           // Check if product is in wishlist
@@ -239,10 +250,166 @@ class _ProductDetailState extends State<ProductDetailView> {
                 // productController.relatedProducts.map((product) {
                 //   return ProductCard(product: product);
                 // }).toList(),
+                SizedBox(
+                  height: 1000,
+                  child: _buildProductList(products),
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  alignment: Alignment.center,
+                  child: InkWell(
+                    onTap: () => Get.toNamed('/product', arguments: {
+                      'category': product.category?.sId.toString()
+                    }),
+                    child: const Text(
+                      "Xem thêm",
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
               ],
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildProductList(List<Products> products) {
+    // return ListView.builder(
+    //   scrollDirection: Axis.horizontal,
+    //   padding: const EdgeInsets.symmetric(horizontal: 16),
+    //   itemCount: min(5, products.length) + 1,
+    //   itemBuilder: (context, index) {
+    //     if(index >= min(5, products.length)) {
+    //       return _buildShowMoreButton();
+    //     }
+    //     return _buildProductCard(products[index]);
+    //   }
+    // );
+    return GridView.builder(
+      scrollDirection: Axis.vertical,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 0.75,
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      itemCount: min(8, products.length) + 1,
+      itemBuilder: (context, index) {
+        // if (index >= min(8, products.length)) {
+        //     return _buildShowMoreButton();
+        // }
+        return _buildProductCard(products[index]);
+      },
+    );
+  }
+
+  Widget _buildProductCard(Products product) {
+    final formatter = NumberFormat('#,###', 'vi_VN');
+    final value = product.price!.$numberDecimal!;
+    final formatPrice = formatter.format(double.parse(value) * 1000000);
+    return GestureDetector(
+      onTap: () {
+        Get.toNamed(Routes.PRODUCTDETAIL, parameters: {'slug': product.slug!});
+      },
+      child: Container(
+        width: 180,
+        margin: const EdgeInsets.only(right: 4),
+        child: Card(
+          color: Colors.grey.shade200,
+          elevation: 2,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: 100,
+                alignment: Alignment.center,
+                child: CachedNetworkImage(
+                  imageUrl: product.proImg?.elementAt(0).img ?? '',
+                  errorWidget: (context, url, error) => const Icon(
+                    FluentIcons.image_off_20_filled,
+                  ),
+                  fit: BoxFit.cover,
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      Center(
+                    child: Shimmer.fromColors(
+                      baseColor: Colors.grey.shade200,
+                      highlightColor: Colors.grey.shade400,
+                      child: Container(
+                        height: 100,
+                        width: 180,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  product.name!,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 2),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      '$formatPrice₫',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w900,
+                        color: Color.fromARGB(255, 162, 95, 230),
+                      ),
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  product.stock == 0
+                      ? const Text(
+                          'Hết hàng',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.red,
+                          ),
+                        )
+                      : ElevatedButton(
+                          onPressed: () {
+                            cartController.addToCart([
+                              {'product': product.sId, 'quantity': 1}
+                            ]);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                const Color.fromARGB(255, 162, 95, 230),
+                            shape: const CircleBorder(),
+                            padding: const EdgeInsets.all(8),
+                          ),
+                          child: const FaIcon(
+                            FontAwesomeIcons.cartPlus,
+                            color: Colors.white,
+                            size: 18,
+                          ),
+                        ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

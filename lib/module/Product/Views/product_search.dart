@@ -95,6 +95,7 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
       borderRadius: BorderRadius.circular(15),
       transitionDuration: const Duration(milliseconds: 300),
       transitionCurve: Curves.easeInOut,
+      queryStyle: const TextStyle(color: Colors.black, fontSize: 16),
       physics: const ScrollPhysics(),
       axisAlignment: 0.0,
       openAxisAlignment: 0.0,

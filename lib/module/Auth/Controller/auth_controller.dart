@@ -40,9 +40,11 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<bool> register(String fullname, String email, String password) async {
+  Future<bool> register(
+      String fullname, String email, String password, String phone) async {
     try {
-      _user.value = await _authService.register(fullname, email, password);
+      _user.value =
+          await _authService.register(fullname, email, password, phone);
       _isLoggedIn.value = true;
       return true;
     } catch (e) {
