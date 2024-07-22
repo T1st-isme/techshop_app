@@ -64,7 +64,7 @@ class _MyAppState extends State<MyApp> {
       themeMode: ThemeMode.system,
       getPages: AppPages.routes,
       initialBinding: AuthBinding(),
-      initialRoute: AppPages.INITIAL,
+      initialRoute: Routes.SPLASH,
     );
   }
 }

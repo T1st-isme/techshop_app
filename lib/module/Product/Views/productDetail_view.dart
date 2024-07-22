@@ -150,12 +150,12 @@ class _ProductDetailState extends State<ProductDetailView> {
                   child: Text(
                     '$formatPrice \u20ab',
                     style: const TextStyle(
-                      fontSize: 18,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 12),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Text(
@@ -183,69 +183,464 @@ class _ProductDetailState extends State<ProductDetailView> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Table(
-                      border: TableBorder.all(),
-                      children: [
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text('CPU'),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                                product.richdescription?.conggiaotiep ?? 'N/A'),
-                          ),
-                        ]),
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text('VGA'),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child:
-                                Text(product.richdescription?.dienang ?? 'N/A'),
-                          ),
-                        ]),
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text('Display'),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                                product.richdescription?.dophangiai ?? 'N/A'),
-                          ),
-                        ]),
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text('RAM'),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child:
-                                Text(product.richdescription?.dosang ?? 'N/A'),
-                          ),
-                        ]),
-                        TableRow(children: [
-                          const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text('SSD'),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                                product.richdescription?.kichthuoc ?? 'N/A'),
-                          ),
-                        ]),
-                      ],
+                  if (product.category?.sId == '6552ee08ea3b4606a040af7b') ...{
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Table(
+                        border: TableBorder.all(),
+                        children: [
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Tần suất'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  product.richdescription?.tansuat ?? 'N/A'),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Bộ vi xử lý'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  product.richdescription?.bovixuly ?? 'N/A'),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Pin'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child:
+                                  Text(product.richdescription?.pin ?? 'N/A'),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Cảm biến'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  product.richdescription?.cambien ?? 'N/A'),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Màu'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child:
+                                  Text(product.richdescription?.mau ?? 'N/A'),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Độ phân giải'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  product.richdescription?.dophangiai ?? 'N/A'),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Trọng lượng'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  product.richdescription?.trongluong ?? 'N/A'),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Kích thước'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  product.richdescription?.kichthuoc ?? 'N/A'),
+                            ),
+                          ]),
+                        ],
+                      ),
                     ),
-                  ),
+                  }
+                  // Màn hình
+                  else if (product.category?.sId ==
+                      '6552ee08ea3b4606a040af7d') ...{
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Table(
+                        border: TableBorder.all(),
+                        children: [
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Kích thước màn hình'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  product.richdescription?.kichthuocmanhinh ??
+                                      'N/A'),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Tỷ lệ'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child:
+                                  Text(product.richdescription?.tyle ?? 'N/A'),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Khu vực hiển thị'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  product.richdescription?.khuvuchienthi ??
+                                      'N/A'),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Loại màn hình'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  product.richdescription?.loaimanhinh ??
+                                      'N/A'),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Tấm nền'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  product.richdescription?.tamnen ?? 'N/A'),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Góc nhìn'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  product.richdescription?.gocnhin ?? 'N/A'),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Độ phân giải'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  product.richdescription?.dophangiai ?? 'N/A'),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Độ sáng'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  product.richdescription?.dosang ?? 'N/A'),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Màu sắc hiển thị'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  product.richdescription?.mausachienthi ??
+                                      'N/A'),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Tần số quét'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  product.richdescription?.tansoquet ?? 'N/A'),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Cổng giao tiếp'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  product.richdescription?.conggiaotiep ??
+                                      'N/A'),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Điện năng'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  product.richdescription?.dienang ?? 'N/A'),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Kích thước'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  product.richdescription?.kichthuoc ?? 'N/A'),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Phụ kiện'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  product.richdescription?.phukien ?? 'N/A'),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Trọng lượng'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  product.richdescription?.trongluong ?? 'N/A'),
+                            ),
+                          ]),
+                        ],
+                      ),
+                    ),
+                  }
+                  // Bàn phím
+                  else if (product.category?.sId ==
+                      '6552ee08ea3b4606a040af7c') ...{
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Table(
+                        border: TableBorder.all(),
+                        children: [
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Tỷ lệ bàn phím'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child:
+                                  Text(product.richdescription?.size ?? 'N/A'),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Kết nối'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  product.richdescription?.connect ?? 'N/A'),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Keycap'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  product.richdescription?.keycap ?? 'N/A'),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Công tắc'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  product.richdescription?.congtac ?? 'N/A'),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Led'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child:
+                                  Text(product.richdescription?.led ?? 'N/A'),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Hỗ trợ'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  product.richdescription?.support ?? 'N/A'),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Phụ kiện'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  product.richdescription?.phukien ?? 'N/A'),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Kích thước'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  product.richdescription?.kichthuoc ?? 'N/A'),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Trọng lượng'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  product.richdescription?.trongluong ?? 'N/A'),
+                            ),
+                          ]),
+                        ],
+                      ),
+                    ),
+                  }
+                  // Laptop
+                  else if (product.category?.sId ==
+                      '6552ee08ea3b4606a040af7a') ...{
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Table(
+                        border: TableBorder.all(),
+                        children: [
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('CPU'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child:
+                                  Text(product.richdescription?.cpu ?? 'N/A'),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('VGA'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child:
+                                  Text(product.richdescription?.vga ?? 'N/A'),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Màn hình'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  product.richdescription?.display ?? 'N/A'),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Ram'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child:
+                                  Text(product.richdescription?.ram ?? 'N/A'),
+                            ),
+                          ]),
+                          TableRow(children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('SSD'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child:
+                                  Text(product.richdescription?.ssd ?? 'N/A'),
+                            ),
+                          ]),
+                        ],
+                      ),
+                    ),
+                  }
                 ],
                 TextButton(
                   child: Text(_isExpanded ? "Thu gọn" : "Xem thêm"),

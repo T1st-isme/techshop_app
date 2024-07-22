@@ -18,6 +18,7 @@ abstract class Routes {
   static const PROFILE = _Paths.PROFILE;
   static const UPDATEPROFILE = _Paths.UPDATEPROFILE;
   static const WISHLIST = _Paths.WISHLIST;
+  static const SPLASH = _Paths.SPLASH;
   // static const WAITING = _Paths.WAITING;
   // static const SEARCH = _Paths.SEARCH;
   // static const SAVED = _Paths.SAVED;
@@ -39,7 +40,7 @@ abstract class _Paths {
   static const PROFILE = '/profile';
   static const UPDATEPROFILE = '/profile/update';
   static const WISHLIST = '/wishlist';
-
+  static const SPLASH = '/splash';
   // static const WAITING = '/waiting';
   // static const SEARCH = '/search';
   // static const SAVED = '/saved';

@@ -146,25 +146,61 @@ class Richdescription {
   String? kichthuoc;
   String? phukien;
   String? trongluong;
+  String? cpu;
+  String? vga;
+  String? display;
+  String? ram;
+  String? ssd;
+  String? tansuat;
+  String? bovixuly;
+  String? pin;
+  String? cambien;
+  String? mau;
+  String? size;
+  String? connect;
+  String? keycap;
+  String? congtac;
+  String? led;
+  String? support;
 
-  Richdescription(
-      {this.kichthuocmanhinh,
-      this.tyle,
-      this.khuvuchienthi,
-      this.loaimanhinh,
-      this.tamnen,
-      this.gocnhin,
-      this.pixelpitch,
-      this.dophangiai,
-      this.dosang,
-      this.mausachienthi,
-      this.tansoquet,
-      this.conggiaotiep,
-      this.dienang,
-      this.kichthuoc,
-      this.phukien,
-      this.trongluong});
-
+  Richdescription({
+    this.kichthuocmanhinh,
+    this.tyle,
+    this.khuvuchienthi,
+    this.loaimanhinh,
+    this.tamnen,
+    this.gocnhin,
+    this.pixelpitch,
+    this.dophangiai,
+    this.dosang,
+    this.mausachienthi,
+    this.tansoquet,
+    this.conggiaotiep,
+    this.dienang,
+    this.kichthuoc,
+    this.phukien,
+    this.trongluong,
+    // Laptop
+    this.cpu,
+    this.vga,
+    this.display,
+    this.ram,
+    this.ssd,
+    // Chuột
+    this.tansuat,
+    this.bovixuly,
+    this.pin,
+    this.cambien,
+    this.mau,
+    // Bàn phím
+    this.size,
+    this.connect,
+    this.keycap,
+    this.congtac,
+    this.led,
+    this.support,
+    // this.phukien,
+  });
   Richdescription.fromJson(Map<String, dynamic> json) {
     kichthuocmanhinh = json['kichthuocmanhinh'];
     tyle = json['tyle'];
@@ -182,6 +218,28 @@ class Richdescription {
     kichthuoc = json['kichthuoc'];
     phukien = json['phukien'];
     trongluong = json['trongluong'];
+
+    // Laptop
+    cpu = json['cpu'];
+    vga = json['vga'];
+    display = json['display'];
+    ram = json['ram'];
+    ssd = json['ssd'];
+
+    // Chuột
+    tansuat = json['tansuat'];
+    bovixuly = json['bovixuly'];
+    pin = json['pin'];
+    cambien = json['cambien'];
+    mau = json['mau'];
+
+    // Bàn phím
+    size = json['size'];
+    connect = json['connect'];
+    keycap = json['keycap'];
+    congtac = json['Switch'];
+    led = json['Led'];
+    support = json['support'];
   }
 
   Map<String, dynamic> toJson() {
@@ -202,6 +260,29 @@ class Richdescription {
     data['kichthuoc'] = kichthuoc;
     data['phukien'] = phukien;
     data['trongluong'] = trongluong;
+
+    //Laptop
+    data['cpu'] = cpu;
+    data['vga'] = vga;
+    data['display'] = display;
+    data['ram'] = ram;
+    data['ssd'] = ssd;
+
+    //Chuột
+    data['tansuat'] = tansuat;
+    data['bovixuly'] = bovixuly;
+    data['pin'] = pin;
+    data['cambien'] = cambien;
+    data['mau'] = mau;
+
+    // Bàn phím
+    data['size'] = size;
+    data['connect'] = connect;
+    data['keycap'] = keycap;
+    data['Switch'] = congtac;
+    data['Led'] = led;
+    data['support'] = support;
+
     return data;
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:techshop_app/module/Auth/Controller/auth_controller.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -9,8 +10,8 @@ class LoginPage extends StatelessWidget {
   final AuthController authController = Get.find<AuthController>();
   final FocusNode emailFocusNode = FocusNode();
   final FocusNode passwordFocusNode = FocusNode();
-  final Uri _youtubeUrl = Uri.parse(
-      'https://www.youtube.com/watch?v=OrDB4jpA1g8'); // Thay bằng URL video của bạn
+  final Uri _youtubeUrl =
+      Uri.parse('https://www.youtube.com/watch?v=jljERmMGomk');
   final ValueNotifier<bool> _obscureText = ValueNotifier<bool>(true);
   final ValueNotifier<bool> _isPasswordFocused = ValueNotifier<bool>(false);
 
@@ -119,19 +120,28 @@ class LoginPage extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 20),
-
-                      // Thêm liên kết YouTube ở đây
                       InkWell(
                         onTap: _launchURL,
-                        child: const Text(
-                          'Xem video hướng dẫn trên YouTube',
-                          style: TextStyle(
-                            color: Colors.blue,
-                            fontSize: 15,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w700,
-                            decoration: TextDecoration.underline,
-                          ),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            FaIcon(
+                              FontAwesomeIcons.youtube,
+                              color: Colors.red,
+                            ),
+                            SizedBox(width: 10),
+                            Text(
+                              'Hướng dẫn sử dụng',
+                              style: TextStyle(
+                                color: Color(0xFF8E6CEE),
+                                fontSize: 15,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w700,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],

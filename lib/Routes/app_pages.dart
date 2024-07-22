@@ -30,6 +30,7 @@ import 'package:techshop_app/module/Product/Views/productDetail_view.dart';
 import 'package:techshop_app/module/Product/Views/productList_view.dart';
 import 'package:techshop_app/module/WishList/Binding/wish_list_binding.dart';
 import 'package:techshop_app/module/WishList/Views/wish_list_view.dart';
+import 'package:techshop_app/module/splash_screen.dart';
 
 part 'app_routes.dart';
 
@@ -125,6 +126,10 @@ class AppPages {
       name: _Paths.WISHLIST,
       page: () => const WishListView(),
       binding: WishListBinding(),
+    ),
+    GetPage(
+      name: _Paths.SPLASH,
+      page: () => const SplashScreen(),
     ),
   ];
 }
